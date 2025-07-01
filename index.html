@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HOLO-D-VISION - Duyuların Harmonisi</title>
+    <title>PİKSENFONİ - Erişilebilir Sanat Galerisi</title>
     
     <!-- Gerekli Kütüphaneler (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
     
     <!-- Babel: JSX kodunu tarayıcıda çalıştırmak için -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -23,75 +24,212 @@
             sans-serif;
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
-          background-color: #111827; /* bg-gray-900 */
+          background-color: #0c0a18;
+          color: #fff;
         }
-        /* QR Tarayıcı için video elementinin kenarlıklarını gizle */
         #qr-reader video {
             border-style: none !important;
+        }
+        /* Scrollbar stilleri */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1a2e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e94560;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f06a7e;
+        }
+        /* Animasyon için */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
 <body>
-    <!-- React uygulamasının render edileceği ana div -->
     <div id="root"></div>
-
-    <!-- Sürekli çalacak gizli arka plan müziği -->
     <audio id="bg-music-player" src="https://raw.githubusercontent.com/Sev84/Holodvision-Duyularin-Harmonisi/main/fon%20muzik.mp3" loop></audio>
-
-    <!-- React Uygulama Kodu (JSX) -->
     <script type="text/babel">
     
-        // React ve diğer kütüphaneleri window objesinden alıyoruz
-        const { useState, useEffect, useRef } = React;
+        const { useState, useEffect, useRef, useCallback } = React;
 
-        // --- ICONS (lucide-react yerine SVG olarak) ---
-        const Palette = (props) => (
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
-        );
-        const Eye = (props) => (
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-        );
-        const Music = (props) => (
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-        );
-        const Camera = (props) => (
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
-        );
-        const Zap = (props) => (
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        );
-        const XCircle = (props) => (
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
-        );
-        const Loader = (props) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-spin" {...props}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-        );
-        const Volume2 = (props) => (
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-        );
-        const VolumeX = (props) => (
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+        // --- ICONS ---
+        const Palette = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>);
+        const Eye = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>);
+        const Music = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>);
+        const Camera = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>);
+        const Zap = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>);
+        const XCircle = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>);
+        const Loader = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-spin" {...props}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>);
+        const Volume2 = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>);
+        const VolumeX = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>);
+        const Cpu = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>);
+        const Users = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6"/><path d="M23 11h-6"/></svg>);
+
+        // --- HOOKS ---
+        const useOnScreen = (options) => {
+            const ref = useRef(null);
+            const [isVisible, setIsVisible] = useState(false);
+
+            useEffect(() => {
+                const observer = new IntersectionObserver(([entry]) => {
+                    if (entry.isIntersecting) {
+                        setIsVisible(true);
+                        observer.unobserve(entry.target);
+                    }
+                }, options);
+
+                const currentRef = ref.current;
+                if (currentRef) {
+                    observer.observe(currentRef);
+                }
+
+                return () => {
+                    if (currentRef) {
+                        observer.unobserve(currentRef);
+                    }
+                };
+            }, [ref, options]);
+
+            return [ref, isVisible];
+        };
+        
+        // --- BİLEŞENLER ---
+        
+        const AnimatedSection = ({ children, ...props }) => {
+            const [ref, isVisible] = useOnScreen({ threshold: 0.1 });
+            return (
+                <section ref={ref} className={`fade-in-section ${isVisible ? 'is-visible' : ''} py-20 px-4 sm:px-6 lg:px-8`} {...props}>
+                    {children}
+                </section>
+            );
+        };
+
+        const ParticleBackground = () => {
+            const canvasRef = useRef(null);
+
+            useEffect(() => {
+                const canvas = canvasRef.current;
+                const ctx = canvas.getContext('2d');
+                let particles = [];
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+
+                const createParticles = () => {
+                    particles = [];
+                    let numberOfParticles = (canvas.height * canvas.width) / 9000;
+                    for (let i = 0; i < numberOfParticles; i++) {
+                        particles.push({
+                            x: Math.random() * canvas.width,
+                            y: Math.random() * canvas.height,
+                            size: Math.random() * 2 + 1,
+                            speedX: Math.random() * 1 - 0.5,
+                            speedY: Math.random() * 1 - 0.5,
+                        });
+                    }
+                };
+
+                const animate = () => {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    for (let i = 0; i < particles.length; i++) {
+                        let p = particles[i];
+                        p.x += p.speedX;
+                        p.y += p.speedY;
+                        
+                        if (p.x > canvas.width || p.x < 0) p.speedX *= -1;
+                        if (p.y > canvas.height || p.y < 0) p.speedY *= -1;
+
+                        ctx.fillStyle = 'rgba(233, 69, 96, 0.5)';
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    requestAnimationFrame(animate);
+                };
+                
+                createParticles();
+                animate();
+
+                const handleResize = () => {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                    createParticles();
+                };
+                window.addEventListener('resize', handleResize);
+                return () => window.removeEventListener('resize', handleResize);
+            }, []);
+
+            return <canvas ref={canvasRef} className="fixed top-0 left-0 w-full h-full -z-10" />;
+        };
+
+        const Navbar = () => {
+            const [isOpen, setIsOpen] = useState(false);
+            const navLinks = [
+                { href: "#home", text: "Ana Sayfa" },
+                { href: "#project", text: "Proje" },
+                { href: "#gallery", text: "Galeri" },
+                { href: "#contact", text: "İletişim" },
+            ];
+            return (
+                <nav className="bg-black/20 backdrop-blur-md fixed w-full z-30 top-0">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="flex items-center justify-between h-16">
+                            <div className="flex-shrink-0">
+                                <img className="h-10" src="https://raw.githubusercontent.com/Sev84/Holodvision-Duyularin-Harmonisi/main/logo1111111.png" alt="Logo"/>
+                            </div>
+                            <div className="hidden md:block">
+                                <div className="ml-10 flex items-baseline space-x-4">
+                                    {navLinks.map(link => (
+                                        <a key={link.href} href={link.href} className="text-gray-300 hover:bg-red-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">{link.text}</a>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="-mr-2 flex md:hidden">
+                                <button onClick={() => setIsOpen(!isOpen)} className="bg-gray-800 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none">
+                                    <svg className={`${isOpen ? 'hidden' : 'block'} h-6 w-6`} stroke="currentColor" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                                    <svg className={`${isOpen ? 'block' : 'hidden'} h-6 w-6`} stroke="currentColor" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div className={`${isOpen ? 'block' : 'hidden'} md:hidden`}>
+                        <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                            {navLinks.map(link => (
+                                <a key={link.href} href={link.href} className="text-gray-300 hover:bg-red-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium transition-colors">{link.text}</a>
+                            ))}
+                        </div>
+                    </div>
+                </nav>
+            );
+        };
+
+        const InfoCard = ({ icon, title, children }) => (
+            <div className="bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl border border-gray-700 text-center transform hover:-translate-y-2 transition-transform duration-300">
+                <div className="text-red-500 mb-4 mx-auto w-16 h-16 flex items-center justify-center bg-gray-900 rounded-full">{icon}</div>
+                <h3 className="text-xl font-bold mb-2">{title}</h3>
+                <p className="text-gray-400">{children}</p>
+            </div>
         );
 
-        // --- BİLEŞENLER (COMPONENTS) ---
-        const ArtCard = ({ item, onSelect }) => (
-          <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300">
-            <img 
-              src={item.imageUrl} 
-              alt={item.artwork} 
-              className="w-full h-56 object-cover" 
-              onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/600x400/1f2937/ffffff?text=Resim+Yüklenemedi`; }}
-            />
+        const ArtCard = ({ item, onSelect, onHover }) => (
+          <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300" onMouseEnter={onHover}>
+            <img src={item.imageUrl} alt={item.artwork} className="w-full h-56 object-cover" onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/600x400/1f2937/ffffff?text=Resim+Yüklenemedi`; }}/>
             <div className="p-4">
               <h3 className="text-xl font-bold text-red-300">{item.artwork}</h3>
               <p className="text-sm text-gray-300 mb-1">{item.artist}</p>
               <p className="text-sm text-gray-400 mb-2 italic">🎨 {item.category}</p>
               <p className="text-sm text-gray-400 mb-4 h-12 overflow-hidden">{item.description}</p>
-              <button 
-                onClick={() => onSelect(item.qr)}
-                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center transition-colors"
-                aria-label={`${item.artwork} eserini dinle ve incele`}
-              >
+              <button onClick={() => onSelect(item.qr)} className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center transition-colors" aria-label={`${item.artwork} eserini dinle ve incele`}>
                 <Music className="mr-2" /> Dinle ve İncele
               </button>
             </div>
@@ -107,25 +245,18 @@
             };
             const config = { fps: 10, qrbox: { width: 250, height: 250 } };
             html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback)
-              .catch(err => {
-                onScanError("Kamera başlatılamadı. Lütfen kamera izni verdiğinizden emin olun.");
-              });
+              .catch(err => { onScanError("Kamera başlatılamadı. Lütfen kamera izni verdiğinizden emin olun."); });
             return () => {
-              if (html5QrCode.isScanning) {
-                html5QrCode.stop().catch(err => console.error("Temizleme sırasında tarama durdurulamadı.", err));
-              }
+              if (html5QrCode.isScanning) { html5QrCode.stop().catch(err => console.error("Temizleme sırasında tarama durdurulamadı.", err)); }
             };
           }, [onScanSuccess, onScanError]);
 
           return (
-            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                 <div className="bg-gray-900 p-4 rounded-2xl shadow-2xl border border-gray-700 w-full max-w-md">
                     <div id="qr-reader" className="rounded-lg overflow-hidden"></div>
                     <p className="text-center text-gray-300 mt-4">QR kodu kameraya gösterin</p>
-                    <button 
-                        onClick={onStop}
-                        className="w-full mt-4 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center transition-colors"
-                    >
+                    <button onClick={onStop} className="w-full mt-4 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center transition-colors">
                         <XCircle className="mr-2" /> Kapat
                     </button>
                 </div>
@@ -140,25 +271,14 @@
             }, [artwork]);
             if (!artwork) return null;
             return (
-                <div ref={cardRef} className="my-10 max-w-2xl mx-auto">
+                <div ref={cardRef} className="my-10 max-w-2xl mx-auto px-4">
                     <div className="bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-red-500 rounded-2xl shadow-2xl shadow-red-500/20 p-6 relative">
-                         <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
-                            <XCircle size={28} />
-                        </button>
+                         <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"><XCircle size={28} /></button>
                         <h2 className="text-3xl font-bold text-center text-red-400 mb-4">Eser Bulundu!</h2>
-                        <img
-                            src={artwork.imageUrl}
-                            alt={artwork.artwork}
-                            className="w-full h-72 object-cover rounded-xl mb-4 shadow-lg"
-                            onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/800x600/1f2937/ffffff?text=Resim+Yüklenemedi`; }}
-                        />
-                        <h3 className="text-2xl font-semibold mb-2 text-white">
-                            <Music className="inline mr-3 text-red-400" /> {artwork.artwork}
-                        </h3>
+                        <img src={artwork.imageUrl} alt={artwork.artwork} className="w-full h-72 object-cover rounded-xl mb-4 shadow-lg" onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/800x600/1f2937/ffffff?text=Resim+Yüklenemedi`; }}/>
+                        <h3 className="text-2xl font-semibold mb-2 text-white"><Music className="inline mr-3 text-red-400" /> {artwork.artwork}</h3>
                         <p className="text-gray-300 mb-4">{artwork.artist}</p>
-                        <audio controls className="w-full" src={artwork.musicUrl} aria-label={`${artwork.artwork} için müzik çalar`}>
-                            Tarayıcınız ses çalmayı desteklemiyor.
-                        </audio>
+                        <audio controls autoPlay className="w-full" src={artwork.musicUrl} aria-label={`${artwork.artwork} için müzik çalar`}>Tarayıcınız ses çalmayı desteklemiyor.</audio>
                         <p className="text-sm text-gray-500 mt-2">Not: Müzik dosyaları GitHub reponuzda değilse çalmayabilir.</p>
                     </div>
                 </div>
@@ -177,10 +297,30 @@
           
           const bgMusicRef = useRef(null);
           const [isBgMusicPlaying, setIsBgMusicPlaying] = useState(true);
+          const hoverSound = useRef(null);
+
+          // Tone.js'i başlat
+          const startAudioContext = useCallback(() => {
+            if (Tone.context.state !== 'running') {
+              Tone.start();
+              console.log('Audio context started');
+            }
+            if (!hoverSound.current) {
+                hoverSound.current = new Tone.Synth({
+                    oscillator: { type: 'sine' },
+                    envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 1 }
+                }).toDestination();
+            }
+          }, []);
+
+          const playHoverSound = useCallback(() => {
+            if (hoverSound.current) {
+                hoverSound.current.triggerAttackRelease("C5", "8n");
+            }
+          }, []);
 
           useEffect(() => {
             const repoBaseUrl = "https://raw.githubusercontent.com/Sev84/Holodvision-Duyularin-Harmonisi/main/";
-            
             const artworksData = [
                 { "id": 1, "artwork": "Mona Lisa", "qr": "MONA_ORJ", "musicUrl": `${repoBaseUrl}Monalisa%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Monalisa.jpeg`, "artist": "Leonardo da Vinci", "description": "Rönesans döneminin en ünlü portrelerinden biri.", "category": "Klasik" },
                 { "id": 2, "artwork": "İnci Küpeli Kız", "qr": "INCI_ORJ", "musicUrl": `${repoBaseUrl}Inci%20Kupeli%20Kız%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Inci%20Kupeli%20Kız.jpeg`, "artist": "Johannes Vermeer", "description": "Hollandalı sanatçının ışık kullanımıyla öne çıkan başyapıtı.", "category": "Klasik" },
@@ -191,41 +331,31 @@
             ];
             setAllArtworks(artworksData);
             setIsLoading(false);
-          }, []);
+            
+            // Kullanıcı etkileşimi için event listener
+            document.body.addEventListener('click', startAudioContext, { once: true });
+            return () => document.body.removeEventListener('click', startAudioContext);
+          }, [startAudioContext]);
           
-          // Fon müziği kontrolü
           useEffect(() => {
-            if (!bgMusicRef.current) {
-                bgMusicRef.current = document.getElementById('bg-music-player');
-            }
+            if (!bgMusicRef.current) { bgMusicRef.current = document.getElementById('bg-music-player'); }
             const audioEl = bgMusicRef.current;
             if (audioEl) {
-                audioEl.volume = 0.2; // Ses seviyesini %20 yap
-                if (isBgMusicPlaying) {
-                    audioEl.play().catch(error => {
-                        console.warn("Fon müziği otomatik oynatılamadı.", error);
-                        setIsBgMusicPlaying(false); // Oynatılamıyorsa durumu false yap
-                    });
-                } else {
-                    audioEl.pause();
-                }
+                audioEl.volume = 0.2;
+                if (isBgMusicPlaying) { audioEl.play().catch(error => { setIsBgMusicPlaying(false); }); } 
+                else { audioEl.pause(); }
             }
           }, [isBgMusicPlaying]);
 
           useEffect(() => {
-            if (filterCategory === "Tümü") {
-              setFilteredArtworks(allArtworks);
-            } else {
-              setFilteredArtworks(allArtworks.filter(item => item.category === filterCategory));
-            }
+            if (filterCategory === "Tümü") { setFilteredArtworks(allArtworks); } 
+            else { setFilteredArtworks(allArtworks.filter(item => item.category === filterCategory)); }
           }, [filterCategory, allArtworks]);
 
           const handleSearch = (qrCode) => {
             const result = allArtworks.find((item) => item.qr === qrCode);
             setFoundArtwork(result || null);
-            if (!result) {
-                alert("Eşleşen eser bulunamadı.");
-            }
+            if (!result) { alert("Eşleşen eser bulunamadı."); }
           };
           
           const handleSelectArtwork = (qr) => { handleSearch(qr); }
@@ -234,91 +364,103 @@
 
           const handleGloveConnect = () => {
             setGloveStatus('Bağlanıyor...');
-            setTimeout(() => {
-                setGloveStatus(prev => prev === 'Bağlandı' ? 'Bağlı Değil' : 'Bağlandı');
-            }, 1500);
+            setTimeout(() => { setGloveStatus(prev => prev === 'Bağlandı' ? 'Bağlı Değil' : 'Bağlandı'); }, 1500);
           };
 
           return (
-            <div className="min-h-screen bg-gray-900 text-white p-4 sm:p-6 md:p-10 font-sans">
-              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-red-900/30 via-transparent to-transparent -z-10"></div>
-              {isScanning && <QrScanner onScanSuccess={handleScanSuccess} onScanError={handleScanError} onStop={() => setIsScanning(false)} />}
+            <div className="bg-[#0c0a18] text-white font-sans" onClick={startAudioContext}>
+              <ParticleBackground />
+              <Navbar />
               
-              <header className="text-center mb-10">
-                <img 
-                    src="https://raw.githubusercontent.com/Sev84/Holodvision-Duyularin-Harmonisi/main/logo1111111.png" 
-                    alt="PİKSENFONİ Logo" 
-                    className="mx-auto mb-4 h-24"
-                    onError={(e) => { e.target.style.display='none'; }}
-                />
-                <h1 className="text-4xl md:text-5xl font-bold flex justify-center items-center gap-3 bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-white">
-                  <Palette className="text-red-400" /> PİKSENFONİ
-                </h1>
-                <p className="mt-2 text-lg text-gray-300 max-w-2xl mx-auto flex items-center justify-center gap-2">
-                  <Eye className="inline text-red-300" /> Renklerle Seslerin Buluştuğu Sınırsız Dünya
-                </p>
-              </header>
-
-              <section className="max-w-2xl mx-auto mb-10 p-4 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl text-center">
-                <h2 className="text-xl font-semibold text-red-300 mb-2">Renk ve Ses Eldiveni</h2>
-                <p className="text-gray-400 mb-4">Eldiveni kullanarak tablolardaki renklere dokunun ve notaları duyun.</p>
-                <div className="flex items-center justify-center gap-4">
-                    <button onClick={handleGloveConnect} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50" disabled={gloveStatus === 'Bağlanıyor...'}>
-                        <Zap className="mr-2" /> 
-                        {gloveStatus === 'Bağlandı' ? 'Bağlantıyı Kes' : 'Eldiveni Bağla'}
-                    </button>
-                    <div className="flex items-center gap-2">
-                        <span className={`w-3 h-3 rounded-full ${gloveStatus === 'Bağlandı' ? 'bg-green-500 animate-pulse' : (gloveStatus === 'Bağlanıyor...' ? 'bg-yellow-500 animate-spin' : 'bg-red-500')}`}></span>
-                        <span>{gloveStatus}</span>
-                    </div>
-                </div>
-              </section>
-              <section className="max-w-5xl mx-auto mb-12 sticky top-4 z-10 bg-gray-900/70 backdrop-blur-md p-4 rounded-xl border border-gray-700">
-                <div className="grid md:grid-cols-2 gap-4 items-end">
-                    <div>
-                        <label htmlFor="category-filter" className="block mb-2 font-medium text-gray-300">🎨 Kategoriye Göre Filtrele</label>
-                        <select id="category-filter" className="w-full p-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-red-500 focus:border-red-500 transition" value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}>
-                            <option value="Tümü">Tümü</option>
-                            <option value="Klasik">Klasik</option>
-                            <option value="Kübist">Kübist</option>
-                        </select>
-                    </div>
-                    <button onClick={() => setIsScanning(true)} className="w-full p-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg flex items-center justify-center transition-colors">
-                        <Camera className="mr-2" /> QR Kod Tara
-                    </button>
-                </div>
-              </section>
-              <FoundArtworkCard artwork={foundArtwork} onClose={() => setFoundArtwork(null)} />
               <main>
-                {isLoading ? (
-                  <div className="flex justify-center items-center p-10"><Loader size={48} className="text-red-500"/><p className="ml-4 text-xl">Sanat eserleri yükleniyor...</p></div>
-                ) : (
-                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
-                    {filteredArtworks.map((item) => <ArtCard key={item.id} item={item} onSelect={handleSelectArtwork} />)}
-                  </div>
-                )}
+                <AnimatedSection id="home" className="min-h-screen flex items-center justify-center text-center">
+                    <div>
+                        <img src="https://raw.githubusercontent.com/Sev84/Holodvision-Duyularin-Harmonisi/main/logo1111111.png" alt="PİKSENFONİ Logo" className="mx-auto mb-4 h-28" onError={(e) => { e.target.style.display='none'; }}/>
+                        <h1 className="text-5xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-pink-400 mb-4">PİKSENFONİ</h1>
+                        <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">Renklerle Seslerin Buluştuğu Sınırsız Dünya: Görme engelli bireyler için sanatı işitsel ve dokunsal bir deneyime dönüştürüyoruz.</p>
+                    </div>
+                </AnimatedSection>
+
+                <AnimatedSection id="project">
+                    <h2 className="text-4xl font-bold text-center mb-12">Proje Hakkında</h2>
+                    <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-8">
+                        <InfoCard icon={<Eye size={32}/>} title="Amacımız">Görme engelli bireylerin sanata erişimini artırmak ve sanat eserlerini çoklu duyusal yollarla, özgürce deneyimlemelerini sağlamak.</InfoCard>
+                        <InfoCard icon={<Cpu size={32}/>} title="Teknolojimiz">RGB renk sensörlü akıllı eldiven, renkleri notalara ve titreşimlere dönüştürür. QR kod tabanlı web uygulamamız ise eserlere özel müziklere anında erişim sunar.</InfoCard>
+                        <InfoCard icon={<Users size={32}/>} title="Hedef Kitlemiz">Görme engelli bireyler, özel eğitim kurumları, müzeler, sanat galerileri ve sanata erişilebilir bir pencereden bakmak isteyen herkes.</InfoCard>
+                    </div>
+                </AnimatedSection>
+
+                <AnimatedSection id="glove" className="bg-black/20">
+                    <div className="max-w-2xl mx-auto text-center">
+                        <h2 className="text-4xl font-bold mb-4">Renk ve Ses Eldiveni</h2>
+                        <p className="text-gray-400 mb-8">Eldiveni kullanarak tablolardaki renklere dokunun ve notaları duyun. Sanatla aranızdaki engelleri kaldırın.</p>
+                        <div className="p-6 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl inline-flex flex-col items-center gap-4">
+                            <button onClick={handleGloveConnect} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50" disabled={gloveStatus === 'Bağlanıyor...'}>
+                                <Zap className="mr-2" /> 
+                                {gloveStatus === 'Bağlandı' ? 'Bağlantıyı Kes' : 'Eldiveni Bağla'}
+                            </button>
+                            <div className="flex items-center gap-2">
+                                <span className={`w-3 h-3 rounded-full ${gloveStatus === 'Bağlandı' ? 'bg-green-500 animate-pulse' : (gloveStatus === 'Bağlanıyor...' ? 'bg-yellow-500 animate-spin' : 'bg-red-500')}`}></span>
+                                <span>{gloveStatus}</span>
+                            </div>
+                        </div>
+                    </div>
+                </AnimatedSection>
+                
+                <AnimatedSection id="gallery">
+                    <h2 className="text-4xl font-bold text-center mb-12">Eser Galerisi</h2>
+                    <div className="max-w-5xl mx-auto mb-12 sticky top-20 z-20 bg-gray-900/70 backdrop-blur-md p-4 rounded-xl border border-gray-700">
+                        <div className="grid md:grid-cols-2 gap-4 items-end">
+                            <div>
+                                <label htmlFor="category-filter" className="block mb-2 font-medium text-gray-300">🎨 Kategoriye Göre Filtrele</label>
+                                <select id="category-filter" className="w-full p-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-red-500 focus:border-red-500 transition" value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}>
+                                    <option value="Tümü">Tümü</option>
+                                    <option value="Klasik">Klasik</option>
+                                    <option value="Kübist">Kübist</option>
+                                </select>
+                            </div>
+                            <button onClick={() => setIsScanning(true)} className="w-full p-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg flex items-center justify-center transition-colors">
+                                <Camera className="mr-2" /> QR Kod Tara
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <FoundArtworkCard artwork={foundArtwork} onClose={() => setFoundArtwork(null)} />
+                    
+                    {isLoading ? (
+                      <div className="flex justify-center items-center p-10"><Loader size={48} className="text-red-500"/><p className="ml-4 text-xl">Sanat eserleri yükleniyor...</p></div>
+                    ) : (
+                      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+                        {filteredArtworks.map((item) => <ArtCard key={item.id} item={item} onSelect={handleSelectArtwork} onHover={playHoverSound} />)}
+                      </div>
+                    )}
+                </AnimatedSection>
+
+                <AnimatedSection id="contact" className="bg-black/20">
+                    <div className="max-w-2xl mx-auto text-center">
+                        <h2 className="text-4xl font-bold mb-4">İletişim</h2>
+                        <p className="text-gray-400 mb-8">Projemiz hakkında daha fazla bilgi almak veya iş birliği yapmak için bizimle iletişime geçebilirsiniz.</p>
+                        <a href="mailto:info@holodvision.com" className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg transition-colors">Bize Ulaşın</a>
+                    </div>
+                </AnimatedSection>
               </main>
 
-              {/* Fon Müziği Kontrol Butonu */}
               <div className="fixed bottom-5 right-5 z-50">
-                <button
-                    onClick={() => setIsBgMusicPlaying(!isBgMusicPlaying)}
-                    className="bg-gray-700/50 hover:bg-gray-600/70 backdrop-blur-sm text-white font-bold p-3 rounded-full shadow-lg transition-colors"
-                    aria-label={isBgMusicPlaying ? "Müziği Kapat" : "Müziği Aç"}
-                >
+                <button onClick={() => setIsBgMusicPlaying(!isBgMusicPlaying)} className="bg-gray-700/50 hover:bg-gray-600/70 backdrop-blur-sm text-white font-bold p-3 rounded-full shadow-lg transition-colors" aria-label={isBgMusicPlaying ? "Müziği Kapat" : "Müziği Aç"}>
                     {isBgMusicPlaying ? <Volume2 /> : <VolumeX />}
                 </button>
               </div>
 
-              <footer className="mt-20 text-center text-sm text-gray-500">
+              <footer className="text-center text-sm text-gray-500 py-8">
                 <p>© 2025 PİKSENFONİ - HOLO-D-VISION Takımı. Tüm hakları saklıdır.</p>
                 <p>TEKNOFEST Engelsiz Yaşam Teknolojileri Yarışması</p>
               </footer>
+              
+              {isScanning && <QrScanner onScanSuccess={handleScanSuccess} onScanError={handleScanError} onStop={() => setIsScanning(false)} />}
             </div>
           );
         }
 
-        // --- React Uygulamasını Başlat ---
         const container = document.getElementById('root');
         const root = ReactDOM.createRoot(container);
         root.render(<App />);
