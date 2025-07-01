@@ -80,7 +80,7 @@
             <div className="p-4">
               <h3 className="text-xl font-bold text-red-300">{item.artwork}</h3>
               <p className="text-sm text-gray-300 mb-1">{item.artist}</p>
-              <p className="text-sm text-gray-400 mb-2 italic">🔴 {item.category}</p>
+              <p className="text-sm text-gray-400 mb-2 italic">🎨 {item.category}</p>
               <p className="text-sm text-gray-400 mb-4 h-12 overflow-hidden">{item.description}</p>
               <button 
                 onClick={() => onSelect(item.qr)}
@@ -174,12 +174,12 @@
             const repoBaseUrl = "https://raw.githubusercontent.com/Sev84/Holodvision-Duyularin-Harmonisi/main/";
             
             const artworksData = [
-                { "id": 1, "artwork": "Mona Lisa", "qr": "MONA_ORJ", "musicUrl": `${repoBaseUrl}Monalisa%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Monalisa.png`, "artist": "Leonardo da Vinci", "description": "Rönesans döneminin en ünlü portrelerinden biri.", "category": "Klasik" },
-                { "id": 2, "artwork": "İnci Küpeli Kız", "qr": "INCI_ORJ", "musicUrl": `${repoBaseUrl}Inci%20Kupeli%20Kız%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Inci%20Kupeli%20Kız.png`, "artist": "Johannes Vermeer", "description": "Hollandalı sanatçının ışık kullanımıyla öne çıkan başyapıtı.", "category": "Klasik" },
-                { "id": 3, "artwork": "Picasso - Olga", "qr": "PICA_ORJ", "musicUrl": `${repoBaseUrl}Picasso%20Olga%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Picasso%20Olga.png`, "artist": "Pablo Picasso", "description": "Picasso'nun eşi Olga Khokhlova'nın portresi.", "category": "Klasik" },
-                { "id": 4, "artwork": "Mona Lisa (Küp Versiyon)", "qr": "MONA_KUP", "musicUrl": `${repoBaseUrl}Monalisa%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Monalisa1.png`, "artist": "Leonardo da Vinci", "description": "Mona Lisa tablosunun kübist bir yorumu.", "category": "Kübist" },
-                { "id": 5, "artwork": "İnci Küpeli Kız (Küp Versiyon)", "qr": "INCI_KUP", "musicUrl": `${repoBaseUrl}Inci%20Kupeli%20Kız%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Inci%20Kupeli%20Kız1.png`, "artist": "Johannes Vermeer", "description": "İnci Küpeli Kız tablosunun kübist bir yorumu.", "category": "Kübist" },
-                { "id": 6, "artwork": "Picasso - Olga (Küp Versiyon)", "qr": "PICA_KUP", "musicUrl": `${repoBaseUrl}Picasso%20Olga%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Picasso%20Olga1.png`, "artist": "Pablo Picasso", "description": "Kübist dokunuşlarla modern bir portre çalışması.", "category": "Kübist" }
+                { "id": 1, "artwork": "Mona Lisa", "qr": "MONA_ORJ", "musicUrl": `${repoBaseUrl}Monalisa%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Monalisa.jpeg`, "artist": "Leonardo da Vinci", "description": "Rönesans döneminin en ünlü portrelerinden biri.", "category": "Klasik" },
+                { "id": 2, "artwork": "İnci Küpeli Kız", "qr": "INCI_ORJ", "musicUrl": `${repoBaseUrl}Inci%20Kupeli%20Kız%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Inci%20Kupeli%20Kız.jpeg`, "artist": "Johannes Vermeer", "description": "Hollandalı sanatçının ışık kullanımıyla öne çıkan başyapıtı.", "category": "Klasik" },
+                { "id": 3, "artwork": "Picasso - Olga", "qr": "PICA_ORJ", "musicUrl": `${repoBaseUrl}Picasso%20Olga%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Picasso%20Olga.jpg`, "artist": "Pablo Picasso", "description": "Picasso'nun eşi Olga Khokhlova'nın portresi.", "category": "Klasik" },
+                { "id": 4, "artwork": "Mona Lisa (Küp Versiyon)", "qr": "MONA_KUP", "musicUrl": `${repoBaseUrl}Monalisa%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Monalisa1.jpg`, "artist": "Leonardo da Vinci", "description": "Mona Lisa tablosunun kübist bir yorumu.", "category": "Kübist" },
+                { "id": 5, "artwork": "İnci Küpeli Kız (Küp Versiyon)", "qr": "INCI_KUP", "musicUrl": `${repoBaseUrl}Inci%20Kupeli%20Kız%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Inci%20Kupeli%20Kız1.jpg`, "artist": "Johannes Vermeer", "description": "İnci Küpeli Kız tablosunun kübist bir yorumu.", "category": "Kübist" },
+                { "id": 6, "artwork": "Picasso - Olga (Küp Versiyon)", "qr": "PICA_KUP", "musicUrl": `${repoBaseUrl}Picasso%20Olga%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Picasso%20Olga1.jpg`, "artist": "Pablo Picasso", "description": "Kübist dokunuşlarla modern bir portre çalışması.", "category": "Kübist" }
             ];
             setAllArtworks(artworksData);
             setIsLoading(false);
