@@ -35,6 +35,10 @@
     <!-- React uygulamasının render edileceği ana div -->
     <div id="root"></div>
 
+    <!-- Sürekli çalacak gizli arka plan müziği -->
+    <!-- Not: Tarayıcılar kullanıcı etkileşimi olmadan otomatik ses çalmayı engelleyebilir. -->
+    <audio src="https://raw.githubusercontent.com/Sev84/Holodvision-Duyularin-Harmonisi/main/fon%20muzik.mp3" autoplay loop hidden></audio>
+
     <!-- React Uygulama Kodu (JSX) -->
     <script type="text/babel">
     
@@ -167,14 +171,15 @@
           const [gloveStatus, setGloveStatus] = useState('Bağlı Değil');
           
           useEffect(() => {
-            // Eser verileri projenize göre güncellendi
+            const repoBaseUrl = "https://raw.githubusercontent.com/Sev84/Holodvision-Duyularin-Harmonisi/main/";
+            
             const artworksData = [
-                { "id": 1, "artwork": "Monalisa", "qr": "_ORJ", "musicUrl": "Monalisa Son Hali.mp3", "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg/800px-_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg", "artist": "Leonardo da Vinci", "description": "Rönesans döneminin en ünlü portrelerinden biri.", "category": "Klasik" },
-                { "id": 2, "artwork": "İnci Küpeli Kız", "qr": "INCI_ORJ", "musicUrl": "Inci Kupeli Kız Son Hali.mp3", "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/1665_Girl_with_a_Pearl_Earring.jpg/800px-1665_Girl_with_a_Pearl_Earring.jpg", "artist": "Johannes Vermeer", "description": "Hollandalı sanatçının ışık kullanımıyla öne çıkan başyapıtı.", "category": "Klasik" },
-                { "id": 3, "artwork": "Picasso - Olga", "qr": "PICA_ORJ", "musicUrl": "Picasso Son Hali.mp3", "imageUrl": "https://raw.githubusercontent.com/Sev84/Holodvision-Duyularin-Harmonisi/main/Picasso Olga.png", "artist": "Pablo Picasso", "description": "Picasso'nun eşi Olga Khokhlova'nın portresi.", "category": "Klasik" },
-                { "id": 4, "artwork": "lisa (Küp Versiyon)", "qr": "_KUP", "musicUrl": "Monalisa Son Hali.mp3", "imageUrl": "https://raw.githubusercontent.com/Sev84/Holodvision-Duyularin-Harmonisi/main/lisa1.png", "artist": "Leonardo da Vinci", "description": "Monalisa tablosunun kübist bir yorumu.", "category": "Kübist" },
-                { "id": 5, "artwork": "İnci Küpeli Kız (Küp Versiyon)", "qr": "INCI_KUP", "musicUrl": "Inci Kupeli Kız Son Hali.mp3", "imageUrl": "https://raw.githubusercontent.com/Sev84/Holodvision-Duyularin-Harmonisi/main/Inci Kupeli Kız1.png", "artist": "Johannes Vermeer", "description": "İnci Küpeli Kız tablosunun kübist bir yorumu.", "category": "Kübist" },
-                { "id": 6, "artwork": "Picasso - Olga (Küp Versiyon)", "qr": "PICA_KUP", "musicUrl": "Picasso Son Hali.mp3", "imageUrl": "https://placehold.co/800x800/1f2937/ffffff?text=Picasso+-+Olga+(Küp)", "artist": "Pablo Picasso", "description": "Kübist dokunuşlarla modern bir portre çalışması.", "category": "Kübist" }
+                { "id": 1, "artwork": "Mona Lisa", "qr": "MONA_ORJ", "musicUrl": `${repoBaseUrl}Monalisa%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Monalisa.png`, "artist": "Leonardo da Vinci", "description": "Rönesans döneminin en ünlü portrelerinden biri.", "category": "Klasik" },
+                { "id": 2, "artwork": "İnci Küpeli Kız", "qr": "INCI_ORJ", "musicUrl": `${repoBaseUrl}Inci%20Kupeli%20Kız%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Inci%20Kupeli%20Kız.png`, "artist": "Johannes Vermeer", "description": "Hollandalı sanatçının ışık kullanımıyla öne çıkan başyapıtı.", "category": "Klasik" },
+                { "id": 3, "artwork": "Picasso - Olga", "qr": "PICA_ORJ", "musicUrl": `${repoBaseUrl}Picasso%20Olga%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Picasso%20Olga.png`, "artist": "Pablo Picasso", "description": "Picasso'nun eşi Olga Khokhlova'nın portresi.", "category": "Klasik" },
+                { "id": 4, "artwork": "Mona Lisa (Küp Versiyon)", "qr": "MONA_KUP", "musicUrl": `${repoBaseUrl}Monalisa%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Monalisa1.png`, "artist": "Leonardo da Vinci", "description": "Mona Lisa tablosunun kübist bir yorumu.", "category": "Kübist" },
+                { "id": 5, "artwork": "İnci Küpeli Kız (Küp Versiyon)", "qr": "INCI_KUP", "musicUrl": `${repoBaseUrl}Inci%20Kupeli%20Kız%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Inci%20Kupeli%20Kız1.png`, "artist": "Johannes Vermeer", "description": "İnci Küpeli Kız tablosunun kübist bir yorumu.", "category": "Kübist" },
+                { "id": 6, "artwork": "Picasso - Olga (Küp Versiyon)", "qr": "PICA_KUP", "musicUrl": `${repoBaseUrl}Picasso%20Olga%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Picasso%20Olga1.png`, "artist": "Pablo Picasso", "description": "Kübist dokunuşlarla modern bir portre çalışması.", "category": "Kübist" }
             ];
             setAllArtworks(artworksData);
             setIsLoading(false);
@@ -211,7 +216,14 @@
             <div className="min-h-screen bg-gray-900 text-white p-4 sm:p-6 md:p-10 font-sans">
               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-red-900/30 via-transparent to-transparent -z-10"></div>
               {isScanning && <QrScanner onScanSuccess={handleScanSuccess} onScanError={handleScanError} onStop={() => setIsScanning(false)} />}
+              
               <header className="text-center mb-10">
+                <img 
+                    src="https://raw.githubusercontent.com/Sev84/Holodvision-Duyularin-Harmonisi/main/logo1111111.png" 
+                    alt="PİKSENFONİ Logo" 
+                    className="mx-auto mb-4 h-24"
+                    onError={(e) => { e.target.style.display='none'; }}
+                />
                 <h1 className="text-4xl md:text-5xl font-bold flex justify-center items-center gap-3 bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-white">
                   <Palette className="text-red-400" /> PİKSENFONİ
                 </h1>
@@ -219,6 +231,7 @@
                   <Eye className="inline text-red-300" /> Renklerle Seslerin Buluştuğu Sınırsız Dünya
                 </p>
               </header>
+
               <section className="max-w-2xl mx-auto mb-10 p-4 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl text-center">
                 <h2 className="text-xl font-semibold text-red-300 mb-2">Renk ve Ses Eldiveni</h2>
                 <p className="text-gray-400 mb-4">Eldiveni kullanarak tablolardaki renklere dokunun ve notaları duyun.</p>
@@ -274,4 +287,3 @@
     </script>
 </body>
 </html>
-
