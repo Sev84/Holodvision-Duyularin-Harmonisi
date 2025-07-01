@@ -1,314 +1,277 @@
-import React, { useState, useEffect, useRef } from 'react';
-
-// Gerekli kütüphaneler (CDN üzerinden)
-// Gerçek bir projede, bunlar npm/yarn ile yüklenir.
-// html5-qrcode kütüphanesini kullanabilmek için script'i HTML'e eklemek gerekir.
-// Bu kodun çalışması için ana HTML dosyanızın <head> bölümüne aşağıdaki satırı ekleyin:
-// <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-
-// --- ICONS (lucide-react yerine SVG olarak) ---
-const Palette = (props) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
-);
-const Eye = (props) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-);
-const Music = (props) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-);
-const Camera = (props) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
-);
-const Zap = (props) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-);
-const XCircle = (props) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
-);
-const Loader = (props) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-spin" {...props}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-);
-
-
-// --- BİLEŞENLER (COMPONENTS) ---
-
-// Sanat eseri kartı bileşeni
-const ArtCard = ({ item, onSelect }) => (
-  <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300">
-    <img 
-      src={item.imageUrl} 
-      alt={item.artwork} 
-      className="w-full h-56 object-cover" 
-      onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/600x400/1f2937/ffffff?text=${item.artwork.replace(/\s/g,'+')}`; }}
-    />
-    <div className="p-4">
-      <h3 className="text-xl font-bold text-red-300">{item.artwork}</h3>
-      <p className="text-sm text-gray-300 mb-1">{item.artist}</p>
-      <p className="text-sm text-gray-400 mb-2 italic">🎨 {item.category}</p>
-      <p className="text-sm text-gray-400 mb-4 h-12 overflow-hidden">{item.description}</p>
-      <button 
-        onClick={() => onSelect(item.qr)}
-        className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center transition-colors"
-        aria-label={`${item.artwork} eserini dinle ve incele`}
-      >
-        <Music className="mr-2" /> Dinle ve İncele
-      </button>
-    </div>
-  </div>
-);
-
-// QR Kod Tarayıcı Bileşeni
-const QrScanner = ({ onScanSuccess, onScanError, onStop }) => {
-  const scannerRef = useRef(null);
-
-  useEffect(() => {
-    // html5-qrcode kütüphanesi global scope'ta mevcut olmalı
-    if (!window.Html5Qrcode) {
-        console.error("html5-qrcode kütüphanesi yüklenemedi.");
-        return;
-    }
-
-    const html5QrCode = new window.Html5Qrcode("qr-reader");
-    scannerRef.current = html5QrCode;
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PİKSENFONİ - Erişilebilir Sanat Galerisi</title>
     
-    const qrCodeSuccessCallback = (decodedText, decodedResult) => {
-      onScanSuccess(decodedText);
-    };
+    <!-- Gerekli Kütüphaneler (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     
-    const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+    <!-- Babel: JSX kodunu tarayıcıda çalıştırmak için -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback)
-      .catch(err => {
-        onScanError("Kamera başlatılamadı. Lütfen kamera izni verdiğinizden emin olun.");
-      });
+    <!-- Temel Sayfa Stilleri -->
+    <style>
+        body {
+          margin: 0;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+            'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+            sans-serif;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+          background-color: #111827; /* bg-gray-900 */
+        }
+        /* QR Tarayıcı için video elementinin kenarlıklarını gizle */
+        #qr-reader video {
+            border-style: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- React uygulamasının render edileceği ana div -->
+    <div id="root"></div>
 
-    // Cleanup function
-    return () => {
-      if (scannerRef.current && scannerRef.current.isScanning) {
-        scannerRef.current.stop().catch(err => console.error("Tarama durdurulamadı.", err));
-      }
-    };
-  }, [onScanSuccess, onScanError]);
-
-  return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50">
-        <div className="bg-gray-900 p-4 rounded-2xl shadow-2xl border border-gray-700 w-full max-w-md">
-            <div id="qr-reader" className="rounded-lg overflow-hidden"></div>
-            <p className="text-center text-gray-300 mt-4">QR kodu kameraya gösterin</p>
-            <button 
-                onClick={onStop}
-                className="w-full mt-4 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center transition-colors"
-            >
-                <XCircle className="mr-2" /> Kapat
-            </button>
-        </div>
-    </div>
-  );
-};
-
-// Bulunan Eseri Gösteren Kart
-const FoundArtworkCard = ({ artwork, onClose }) => {
-    const cardRef = useRef(null);
-
-    useEffect(() => {
-        // Kart göründüğünde scroll yap
-        cardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, [artwork]);
-
-    if (!artwork) return null;
-
-    return (
-        <div ref={cardRef} className="my-10 max-w-2xl mx-auto">
-            <div className="bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-red-500 rounded-2xl shadow-2xl shadow-red-500/20 p-6 relative">
-                 <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
-                    <XCircle size={28} />
-                </button>
-                <h2 className="text-3xl font-bold text-center text-red-400 mb-4">Eser Bulundu!</h2>
-                <img
-                    src={artwork.imageUrl}
-                    alt={artwork.artwork}
-                    className="w-full h-72 object-cover rounded-xl mb-4 shadow-lg"
-                    onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/800x600/1f2937/ffffff?text=${artwork.artwork.replace(/\s/g,'+')}`; }}
-                />
-                <h3 className="text-2xl font-semibold mb-2 text-white">
-                    <Music className="inline mr-3 text-red-400" /> {artwork.artwork}
-                </h3>
-                <p className="text-gray-300 mb-4">{artwork.artist}</p>
-                <audio controls className="w-full" src={artwork.musicUrl} aria-label={`${artwork.artwork} için müzik çalar`}>
-                    {/* Tarayıcı ses dosyasını desteklemiyorsa bu metin gösterilir. */}
-                    Tarayıcınız ses çalmayı desteklemiyor.
-                </audio>
-                <p className="text-sm text-gray-500 mt-2">Not: Müzik dosyaları sunucuya yüklenmediği için çalmayabilir. Bu bir prototiptir.</p>
-            </div>
-        </div>
-    );
-}
-
-
-// --- ANA UYGULAMA BİLEŞENİ ---
-
-export default function AccessibleArtApp() {
-  const [allArtworks, setAllArtworks] = useState([]);
-  const [filteredArtworks, setFilteredArtworks] = useState([]);
-  const [foundArtwork, setFoundArtwork] = useState(null);
-  const [filterCategory, setFilterCategory] = useState("Tümü");
-  
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-  
-  const [isScanning, setIsScanning] = useState(false);
-  const [scanError, setScanError] = useState(null);
-
-  const [gloveStatus, setGloveStatus] = useState('Bağlı Değil');
-  
-  // 1. Adım: Veriyi harici bir kaynaktan çek
-  useEffect(() => {
-    // Gerçek bir uygulamada bu bir API adresi olur.
-    // Prototip için, veriyi public bir klasörden çekiyoruz.
-    // Bu kodun çalışması için projenizin public klasöründe
-    // /data/artworks.json dosyası olmalıdır.
-    const artworksData = [
-        { "id": 1, "artwork": "Mona Lisa", "qr": "MONA123", "musicUrl": "/audio/mona.mp3", "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg/800px-Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg", "artist": "Leonardo da Vinci", "description": "Rönesans döneminin en ünlü portrelerinden biri.", "category": "Klasik" },
-        { "id": 2, "artwork": "İnci Küpeli Kız", "qr": "INCI456", "musicUrl": "/audio/inci.mp3", "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/1665_Girl_with_a_Pearl_Earring.jpg/800px-1665_Girl_with_a_Pearl_Earring.jpg", "artist": "Johannes Vermeer", "description": "Hollandalı sanatçının ışık kullanımıyla öne çıkan başyapıtı.", "category": "Klasik" },
-        { "id": 3, "artwork": "Mona Lisa (Küp Versiyon)", "qr": "MONA_KUP", "musicUrl": "/audio/mona.mp3", "imageUrl": "https://placehold.co/800x800/1f2937/ffffff?text=Mona+Lisa+(Küp)", "artist": "Leonardo da Vinci", "description": "Mona Lisa tablosunun piksel/küp biçiminde temsil edilen çağdaş yorumu.", "category": "Kübist" },
-        { "id": 4, "artwork": "İnci Küpeli Kız (Küp Versiyon)", "qr": "INCI_KUP", "musicUrl": "/audio/inci.mp3", "imageUrl": "https://placehold.co/800x800/1f2937/ffffff?text=İnci+Küpeli+Kız+(Küp)", "artist": "Johannes Vermeer", "description": "Klasik tablonun soyut küp versiyonuyla farklı bir erişim yaklaşımı.", "category": "Soyut" },
-        { "id": 5, "artwork": "Picasso - Olga (1)", "qr": "PICA_1", "musicUrl": "/audio/picasso.mp3", "imageUrl": "https://placehold.co/800x800/1f2937/ffffff?text=Picasso+-+Olga+(1)", "artist": "Pablo Picasso", "description": "Kübist dokunuşlarla modern bir portre çalışması.", "category": "Kübist" },
-        { "id": 6, "artwork": "Yıldızlı Gece", "qr": "YILDIZLI_GECE", "musicUrl": "/audio/gece.mp3", "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/800px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg", "artist": "Vincent van Gogh", "description": "Post-empresyonist dönemin en tanınmış eserlerinden biridir.", "category": "Modern" }
-    ];
+    <!-- React Uygulama Kodu (JSX) -->
+    <script type="text/babel">
     
-    setAllArtworks(artworksData);
-    setIsLoading(false);
-  }, []);
+        // React ve diğer kütüphaneleri window objesinden alıyoruz
+        const { useState, useEffect, useRef } = React;
 
-  // 2. Adım: Filtreleme mantığı
-  useEffect(() => {
-    if (filterCategory === "Tümü") {
-      setFilteredArtworks(allArtworks);
-    } else {
-      setFilteredArtworks(allArtworks.filter(item => item.category === filterCategory));
-    }
-  }, [filterCategory, allArtworks]);
+        // --- ICONS (lucide-react yerine SVG olarak) ---
+        const Palette = (props) => (
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
+        );
+        const Eye = (props) => (
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+        );
+        const Music = (props) => (
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        );
+        const Camera = (props) => (
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+        );
+        const Zap = (props) => (
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        );
+        const XCircle = (props) => (
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
+        );
+        const Loader = (props) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-spin" {...props}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+        );
 
-  // 3. Adım: Arama ve seçim fonksiyonları
-  const handleSearch = (qrCode) => {
-    const result = allArtworks.find((item) => item.qr === qrCode);
-    setFoundArtwork(result || null);
-    if (!result) {
-        alert("Eşleşen eser bulunamadı.");
-    }
-  };
-  
-  const handleSelectArtwork = (qr) => {
-    handleSearch(qr);
-  }
-
-  // 4. Adım: QR Tarayıcı yönetimi
-  const handleScanSuccess = (decodedText) => {
-    setIsScanning(false);
-    handleSearch(decodedText);
-  };
-
-  const handleScanError = (errorMessage) => {
-    setIsScanning(false);
-    setScanError(errorMessage);
-    alert(errorMessage); // Basit bir uyarı
-  };
-
-  // 5. Adım: Akıllı Eldiven simülasyonu
-  const handleGloveConnect = () => {
-    setGloveStatus('Bağlanıyor...');
-    setTimeout(() => {
-        setGloveStatus(prev => prev === 'Bağlandı' ? 'Bağlı Değil' : 'Bağlandı');
-    }, 1500);
-  };
-
-  return (
-    <div className="min-h-screen bg-gray-900 text-white p-4 sm:p-6 md:p-10 font-sans">
-      <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-red-900/30 via-transparent to-transparent -z-10"></div>
-      
-      {isScanning && <QrScanner onScanSuccess={handleScanSuccess} onScanError={handleScanError} onStop={() => setIsScanning(false)} />}
-
-      <header className="text-center mb-10">
-        <h1 className="text-4xl md:text-5xl font-bold flex justify-center items-center gap-3 bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-white">
-          <Palette className="text-red-400" /> PİKSENFONİ
-        </h1>
-        <p className="mt-2 text-lg text-gray-300 max-w-2xl mx-auto flex items-center justify-center gap-2">
-          <Eye className="inline text-red-300" /> Renklerle Seslerin Buluştuğu Sınırsız Dünya
-        </p>
-      </header>
-      
-      {/* Akıllı Eldiven Kontrol Paneli */}
-      <section className="max-w-2xl mx-auto mb-10 p-4 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl text-center">
-        <h2 className="text-xl font-semibold text-red-300 mb-2">Renk ve Ses Eldiveni</h2>
-        <p className="text-gray-400 mb-4">Eldiveni kullanarak tablolardaki renklere dokunun ve notaları duyun.</p>
-        <div className="flex items-center justify-center gap-4">
-            <button 
-                onClick={handleGloveConnect}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50"
-                disabled={gloveStatus === 'Bağlanıyor...'}
-            >
-                <Zap className="mr-2" /> 
-                {gloveStatus === 'Bağlandı' ? 'Bağlantıyı Kes' : 'Eldiveni Bağla'}
-            </button>
-            <div className="flex items-center gap-2">
-                <span className={`w-3 h-3 rounded-full ${gloveStatus === 'Bağlandı' ? 'bg-green-500 animate-pulse' : (gloveStatus === 'Bağlanıyor...' ? 'bg-yellow-500 animate-spin' : 'bg-red-500')}`}></span>
-                <span>{gloveStatus}</span>
+        // --- BİLEŞENLER (COMPONENTS) ---
+        const ArtCard = ({ item, onSelect }) => (
+          <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300">
+            <img 
+              src={item.imageUrl} 
+              alt={item.artwork} 
+              className="w-full h-56 object-cover" 
+              onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/600x400/1f2937/ffffff?text=${item.artwork.replace(/\s/g,'+')}`; }}
+            />
+            <div className="p-4">
+              <h3 className="text-xl font-bold text-red-300">{item.artwork}</h3>
+              <p className="text-sm text-gray-300 mb-1">{item.artist}</p>
+              <p className="text-sm text-gray-400 mb-2 italic">🎨 {item.category}</p>
+              <p className="text-sm text-gray-400 mb-4 h-12 overflow-hidden">{item.description}</p>
+              <button 
+                onClick={() => onSelect(item.qr)}
+                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center transition-colors"
+                aria-label={`${item.artwork} eserini dinle ve incele`}
+              >
+                <Music className="mr-2" /> Dinle ve İncele
+              </button>
             </div>
-        </div>
-      </section>
-
-      {/* Arama ve Filtreleme */}
-      <section className="max-w-5xl mx-auto mb-12 sticky top-4 z-10 bg-gray-900/70 backdrop-blur-md p-4 rounded-xl border border-gray-700">
-        <div className="grid md:grid-cols-2 gap-4 items-end">
-            <div>
-                <label htmlFor="category-filter" className="block mb-2 font-medium text-gray-300">🎨 Kategoriye Göre Filtrele</label>
-                <select
-                    id="category-filter"
-                    className="w-full p-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-red-500 focus:border-red-500 transition"
-                    value={filterCategory}
-                    onChange={(e) => setFilterCategory(e.target.value)}
-                >
-                    <option value="Tümü">Tümü</option>
-                    <option value="Klasik">Klasik</option>
-                    <option value="Kübist">Kübist</option>
-                    <option value="Soyut">Soyut</option>
-                    <option value="Modern">Modern</option>
-                </select>
-            </div>
-            <button 
-                onClick={() => setIsScanning(true)}
-                className="w-full p-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg flex items-center justify-center transition-colors"
-            >
-                <Camera className="mr-2" /> QR Kod Tara
-            </button>
-        </div>
-      </section>
-
-      {/* Bulunan Eser */}
-      <FoundArtworkCard artwork={foundArtwork} onClose={() => setFoundArtwork(null)} />
-
-      {/* Galeri */}
-      <main>
-        {isLoading ? (
-          <div className="flex justify-center items-center p-10">
-            <Loader size={48} className="text-red-500"/>
-            <p className="ml-4 text-xl">Sanat eserleri yükleniyor...</p>
           </div>
-        ) : error ? (
-          <p className="text-center text-red-400">{error}</p>
-        ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
-            {filteredArtworks.map((item) => (
-              <ArtCard key={item.id} item={item} onSelect={handleSelectArtwork} />
-            ))}
-          </div>
-        )}
-      </main>
+        );
 
-      <footer className="mt-20 text-center text-sm text-gray-500">
-        <p>© 2025 PİKSENFONİ - HOLO-D-VISION Takımı. Tüm hakları saklıdır.</p>
-        <p>TEKNOFEST Engelsiz Yaşam Teknolojileri Yarışması</p>
-      </footer>
-    </div>
-  );
-}
+        const QrScanner = ({ onScanSuccess, onScanError, onStop }) => {
+          useEffect(() => {
+            const html5QrCode = new Html5Qrcode("qr-reader");
+            const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+              onScanSuccess(decodedText);
+              html5QrCode.stop().catch(err => console.error("Tarama durdurulamadı.", err));
+            };
+            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+            html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback)
+              .catch(err => {
+                onScanError("Kamera başlatılamadı. Lütfen kamera izni verdiğinizden emin olun.");
+              });
+            return () => {
+              if (html5QrCode.isScanning) {
+                html5QrCode.stop().catch(err => console.error("Temizleme sırasında tarama durdurulamadı.", err));
+              }
+            };
+          }, [onScanSuccess, onScanError]);
+
+          return (
+            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50">
+                <div className="bg-gray-900 p-4 rounded-2xl shadow-2xl border border-gray-700 w-full max-w-md">
+                    <div id="qr-reader" className="rounded-lg overflow-hidden"></div>
+                    <p className="text-center text-gray-300 mt-4">QR kodu kameraya gösterin</p>
+                    <button 
+                        onClick={onStop}
+                        className="w-full mt-4 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center transition-colors"
+                    >
+                        <XCircle className="mr-2" /> Kapat
+                    </button>
+                </div>
+            </div>
+          );
+        };
+
+        const FoundArtworkCard = ({ artwork, onClose }) => {
+            const cardRef = useRef(null);
+            useEffect(() => {
+                cardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, [artwork]);
+            if (!artwork) return null;
+            return (
+                <div ref={cardRef} className="my-10 max-w-2xl mx-auto">
+                    <div className="bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-red-500 rounded-2xl shadow-2xl shadow-red-500/20 p-6 relative">
+                         <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
+                            <XCircle size={28} />
+                        </button>
+                        <h2 className="text-3xl font-bold text-center text-red-400 mb-4">Eser Bulundu!</h2>
+                        <img
+                            src={artwork.imageUrl}
+                            alt={artwork.artwork}
+                            className="w-full h-72 object-cover rounded-xl mb-4 shadow-lg"
+                            onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/800x600/1f2937/ffffff?text=${artwork.artwork.replace(/\s/g,'+')}`; }}
+                        />
+                        <h3 className="text-2xl font-semibold mb-2 text-white">
+                            <Music className="inline mr-3 text-red-400" /> {artwork.artwork}
+                        </h3>
+                        <p className="text-gray-300 mb-4">{artwork.artist}</p>
+                        <audio controls className="w-full" src={artwork.musicUrl} aria-label={`${artwork.artwork} için müzik çalar`}>
+                            Tarayıcınız ses çalmayı desteklemiyor.
+                        </audio>
+                        <p className="text-sm text-gray-500 mt-2">Not: Müzik dosyaları mevcut olmadığı için çalmayabilir. Bu bir prototiptir.</p>
+                    </div>
+                </div>
+            );
+        }
+
+        // --- ANA UYGULAMA BİLEŞENİ ---
+        function App() {
+          const [allArtworks, setAllArtworks] = useState([]);
+          const [filteredArtworks, setFilteredArtworks] = useState([]);
+          const [foundArtwork, setFoundArtwork] = useState(null);
+          const [filterCategory, setFilterCategory] = useState("Tümü");
+          const [isLoading, setIsLoading] = useState(true);
+          const [isScanning, setIsScanning] = useState(false);
+          const [gloveStatus, setGloveStatus] = useState('Bağlı Değil');
+          
+          useEffect(() => {
+            const artworksData = [
+                { "id": 1, "artwork": "Mona Lisa", "qr": "MONA123", "musicUrl": "/audio/mona.mp3", "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg/800px-Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg", "artist": "Leonardo da Vinci", "description": "Rönesans döneminin en ünlü portrelerinden biri.", "category": "Klasik" },
+                { "id": 2, "artwork": "İnci Küpeli Kız", "qr": "INCI456", "musicUrl": "/audio/inci.mp3", "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/1665_Girl_with_a_Pearl_Earring.jpg/800px-1665_Girl_with_a_Pearl_Earring.jpg", "artist": "Johannes Vermeer", "description": "Hollandalı sanatçının ışık kullanımıyla öne çıkan başyapıtı.", "category": "Klasik" },
+                { "id": 3, "artwork": "Mona Lisa (Küp Versiyon)", "qr": "MONA_KUP", "musicUrl": "/audio/mona.mp3", "imageUrl": "https://placehold.co/800x800/1f2937/ffffff?text=Mona+Lisa+(Küp)", "artist": "Leonardo da Vinci", "description": "Mona Lisa tablosunun piksel/küp biçiminde temsil edilen çağdaş yorumu.", "category": "Kübist" },
+                { "id": 4, "artwork": "İnci Küpeli Kız (Küp Versiyon)", "qr": "INCI_KUP", "musicUrl": "/audio/inci.mp3", "imageUrl": "https://placehold.co/800x800/1f2937/ffffff?text=İnci+Küpeli+Kız+(Küp)", "artist": "Johannes Vermeer", "description": "Klasik tablonun soyut küp versiyonuyla farklı bir erişim yaklaşımı.", "category": "Soyut" },
+                { "id": 5, "artwork": "Picasso - Olga (1)", "qr": "PICA_1", "musicUrl": "/audio/picasso.mp3", "imageUrl": "https://placehold.co/800x800/1f2937/ffffff?text=Picasso+-+Olga+(1)", "artist": "Pablo Picasso", "description": "Kübist dokunuşlarla modern bir portre çalışması.", "category": "Kübist" },
+                { "id": 6, "artwork": "Yıldızlı Gece", "qr": "YILDIZLI_GECE", "musicUrl": "/audio/gece.mp3", "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/800px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg", "artist": "Vincent van Gogh", "description": "Post-empresyonist dönemin en tanınmış eserlerinden biridir.", "category": "Modern" }
+            ];
+            setAllArtworks(artworksData);
+            setIsLoading(false);
+          }, []);
+
+          useEffect(() => {
+            if (filterCategory === "Tümü") {
+              setFilteredArtworks(allArtworks);
+            } else {
+              setFilteredArtworks(allArtworks.filter(item => item.category === filterCategory));
+            }
+          }, [filterCategory, allArtworks]);
+
+          const handleSearch = (qrCode) => {
+            const result = allArtworks.find((item) => item.qr === qrCode);
+            setFoundArtwork(result || null);
+            if (!result) {
+                alert("Eşleşen eser bulunamadı.");
+            }
+          };
+          
+          const handleSelectArtwork = (qr) => { handleSearch(qr); }
+          const handleScanSuccess = (decodedText) => { setIsScanning(false); handleSearch(decodedText); };
+          const handleScanError = (errorMessage) => { setIsScanning(false); alert(errorMessage); };
+
+          const handleGloveConnect = () => {
+            setGloveStatus('Bağlanıyor...');
+            setTimeout(() => {
+                setGloveStatus(prev => prev === 'Bağlandı' ? 'Bağlı Değil' : 'Bağlandı');
+            }, 1500);
+          };
+
+          return (
+            <div className="min-h-screen bg-gray-900 text-white p-4 sm:p-6 md:p-10 font-sans">
+              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-red-900/30 via-transparent to-transparent -z-10"></div>
+              {isScanning && <QrScanner onScanSuccess={handleScanSuccess} onScanError={handleScanError} onStop={() => setIsScanning(false)} />}
+              <header className="text-center mb-10">
+                <h1 className="text-4xl md:text-5xl font-bold flex justify-center items-center gap-3 bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-white">
+                  <Palette className="text-red-400" /> PİKSENFONİ
+                </h1>
+                <p className="mt-2 text-lg text-gray-300 max-w-2xl mx-auto flex items-center justify-center gap-2">
+                  <Eye className="inline text-red-300" /> Renklerle Seslerin Buluştuğu Sınırsız Dünya
+                </p>
+              </header>
+              <section className="max-w-2xl mx-auto mb-10 p-4 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl text-center">
+                <h2 className="text-xl font-semibold text-red-300 mb-2">Renk ve Ses Eldiveni</h2>
+                <p className="text-gray-400 mb-4">Eldiveni kullanarak tablolardaki renklere dokunun ve notaları duyun.</p>
+                <div className="flex items-center justify-center gap-4">
+                    <button onClick={handleGloveConnect} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50" disabled={gloveStatus === 'Bağlanıyor...'}>
+                        <Zap className="mr-2" /> 
+                        {gloveStatus === 'Bağlandı' ? 'Bağlantıyı Kes' : 'Eldiveni Bağla'}
+                    </button>
+                    <div className="flex items-center gap-2">
+                        <span className={`w-3 h-3 rounded-full ${gloveStatus === 'Bağlandı' ? 'bg-green-500 animate-pulse' : (gloveStatus === 'Bağlanıyor...' ? 'bg-yellow-500 animate-spin' : 'bg-red-500')}`}></span>
+                        <span>{gloveStatus}</span>
+                    </div>
+                </div>
+              </section>
+              <section className="max-w-5xl mx-auto mb-12 sticky top-4 z-10 bg-gray-900/70 backdrop-blur-md p-4 rounded-xl border border-gray-700">
+                <div className="grid md:grid-cols-2 gap-4 items-end">
+                    <div>
+                        <label htmlFor="category-filter" className="block mb-2 font-medium text-gray-300">🎨 Kategoriye Göre Filtrele</label>
+                        <select id="category-filter" className="w-full p-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-red-500 focus:border-red-500 transition" value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}>
+                            <option value="Tümü">Tümü</option>
+                            <option value="Klasik">Klasik</option>
+                            <option value="Kübist">Kübist</option>
+                            <option value="Soyut">Soyut</option>
+                            <option value="Modern">Modern</option>
+                        </select>
+                    </div>
+                    <button onClick={() => setIsScanning(true)} className="w-full p-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg flex items-center justify-center transition-colors">
+                        <Camera className="mr-2" /> QR Kod Tara
+                    </button>
+                </div>
+              </section>
+              <FoundArtworkCard artwork={foundArtwork} onClose={() => setFoundArtwork(null)} />
+              <main>
+                {isLoading ? (
+                  <div className="flex justify-center items-center p-10"><Loader size={48} className="text-red-500"/><p className="ml-4 text-xl">Sanat eserleri yükleniyor...</p></div>
+                ) : (
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+                    {filteredArtworks.map((item) => <ArtCard key={item.id} item={item} onSelect={handleSelectArtwork} />)}
+                  </div>
+                )}
+              </main>
+              <footer className="mt-20 text-center text-sm text-gray-500">
+                <p>© 2025 PİKSENFONİ - HOLO-D-VISION Takımı. Tüm hakları saklıdır.</p>
+                <p>TEKNOFEST Engelsiz Yaşam Teknolojileri Yarışması</p>
+              </footer>
+            </div>
+          );
+        }
+
+        // --- React Uygulamasını Başlat ---
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />);
+
+    </script>
+</body>
+</html>
