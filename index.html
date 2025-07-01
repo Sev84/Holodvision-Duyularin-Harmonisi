@@ -289,6 +289,7 @@
                         body: JSON.stringify(payload)
                     });
                     if (!response.ok) {
+                        // Throw an error to be caught by the catch block
                         throw new Error(`API call failed with status: ${response.status}`);
                     }
                     const result = await response.json();
@@ -297,11 +298,15 @@
                         setAnalysisText(text);
                         speakText(text);
                     } else {
-                        setAnalysisText("Sanatsal analiz alınamadı. Lütfen tekrar deneyin. Modelden geçerli bir yanıt gelmedi.");
+                        // Handle cases where the API returns a 200 OK but no valid content
+                        throw new Error("Modelden geçerli bir yanıt gelmedi.");
                     }
                 } catch (error) {
                     console.error("Gemini API error:", error);
-                    setAnalysisText(`Bir hata oluştu: ${error.message}. Lütfen internet bağlantınızı kontrol edin veya daha sonra tekrar deneyin.`);
+                    // Fallback to a mock response for demonstration
+                    const mockAnalysis = `[DEMO MODU] '${artwork.artwork}' adlı bu eser, ${artwork.artist} tarafından yapılmış, ${artwork.category} sanat akımının bir örneğidir. Sanatçı, bu eserde duyguları ve formları kendine has bir dille yorumlamıştır. Bu analiz, yapay zeka tarafından üretilmiştir. Canlı bağlantı kurulamadığında bu örnek metin gösterilir.`;
+                    setAnalysisText(mockAnalysis);
+                    speakText(mockAnalysis);
                 } finally {
                     setIsAnalyzing(false);
                 }
@@ -336,10 +341,12 @@
                         setChatHistory(prev => [...prev, { role: 'model', text: botResponse }]);
                         speakText(botResponse);
                     } else {
-                         setChatHistory(prev => [...prev, { role: 'model', text: "Üzgünüm, bu soruya şu an cevap veremiyorum." }]);
+                         throw new Error("Modelden geçerli bir yanıt gelmedi.");
                     }
                 } catch (error) {
-                     setChatHistory(prev => [...prev, { role: 'model', text: "Bir hata oluştu, lütfen tekrar deneyin." }]);
+                     const mockResponse = "[DEMO MODU] Bu soruya şu an yanıt veremiyorum, ancak sanatçının bu dönemdeki diğer eserlerini inceleyebilirsiniz.";
+                     setChatHistory(prev => [...prev, { role: 'model', text: mockResponse }]);
+                     speakText(mockResponse);
                 } finally {
                     setIsChatting(false);
                 }
