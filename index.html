@@ -71,7 +71,7 @@
               src={item.imageUrl} 
               alt={item.artwork} 
               className="w-full h-56 object-cover" 
-              onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/600x400/1f2937/ffffff?text=${item.artwork.replace(/\s/g,'+')}`; }}
+              onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/600x400/1f2937/ffffff?text=Resim+Yüklenemedi`; }}
             />
             <div className="p-4">
               <h3 className="text-xl font-bold text-red-300">{item.artwork}</h3>
@@ -141,7 +141,7 @@
                             src={artwork.imageUrl}
                             alt={artwork.artwork}
                             className="w-full h-72 object-cover rounded-xl mb-4 shadow-lg"
-                            onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/800x600/1f2937/ffffff?text=${artwork.artwork.replace(/\s/g,'+')}`; }}
+                            onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/800x600/1f2937/ffffff?text=Resim+Yüklenemedi`; }}
                         />
                         <h3 className="text-2xl font-semibold mb-2 text-white">
                             <Music className="inline mr-3 text-red-400" /> {artwork.artwork}
@@ -150,7 +150,7 @@
                         <audio controls className="w-full" src={artwork.musicUrl} aria-label={`${artwork.artwork} için müzik çalar`}>
                             Tarayıcınız ses çalmayı desteklemiyor.
                         </audio>
-                        <p className="text-sm text-gray-500 mt-2">Not: Müzik dosyaları mevcut olmadığı için çalmayabilir. Bu bir prototiptir.</p>
+                        <p className="text-sm text-gray-500 mt-2">Not: Müzik dosyaları GitHub reponuzda değilse çalmayabilir.</p>
                     </div>
                 </div>
             );
@@ -167,13 +167,14 @@
           const [gloveStatus, setGloveStatus] = useState('Bağlı Değil');
           
           useEffect(() => {
+            // Eser verileri projenize göre güncellendi
             const artworksData = [
-                { "id": 1, "artwork": "Mona Lisa", "qr": "MONA123", "musicUrl": "/audio/mona.mp3", "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg/800px-Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg", "artist": "Leonardo da Vinci", "description": "Rönesans döneminin en ünlü portrelerinden biri.", "category": "Klasik" },
-                { "id": 2, "artwork": "İnci Küpeli Kız", "qr": "INCI456", "musicUrl": "/audio/inci.mp3", "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/1665_Girl_with_a_Pearl_Earring.jpg/800px-1665_Girl_with_a_Pearl_Earring.jpg", "artist": "Johannes Vermeer", "description": "Hollandalı sanatçının ışık kullanımıyla öne çıkan başyapıtı.", "category": "Klasik" },
-                { "id": 3, "artwork": "Mona Lisa (Küp Versiyon)", "qr": "MONA_KUP", "musicUrl": "/audio/mona.mp3", "imageUrl": "https://placehold.co/800x800/1f2937/ffffff?text=Mona+Lisa+(Küp)", "artist": "Leonardo da Vinci", "description": "Mona Lisa tablosunun piksel/küp biçiminde temsil edilen çağdaş yorumu.", "category": "Kübist" },
-                { "id": 4, "artwork": "İnci Küpeli Kız (Küp Versiyon)", "qr": "INCI_KUP", "musicUrl": "/audio/inci.mp3", "imageUrl": "https://placehold.co/800x800/1f2937/ffffff?text=İnci+Küpeli+Kız+(Küp)", "artist": "Johannes Vermeer", "description": "Klasik tablonun soyut küp versiyonuyla farklı bir erişim yaklaşımı.", "category": "Soyut" },
-                { "id": 5, "artwork": "Picasso - Olga (1)", "qr": "PICA_1", "musicUrl": "/audio/picasso.mp3", "imageUrl": "https://placehold.co/800x800/1f2937/ffffff?text=Picasso+-+Olga+(1)", "artist": "Pablo Picasso", "description": "Kübist dokunuşlarla modern bir portre çalışması.", "category": "Kübist" },
-                { "id": 6, "artwork": "Yıldızlı Gece", "qr": "YILDIZLI_GECE", "musicUrl": "/audio/gece.mp3", "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/800px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg", "artist": "Vincent van Gogh", "description": "Post-empresyonist dönemin en tanınmış eserlerinden biridir.", "category": "Modern" }
+                { "id": 1, "artwork": "Mona Lisa", "qr": "MONA_ORJ", "musicUrl": "Monalisa Son Hali.mp3", "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg/800px-Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg", "artist": "Leonardo da Vinci", "description": "Rönesans döneminin en ünlü portrelerinden biri.", "category": "Klasik" },
+                { "id": 2, "artwork": "İnci Küpeli Kız", "qr": "INCI_ORJ", "musicUrl": "Inci Kupeli Kız Son Hali.mp3", "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/1665_Girl_with_a_Pearl_Earring.jpg/800px-1665_Girl_with_a_Pearl_Earring.jpg", "artist": "Johannes Vermeer", "description": "Hollandalı sanatçının ışık kullanımıyla öne çıkan başyapıtı.", "category": "Klasik" },
+                { "id": 3, "artwork": "Picasso - Olga", "qr": "PICA_ORJ", "musicUrl": "Picasso Son Hali.mp3", "imageUrl": "https://raw.githubusercontent.com/Sev84/Holodvision-Duyularin-Harmonisi/main/Picasso Olga.png", "artist": "Pablo Picasso", "description": "Picasso'nun eşi Olga Khokhlova'nın portresi.", "category": "Klasik" },
+                { "id": 4, "artwork": "Mona Lisa (Küp Versiyon)", "qr": "MONA_KUP", "musicUrl": "Monalisa Son Hali.mp3", "imageUrl": "https://raw.githubusercontent.com/Sev84/Holodvision-Duyularin-Harmonisi/main/Mona Lisa1.png", "artist": "Leonardo da Vinci", "description": "Mona Lisa tablosunun kübist bir yorumu.", "category": "Kübist" },
+                { "id": 5, "artwork": "İnci Küpeli Kız (Küp Versiyon)", "qr": "INCI_KUP", "musicUrl": "Inci Kupeli Kız Son Hali.mp3", "imageUrl": "https://raw.githubusercontent.com/Sev84/Holodvision-Duyularin-Harmonisi/main/Inci Kupeli Kız1.png", "artist": "Johannes Vermeer", "description": "İnci Küpeli Kız tablosunun kübist bir yorumu.", "category": "Kübist" },
+                { "id": 6, "artwork": "Picasso - Olga (Küp Versiyon)", "qr": "PICA_KUP", "musicUrl": "Picasso Son Hali.mp3", "imageUrl": "https://placehold.co/800x800/1f2937/ffffff?text=Picasso+-+Olga+(Küp)", "artist": "Pablo Picasso", "description": "Kübist dokunuşlarla modern bir portre çalışması.", "category": "Kübist" }
             ];
             setAllArtworks(artworksData);
             setIsLoading(false);
@@ -240,8 +241,6 @@
                             <option value="Tümü">Tümü</option>
                             <option value="Klasik">Klasik</option>
                             <option value="Kübist">Kübist</option>
-                            <option value="Soyut">Soyut</option>
-                            <option value="Modern">Modern</option>
                         </select>
                     </div>
                     <button onClick={() => setIsScanning(true)} className="w-full p-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg flex items-center justify-center transition-colors">
@@ -275,3 +274,4 @@
     </script>
 </body>
 </html>
+
