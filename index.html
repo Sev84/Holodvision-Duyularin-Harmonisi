@@ -1,0 +1,207 @@
+import { useState, useEffect, useRef } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Music, Camera, Info, Users, Volume2, Filter, Palette, Eye, BarChart2 } from "lucide-react";
+
+const musicArchive = [
+  {
+    id: 3,
+    artwork: "Mona Lisa (Küp Versiyon)",
+    qr: "MONA_KUP",
+    musicUrl: "/audio/mona.mp3",
+    imageUrl: "/mnt/data/4-2-Monalisa 11x17 Küp 22x27 cm (1).jpg",
+    artist: "Leonardo da Vinci",
+    description: "Mona Lisa tablosunun piksel/küp biçiminde temsil edilen çağdaş yorumu.",
+    category: "Kübist"
+  },
+  {
+    id: 4,
+    artwork: "İnci Küpeli Kız (Küp Versiyon)",
+    qr: "INCI_KUP",
+    musicUrl: "/audio/inci.mp3",
+    imageUrl: "/mnt/data/2-2-Inci Kupeli Kız 11×15 Kutu 22×30 cm (1).jpeg",
+    artist: "Johannes Vermeer",
+    description: "Klasik tablonun soyut küp versiyonuyla farklı bir erişim yaklaşımı.",
+    category: "Soyut"
+  },
+  {
+    id: 5,
+    artwork: "Picasso - Olga (1)",
+    qr: "PICA_1",
+    musicUrl: "/audio/picasso.mp3",
+    imageUrl: "/mnt/data/1-1-Picasso Olga 11x13 Küp 22x26 cm (1).jpg",
+    artist: "Pablo Picasso",
+    description: "Kübist dokunuşlarla modern bir portre çalışması.",
+    category: "Kübist"
+  },
+  {
+    id: 6,
+    artwork: "Picasso - Olga (2)",
+    qr: "PICA_2",
+    musicUrl: "/audio/picasso.mp3",
+    imageUrl: "/mnt/data/1-2-Picasso Olga 11x13 Küp 22x26 cm (1).jpg",
+    artist: "Pablo Picasso",
+    description: "Canlı renklerle yorumlanmış ikinci Olga versiyonu.",
+    category: "Modern"
+  },
+  {
+    id: 1,
+    artwork: "Mona Lisa",
+    qr: "MONA123",
+    musicUrl: "/audio/mona.mp3",
+    imageUrl: "/images/mona-lisa.jpg",
+    artist: "Leonardo da Vinci",
+    description: "Rönesans döneminin en ünlü portrelerinden biri.",
+    category: "Klasik"
+  },
+  {
+    id: 2,
+    artwork: "İnci Küpeli Kız",
+    qr: "INCI456",
+    musicUrl: "/audio/inci.mp3",
+    imageUrl: "/images/girl-with-pearl.jpg",
+    artist: "Johannes Vermeer",
+    description: "Hollandalı sanatçının ışık kullanımıyla öne çıkan başyapıtı.",
+    category: "Klasik"
+  },
+];
+
+export default function AccessibleArtApp() {
+  const [qrCode, setQrCode] = useState("");
+  const [foundMusic, setFoundMusic] = useState(null);
+  const [totalScans, setTotalScans] = useState(0);
+  const [scanning, setScanning] = useState(false);
+  const [filterCategory, setFilterCategory] = useState("Tümü");
+  const videoRef = useRef(null);
+  const bgMusicRef = useRef(null);
+
+  useEffect(() => {
+    bgMusicRef.current?.play().catch(() => {});
+  }, []);
+
+  const handleSearch = () => {
+    const result = musicArchive.find((item) => item.qr === qrCode);
+    if (result) setTotalScans((prev) => prev + 1);
+    setFoundMusic(result || null);
+  };
+
+  const startScan = async () => {
+    setScanning(true);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+      videoRef.current.srcObject = stream;
+      videoRef.current.play();
+    } catch (error) {
+      alert("Kamera erişimi reddedildi.");
+      setScanning(false);
+    }
+  };
+
+  const filteredArchive = filterCategory === "Tümü" ? musicArchive : musicArchive.filter(item => item.category === filterCategory);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-red-800 text-white p-6 md:p-10 lg:p-16">
+      <audio ref={bgMusicRef} loop autoPlay className="hidden">
+        <source src="/audio/intro.mp3" type="audio/mp3" />
+      </audio>
+
+      <header className="mb-10">
+        <h1 className="text-3xl md:text-5xl font-bold text-center flex justify-center items-center gap-2">
+          <Palette className="text-red-400" /> Modern Sanat Galerisi
+        </h1>
+        <p className="text-center mt-2 text-lg text-gray-300 max-w-2xl mx-auto">
+          <Eye className="inline mr-2 text-red-300" /> QR kod ile eşleşen sanat eserlerine müzik ve erişilebilir özelliklerle ulaşın.
+        </p>
+      </header>
+
+      <div className="max-w-xl mx-auto mb-6">
+        <label className="block mb-2 font-medium">🎨 Kategoriye Göre Filtrele</label>
+        <select
+          className="w-full p-2 bg-gray-800 border border-gray-600 rounded text-white"
+          value={filterCategory}
+          onChange={(e) => setFilterCategory(e.target.value)}
+        >
+          <option value="Tümü">Tümü</option>
+          <option value="Klasik">Klasik</option>
+          <option value="Kübist">Kübist</option>
+          <option value="Soyut">Soyut</option>
+          <option value="Modern">Modern</option>
+        </select>
+      </div>
+
+      <section className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto mb-12">
+        {filteredArchive.map((item) => (
+          <Card key={item.id} className="bg-gray-800 text-white">
+            <CardContent className="p-4">
+              <img src={item.imageUrl} alt={item.artwork} className="w-full h-56 object-cover rounded-lg mb-3" />
+              <h3 className="text-xl font-bold">{item.artwork}</h3>
+              <p className="text-sm text-gray-300 mb-1">{item.artist}</p>
+              <p className="text-sm text-gray-400 mb-2 italic">🎨 {item.category}</p>
+              <p className="text-sm text-gray-400 mb-3">{item.description}</p>
+              <Button onClick={() => { setQrCode(item.qr); handleSearch(); }}>
+                <Music className="mr-2 text-red-300" /> Dinle ve İncele
+              </Button>
+            </CardContent>
+          </Card>
+        ))}
+      </section>
+
+      <section className="max-w-xl mx-auto mb-10">
+        <label className="block mb-2 text-lg font-medium">🎯 QR Kod Girin:</label>
+        <div className="flex gap-2">
+          <Input
+            placeholder="QR kodu buraya yazın"
+            value={qrCode}
+            onChange={(e) => setQrCode(e.target.value)}
+          />
+          <Button onClick={handleSearch}>Ara</Button>
+          <Button variant="outline" onClick={startScan}>
+            <Camera className="mr-2 text-red-300" /> Kamera
+          </Button>
+        </div>
+      </section>
+
+      {scanning && (
+        <div className="max-w-xl mx-auto mb-6">
+          <video ref={videoRef} className="rounded-xl shadow border border-gray-500" width="100%" height="240" />
+          <p className="text-center text-sm text-gray-300 mt-2">QR kodu kameraya gösterin</p>
+        </div>
+      )}
+
+      {foundMusic && (
+        <Card className="max-w-xl mx-auto bg-gray-800 text-white">
+          <CardContent className="p-4">
+            <img
+              src={foundMusic.imageUrl}
+              alt={foundMusic.artwork}
+              className="w-full h-64 object-cover rounded-xl mb-4 shadow"
+            />
+            <h2 className="text-2xl font-semibold mb-2">
+              <Music className="inline mr-2 text-red-300" /> {foundMusic.artwork} Eseri
+            </h2>
+            <audio controls className="w-full">
+              <source src={foundMusic.musicUrl} type="audio/mp3" />
+              Tarayıcınız ses çalmayı desteklemiyor.
+            </audio>
+          </CardContent>
+        </Card>
+      )}
+
+      {qrCode && !foundMusic && (
+        <p className="text-center text-red-300 font-medium">Eşleşen eser bulunamadı.</p>
+      )}
+
+      <section className="mt-16 text-center">
+        <h3 className="text-lg font-semibold flex justify-center items-center gap-2">
+          <BarChart2 className="text-red-400" /> Toplam Sanat Eseri Erişimi:
+        </h3>
+        <p className="text-3xl font-bold text-red-400">{totalScans}</p>
+      </section>
+
+      <footer className="mt-20 text-center text-sm text-gray-400">
+        © 2025 Engelsiz Sanat Galerisi. Tüm hakları saklıdır.
+      </footer>
+    </div>
+  );
+}
