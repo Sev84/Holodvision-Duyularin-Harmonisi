@@ -82,8 +82,6 @@
         const { useState, useEffect, useRef, useCallback } = React;
 
         // --- API ANAHTARI ---
-        // Lütfen geçerli bir ElevenLabs API anahtarını buraya girin.
-        // Bu alan boş bırakılırsa veya anahtar geçersizse, uygulama tarayıcının standart sesini kullanacaktır.
         const ELEVENLABS_API_KEY = "sk_18356aca8191bc614c9cbd66a915b375532b4ac202836cc5"; 
 
         // --- ICONS ---
@@ -128,27 +126,31 @@
         
         const WelcomeModal = ({ isOpen, onClose }) => {
             const textToSpeak = `Piksenfoni, Duyuların Harmonisi Sanat Atölyesi'ne hoş geldiniz. Bu platform, görme engelli bireylerin sanatı işitsel ve dokunsal yollarla deneyimlemesi için tasarlanmıştır. Sayfayı aşağı kaydırarak proje detaylarını ve eser galerisini keşfedebilirsiniz. Galerideki eserlerin üzerine gelerek sesli ipuçları alabilir, QR kod tarayıcı ile eserlere özel bestelenmiş müzikleri dinleyebilirsiniz. Deneyime başlamak için Başla butonuna tıklayabilirsiniz.`;
-            
+            const hasSpoken = useRef(false);
+
             const speak = useCallback(() => {
+                if(hasSpoken.current) return;
                 speakText(textToSpeak);
+                hasSpoken.current = true;
             }, []);
 
             useEffect(() => {
                 if (isOpen) {
-                    // Seslerin yüklenmesini beklemek için küçük bir gecikme
-                    setTimeout(() => {
-                        const voices = window.speechSynthesis.getVoices();
-                        if (voices.length > 0) {
-                            speak();
-                        } else {
-                            window.speechSynthesis.onvoiceschanged = speak;
+                    const handleVoicesChanged = () => {
+                        if (isOpen) {
+                            setTimeout(speak, 100);
                         }
-                    }, 100);
+                    };
+                    const voices = window.speechSynthesis.getVoices();
+                    if (voices.length > 0) {
+                        handleVoicesChanged();
+                    } else {
+                        window.speechSynthesis.onvoiceschanged = handleVoicesChanged;
+                    }
+                    return () => {
+                        window.speechSynthesis.onvoiceschanged = null;
+                    };
                 }
-                return () => {
-                    window.speechSynthesis.cancel();
-                    window.speechSynthesis.onvoiceschanged = null;
-                };
             }, [isOpen, speak]);
 
             if (!isOpen) return null;
@@ -161,7 +163,7 @@
                         <p className="text-gray-300 mb-8">Bu platform, görme engelli bireylerin sanatı işitsel ve dokunsal yollarla deneyimlemesi için tasarlanmıştır. Lütfen yönergeleri dinleyin.</p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
                             <button onClick={onClose} className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition-colors w-full sm:w-auto">Deneyime Başla</button>
-                            <button onClick={speak} className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center w-full sm:w-auto"><PlayCircle className="mr-2" /> Tekrar Dinle</button>
+                            <button onClick={() => speakText(textToSpeak)} className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center w-full sm:w-auto"><PlayCircle className="mr-2" /> Tekrar Dinle</button>
                         </div>
                     </div>
                 </div>
@@ -267,9 +269,16 @@
         };
         
         // --- SESLENDİRME FONKSİYONU ---
+        let elevenLabsAudio = new Audio();
         const speakText = async (text, setLoading) => {
             if (setLoading) setLoading(true);
+            
+            // Mevcut tüm sesleri durdur
             window.speechSynthesis.cancel();
+            if (elevenLabsAudio && !elevenLabsAudio.paused) {
+                elevenLabsAudio.pause();
+                elevenLabsAudio.currentTime = 0;
+            }
 
             // ElevenLabs API Anahtarı varsa onu kullan
             if (ELEVENLABS_API_KEY) {
@@ -292,15 +301,15 @@
                     const response = await fetch(url, options);
                     if (!response.ok) {
                         const errorBody = await response.json().catch(() => ({ detail: { message: response.statusText } }));
-                        const errorMessage = errorBody.detail.message || `HTTP status ${response.status}`;
+                        const errorMessage = errorBody.detail ? errorBody.detail.message : `HTTP status ${response.status}`;
                         throw new Error(`ElevenLabs API hatası: ${errorMessage}`);
                     }
                     const audioBlob = await response.blob();
                     const audioUrl = URL.createObjectURL(audioBlob);
-                    const audio = new Audio(audioUrl);
-                    audio.play();
-                    audio.onended = () => { if (setLoading) setLoading(false); };
-                    return; // ElevenLabs başarılı, burada bitir
+                    elevenLabsAudio = new Audio(audioUrl);
+                    elevenLabsAudio.play();
+                    elevenLabsAudio.onended = () => { if (setLoading) setLoading(false); };
+                    return; 
                 } catch (error) {
                     console.error("ElevenLabs sesi oynatılamadı, tarayıcı sesine geçiliyor:", error);
                 }
@@ -328,12 +337,14 @@
             const [isListening, setIsListening] = useState(false);
             const recognitionRef = useRef(null);
 
-            // Modal açıldığında arka plan müziğini durdur, kapanınca devam ettir
             useEffect(() => {
                 if(isBgMusicPlaying) bgMusicRef.current?.pause();
                 return () => {
                     if(isBgMusicPlaying) bgMusicRef.current?.play();
-                    window.speechSynthesis.cancel(); // Modal kapanınca konuşmayı durdur
+                    window.speechSynthesis.cancel();
+                    if (elevenLabsAudio && !elevenLabsAudio.paused) {
+                        elevenLabsAudio.pause();
+                    }
                 };
             }, [isBgMusicPlaying, bgMusicRef]);
 
