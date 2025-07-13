@@ -1,50 +1,53 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" style="scroll-behavior: smooth;">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PİKSENFONİ - Erişilebilir Sanat Galerisi</title>
+    <title>PİKSENFONİ - Bütünleşik Deneyim</title>
     
-    <!-- Gerekli Kütüphaneler (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     
-    <!-- Babel: JSX kodunu tarayıcıda çalıştırmak için -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    <!-- Temel Sayfa Stilleri -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyC77aQt7K6CicZYwgcxgLEH8sGmErcbkdc",
+            authDomain: "holodvision-piksenfoni.firebaseapp.com",
+            databaseURL: "https://holodvision-piksenfoni-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "holodvision-piksenfoni",
+            storageBucket: "holodvision-piksenfoni.firebasestorage.com",
+            messagingSenderId: "924131810834",
+            appId: "1:924131810834:web:abf8f10b5250e38fc702cb"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        window.firebaseDb = getDatabase(app);
+        window.firebaseRef = ref;
+        window.firebaseOnValue = onValue;
+    </script>
+
     <style>
         body {
-          margin: 0;
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-            'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-            sans-serif;
-          -webkit-font-smoothing: antialiased;
-          -moz-osx-font-smoothing: grayscale;
-          background-color: #0c0a18;
-          color: #fff;
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+                'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+                sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background-color: #0c0a18; /* Varsayılan arka plan rengi */
+            color: #fff;
         }
-        #qr-reader video {
-            border-style: none !important;
-        }
-        /* Scrollbar stilleri */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #1a1a2e;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #e94560;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #f06a7e;
-        }
-        /* Animasyon için */
+        #qr-reader video { border-style: none !important; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1a1a2e; }
+        ::-webkit-scrollbar-thumb { background: #e94560; border-radius: 10px; }
         .fade-in-section {
             opacity: 0;
             transform: translateY(20px);
@@ -54,607 +57,279 @@
             opacity: 1;
             transform: translateY(0);
         }
-        .modal-enter {
-            opacity: 0;
-            transform: scale(0.9);
-        }
-        .modal-enter-active {
-            opacity: 1;
-            transform: scale(1);
-            transition: opacity 300ms, transform 300ms;
-        }
-        .modal-exit {
-            opacity: 1;
-            transform: scale(1);
-        }
-        .modal-exit-active {
-            opacity: 0;
-            transform: scale(0.9);
-            transition: opacity 300ms, transform 300ms;
-        }
     </style>
 </head>
 <body>
     <div id="root"></div>
     <audio id="bg-music-player" src="https://raw.githubusercontent.com/Sev84/Holodvision-Duyularin-Harmonisi/main/fon%20muzik.mp3" loop></audio>
+
     <script type="text/babel">
-    
-        const { useState, useEffect, useRef, useCallback } = React;
+        const { useState, useEffect, useRef } = React;
 
-        // --- API ANAHTARI ---
-        const ELEVENLABS_API_KEY = "sk_06e523c1c3688282e8421a4da028fed650a11643c6d33879"; 
-        const GEMINI_API_KEY = "AIzaSyAZMMSy7N-i82s-eNJNZurylx_fGbIyhlk";
+        // --- API & GÜVENLİK ---
+        const ELEVENLABS_API_KEY = "sk_463721d6208745ce0f2f1e28d344aa5492b27f0a388cb5b8";
+        const GEMINI_API_KEY = "AIzaSyA45T_vxxutVkt8F80fljk3nJRRcORhgE"; 
 
-        // --- ICONS ---
-        const Palette = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>);
-        const Eye = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>);
-        const Music = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>);
-        const Camera = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>);
-        const Zap = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>);
-        const XCircle = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>);
-        const Loader = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-spin" {...props}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>);
-        const Volume2 = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>);
-        const VolumeX = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>);
-        const Cpu = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>);
-        const Users = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6"/><path d="M23 11h-6"/></svg>);
-        const PlayCircle = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>);
-        const Sparkles = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="m12 3-1.9 5.8-5.8 1.9 5.8 1.9L12 18l1.9-5.8 5.8-1.9-5.8-1.9L12 3z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>);
-        const Send = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>);
-        const Mic = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>);
+        // --- ICON BILEŞENLERİ ---
+        const EyeIcon = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>);
+        const MusicIcon = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>);
+        const RssIcon = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>);
+        const XCircleIcon = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>);
+        const LoaderIcon = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-spin" {...props}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>);
+        const SparklesIcon = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="m12 3-1.9 5.8-5.8 1.9 5.8 1.9L12 18l1.9-5.8 5.8-1.9-5.8-1.9L12 3z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>);
+        const CameraIcon = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>);
+        const Volume2Icon = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>);
+        const VolumeXIcon = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>);
+        const HomeIcon = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>);
+        const FileTextIcon = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>);
+        const MailIcon = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>);
 
-        // --- HOOKS ---
-        const useOnScreen = (options) => {
-            const ref = useRef(null);
-            const [isVisible, setIsVisible] = useState(false);
+        // Diğer bileşenler ve fonksiyonlar... (değişiklik yok)
+        const speakText = (() => { let elevenLabsAudio = new Audio(); const speakWithBrowser = (text, resolve, reject) => { const utterance = new SpeechSynthesisUtterance(text); utterance.lang = 'tr-TR'; utterance.rate = 0.9; utterance.onend = resolve; utterance.onerror = (e) => reject(new Error(`SpeechSynthesis Hatası: ${e.error}`)); window.speechSynthesis.speak(utterance); }; return (text) => { return new Promise(async (resolve, reject) => { window.speechSynthesis.cancel(); if (elevenLabsAudio && !elevenLabsAudio.paused) { elevenLabsAudio.pause(); elevenLabsAudio.currentTime = 0; } if (ELEVENLABS_API_KEY && ELEVENLABS_API_KEY.startsWith("sk_")) { const VOICE_ID = '21m00Tcm4TlvDq8ikWAM'; const url = `https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}`; const options = { method: 'POST', headers: { 'Accept': 'audio/mpeg', 'Content-Type': 'application/json', 'xi-api-key': ELEVENLABS_API_KEY }, body: JSON.stringify({ text, model_id: 'eleven_multilingual_v2', voice_settings: { stability: 0.5, similarity_boost: 0.75 } }), }; try { const response = await fetch(url, options); if (!response.ok) { const errorText = await response.text(); let errorDetail = errorText; try { const errorJson = JSON.parse(errorText); errorDetail = errorJson.detail?.message || JSON.stringify(errorJson); } catch (e) {} throw new Error(`HTTP ${response.status} - ${response.statusText}. Detay: ${errorDetail}`); } const audioBlob = await response.blob(); const audioUrl = URL.createObjectURL(audioBlob); elevenLabsAudio = new Audio(audioUrl); elevenLabsAudio.onended = resolve; elevenLabsAudio.onerror = reject; await elevenLabsAudio.play(); } catch (error) { console.error("ElevenLabs API hatası. Tarayıcı sesine geçiliyor:", error); speakWithBrowser(text, resolve, reject); } } else { if (ELEVENLABS_API_KEY) console.warn("Geçersiz veya kotası dolmuş ElevenLabs API anahtarı. Tarayıcı sesi kullanılıyor."); speakWithBrowser(text, resolve, reject); } }); }; })();
+        const useOnScreen = (options) => { const ref = useRef(null); const [isVisible, setIsVisible] = useState(false); useEffect(() => { const observer = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) { setIsVisible(true); observer.unobserve(entry.target); } }, options); const currentRef = ref.current; if (currentRef) observer.observe(currentRef); return () => { if (currentRef) observer.unobserve(currentRef); }; }, [ref, options]); return [ref, isVisible]; };
+        const AnimatedSection = ({ children, ...props }) => { const [ref, isVisible] = useOnScreen({ threshold: 0.1 }); return ( <div ref={ref} className={`fade-in-section ${isVisible ? 'is-visible' : ''} py-16 px-4 sm:px-6 lg:px-8 min-h-screen flex items-center`} {...props}> {children} </div> ); };
+        const Notification = ({ message, onClear }) => { if (!message) return null; useEffect(() => { const timer = setTimeout(() => { onClear(); }, 4000); return () => clearTimeout(timer); }, [message, onClear]); return ( <div className="fixed bottom-5 left-1/2 -translate-x-1/2 bg-red-600 text-white py-3 px-6 rounded-lg shadow-lg z-[100] transition-transform animate-bounce"> {message} </div> ); };
+        const ArtCard = ({ item, onSelect }) => ( <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300 cursor-pointer" onClick={() => onSelect(item)}> <img src={item.imageUrl} alt={item.artwork} className="w-full h-56 object-cover" onError={(e) => { e.target.src=`https://placehold.co/600x400/1f2937/ffffff?text=Resim+Yüklenemedi`; }}/> <div className="p-4"> <h3 className="text-xl font-bold text-red-300">{item.artwork}</h3> <p className="text-sm text-gray-300 mb-2">{item.artist} | {item.category}</p> <p className="text-sm text-gray-400 h-12 overflow-hidden">{item.description}</p> </div> </div> );
+        const QrScannerModal = ({ onScanSuccess, onScanError, onStop }) => { useEffect(() => { const html5QrCode = new Html5Qrcode("qr-reader"); const qrCodeSuccessCallback = (decodedText, decodedResult) => { onScanSuccess(decodedText); html5QrCode.stop().catch(err => console.error("Tarama durdurulamadı.", err)); }; const config = { fps: 10, qrbox: { width: 250, height: 250 } }; html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback) .catch(err => { onScanError("Kamera başlatılamadı. Lütfen kamera izni verdiğinizden emin olun."); }); return () => { if (html5QrCode.isScanning) { html5QrCode.stop().catch(err => {}); } }; }, [onScanSuccess, onScanError]); return ( <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"> <div className="bg-gray-900 p-4 rounded-2xl shadow-2xl border border-gray-700 w-full max-w-md"> <div id="qr-reader" className="rounded-lg overflow-hidden"></div> <p className="text-center text-gray-300 mt-4">QR kodu kameraya gösterin</p> <button onClick={onStop} className="w-full mt-4 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center transition-colors"><XCircleIcon className="mr-2" /> Kapat</button> </div> </div> ); };
+        const ArtworkDetailModal = ({ artwork, onClose, setNotification }) => { const [isAnalyzing, setIsAnalyzing] = useState(false); const [analysisText, setAnalysisText] = useState(""); const getArtAnalysis = async () => { if (!artwork || isAnalyzing) return; if (GEMINI_API_KEY === "AIzaSyDjpXSAhc5eCcp4LeW-KItyj7yH-1Sb-bQ") { setNotification("Lütfen geçerli bir Gemini API anahtarı girin."); return; } setIsAnalyzing(true); setAnalysisText(""); try { const prompt = `Sen bir sanat tarihçisisin. Görme engelli bir kullanıcı için ${artwork.artist} tarafından yapılan '${artwork.artwork}' adlı tabloyu canlı, duygusal ve erişilebilir bir dille betimle. Renklerin hissettirdiği duyguları, tablonun atmosferini, kullanılan teknikleri ve olası hikayesini anlat. Cevabın bilgilendirici ve şiirsel olsun.`; const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`; const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] }; const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); if (!response.ok) throw new Error(`Gemini API çağrısı başarısız: ${response.status}`); const result = await response.json(); if (result.candidates && result.candidates[0]?.content?.parts?.[0]?.text) { const text = result.candidates[0].content.parts[0].text; setAnalysisText(text); await speakText(text); } else { throw new Error("API'den geçersiz yanıt formatı alındı."); } } catch (error) { if (error.message?.includes('interrupted')) { console.log("Analiz seslendirmesi kullanıcı tarafından kesildi."); } else { console.error("Yapay zeka analizi sırasında hata:", error); const errorMessage = `Analiz sırasında bir hata oluştu. Lütfen API anahtarınızı ve internet bağlantınızı kontrol edin.`; setAnalysisText(`[HATA] ${errorMessage}`); setNotification(errorMessage); } } finally { setIsAnalyzing(false); } }; const handleClose = () => { window.speechSynthesis.cancel(); onClose(); }; if (!artwork) return null; return ( <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-40 p-4"> <div className="bg-gradient-to-br from-gray-900 to-[#1a1a2e] p-6 rounded-2xl shadow-2xl border border-red-500/50 max-w-2xl w-full max-h-[90vh] overflow-y-auto"> <div className="flex justify-between items-start mb-4"> <div> <h2 className="text-3xl font-bold text-red-400">{artwork.artwork}</h2> <p className="text-gray-300 text-lg">{artwork.artist}</p> </div> <button onClick={handleClose} className="text-gray-400 hover:text-white transition-colors"><XCircleIcon size={28} /></button> </div> <img src={item.imageUrl} alt={item.artwork} className="w-full h-72 object-cover" onError={(e) => { e.target.src=`https://placehold.co/600x400/1f2937/ffffff?text=Resim+Yüklenemedi`; }}/> <audio controls autoPlay className="w-full mb-4" src={artwork.musicUrl}>Tarayıcınız ses çalmayı desteklemiyor.</audio> <p className="text-gray-400 mb-6">{artwork.description}</p> <div className="pt-6 border-t border-gray-700"> <button onClick={getArtAnalysis} disabled={isAnalyzing} className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed"> {isAnalyzing ? <LoaderIcon /> : <SparklesIcon className="mr-2" />} {isAnalyzing ? "Analiz Ediliyor..." : "✨ Sanatsal Analiz Al"} </button> {analysisText && ( <div className="mt-4 p-4 bg-gray-900/70 rounded-lg"> <h4 className="font-bold text-lg text-red-300 mb-2">Sanatsal Analiz</h4> <p className="text-gray-300 whitespace-pre-wrap">{analysisText}</p> </div> )} </div> </div> </div> ); };
+        const GalleryView = ({setNotification}) => { const [allArtworks, setAllArtworks] = useState([]); const [filteredArtworks, setFilteredArtworks] = useState([]); const [selectedArtwork, setSelectedArtwork] = useState(null); const [filterCategory, setFilterCategory] = useState("Tümü"); const [isLoading, setIsLoading] = useState(true); const [isScanning, setIsScanning] = useState(false); useEffect(() => { const repoBaseUrl = "https://raw.githubusercontent.com/Sev84/Holodvision-Duyularin-Harmonisi/main/"; const artworksData = [ { "id": 1, "artwork": "Mona Lisa", "qr": "MONA_ORJ", "musicUrl": `${repoBaseUrl}Monalisa%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Monalisa.jpeg`, "artist": "Leonardo da Vinci", "description": "Rönesans döneminin en ünlü portrelerinden biri.", "category": "Klasik" }, { "id": 2, "artwork": "İnci Küpeli Kız", "qr": "INCI_ORJ", "musicUrl": `${repoBaseUrl}Inci%20Kupeli%20Kız%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Inci%20Kupeli%20Kız.jpeg`, "artist": "Johannes Vermeer", "description": "Hollandalı sanatçının ışık kullanımıyla öne çıkan başyapıtı.", "category": "Klasik" }, { "id": 5, "artwork": "İnci Küpeli Kız (Küp Versiyon)", "qr": "INCI_KUP", "musicUrl": `${repoBaseUrl}Inci%20Kupeli%20Kız%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Inci%20Kupeli%20Kız1.jpg`, "artist": "Johannes Vermeer", "description": "İnci Küpeli Kız tablosunun kübist bir yorumu.", "category": "Kübist" }, { "id": 6, "artwork": "Picasso - Olga (Küp Versiyon)", "qr": "PICA_KUP", "musicUrl": `${repoBaseUrl}Picasso%20Olga%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Picasso%20Olga1.jpg`, "artist": "Pablo Picasso", "description": "Kübist dokunuşlarla modern bir portre çalışması.", "category": "Kübist" }, { "id": 8, "artwork": "Mona Lisa (Küp Versiyon)", "qr": "MONA_KUP", "musicUrl": `${repoBaseUrl}Monalisa%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Monalisa1.jpg`, "artist": "Leonardo da Vinci", "description": "Mona Lisa tablosunun kübist bir yorumu.", "category": "Kübist" }, { "id": 9, "artwork": "Picasso - Olga (Klasik Versiyon)", "qr": "PICA_KLASIK", "musicUrl": `${repoBaseUrl}Picasso%20Olga%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Picasso%20Olga.jpg`, "artist": "Pablo Picasso", "description": "Pablo Picasso'nun Olga portresinin klasik bir yorumu.", "category": "Klasik" } ]; setAllArtworks(artworksData); setFilteredArtworks(artworksData); setIsLoading(false); }, []); useEffect(() => { if (filterCategory === "Tümü") setFilteredArtworks(allArtworks); else setFilteredArtworks(allArtworks.filter(item => item.category === filterCategory)); }, [filterCategory, allArtworks]); const handleScanSuccess = (decodedText) => { setIsScanning(false); const result = allArtworks.find((item) => item.qr === decodedText); if (result) setSelectedArtwork(result); else setNotification("Eşleşen eser bulunamadı."); }; return ( <div className="w-full"> <h2 className="text-4xl font-bold text-center mb-12">Eser Galerisi</h2> <div className="max-w-3xl mx-auto mb-8 sticky top-20 z-20 bg-gray-900/70 backdrop-blur-md p-4 rounded-xl border border-gray-700"> <div className="grid md:grid-cols-2 gap-4 items-end"> <div> <label htmlFor="category-filter" className="block mb-2 font-medium text-gray-300">Kategoriye Göre Filtrele</label> <select id="category-filter" className="w-full p-3 bg-gray-800 border border-gray-600 rounded-lg text-white" value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}> <option value="Tümü">Tümü</option> <option value="Klasik">Klasik</option> <option value="Kübist">Kübist</option> </select> </div> <button onClick={() => setIsScanning(true)} className="w-full p-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg flex items-center justify-center"><CameraIcon className="mr-2" /> QR Kod Tara</button> </div> </div> {isLoading ? <div className="text-center p-10"><LoaderIcon size={48} /></div> : <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">{filteredArtworks.map((item) => <ArtCard key={item.id} item={item} onSelect={setSelectedArtwork} />)}</div>} {isScanning && <QrScannerModal onScanSuccess={handleScanSuccess} onScanError={(err) => {setIsScanning(false); setNotification(err);}} onStop={() => setIsScanning(false)} />} {selectedArtwork && <ArtworkDetailModal artwork={selectedArtwork} onClose={() => setSelectedArtwork(null)} setNotification={setNotification} />} </div> ); };
+        const ComposerView = () => ( <div className="w-full text-center"> <h2 className="text-4xl font-bold text-center mb-4">PİKSENFONİ Besteci</h2> <p className="text-center text-gray-400 mb-8">Resimlerinizden müzik yaratın. Bu özellik yakında geliyor!</p> <a href="https://sev84.github.io/Holodvision-Piksenfoni-Besteci/" target="_blank" rel="noopener noreferrer" className="inline-block bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-transform transform hover:scale-105">Besteciyi Ayrı Sekmede Aç</a> </div> );
+        const ProjeView = () => ( <div className="w-full max-w-5xl mx-auto"> <h2 className="text-4xl font-bold text-center mb-12">Proje Hakkında</h2> <div className="grid md:grid-cols-3 gap-8 mb-16 text-center"> <div className="bg-gray-800/50 p-6 rounded-xl"> <h3 className="text-2xl font-bold text-red-300 mb-3">Amacımız</h3> <p className="text-gray-400">Görme engelli bireylerin sanata erişimini artırmak ve sanat eserlerini çoklu duyusal yollarla, özgürce deneyimlemelerini sağlamak.</p> </div> <div className="bg-gray-800/50 p-6 rounded-xl"> <h3 className="text-2xl font-bold text-red-300 mb-3">Teknolojimiz</h3> <p className="text-gray-400">RGB renk sensörlü akıllı eldiven, renkleri notalara ve titreşimlere dönüştürür. QR kod tabanlı web uygulamamız ise eserlere özel müziklere anında erişim sunar.</p> </div> <div className="bg-gray-800/50 p-6 rounded-xl"> <h3 className="text-2xl font-bold text-red-300 mb-3">Hedef Kitlemiz</h3> <p className="text-gray-400">Görme engelli bireyler, özel eğitim kurumları, müzeler, sanat galerileri ve sanata erişilebilir bir pencereden bakmak isteyen herkes.</p> </div> </div> <div className="text-center bg-gray-800/50 p-8 rounded-xl"> <h3 className="text-3xl font-bold mb-4">Renk ve Ses Eldiveni</h3> <p className="text-gray-400 max-w-2xl mx-auto mb-6">Eldiveni kullanarak tablolardaki renklere dokunun ve notaları duyun. Sanatla aranızdaki engelleri kaldırın.</p> <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105"> ⚡ Firebase Bağlantısı Kuruldu </button> <p className="text-sm text-gray-500 mt-3">Canlı sensör verisi için "Sensör Simülatörü" bölümünü ziyaret edin.</p> </div> </div> );
+        const IletisimView = ({ setNotification }) => { const [formData, setFormData] = useState({ name: '', email: '', message: '' }); const handleChange = (e) => { const { name, value } = e.target; setFormData(prev => ({ ...prev, [name]: value })); }; const handleSubmit = (e) => { e.preventDefault(); console.log("İletişim Formu Gönderildi:", formData); setNotification("Mesajınız başarıyla gönderildi! Teşekkür ederiz."); setFormData({ name: '', email: '', message: '' }); }; return ( <div className="w-full max-w-2xl mx-auto text-center"> <h2 className="text-4xl font-bold mb-4">İletişim</h2> <p className="text-gray-400 mb-8">Sorularınız, geri bildirimleriniz veya işbirliği teklifleriniz için bizimle iletişime geçin.</p> <form onSubmit={handleSubmit} className="bg-gray-800/50 p-8 rounded-xl shadow-lg border border-gray-700"> <div className="mb-6 text-left"> <label htmlFor="name" className="block text-gray-300 text-sm font-bold mb-2">Adınız:</label> <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} className="shadow appearance-none border border-gray-600 rounded-lg w-full py-3 px-4 text-white leading-tight focus:outline-none focus:shadow-outline bg-gray-900 placeholder-gray-500" placeholder="Adınız Soyadınız" required /> </div> <div className="mb-6 text-left"> <label htmlFor="email" className="block text-gray-300 text-sm font-bold mb-2">E-posta Adresiniz:</label> <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} className="shadow appearance-none border border-gray-600 rounded-lg w-full py-3 px-4 text-white leading-tight focus:outline-none focus:shadow-outline bg-gray-900 placeholder-gray-500" placeholder="ornek@email.com" required /> </div> <div className="mb-8 text-left"> <label htmlFor="message" className="block text-gray-300 text-sm font-bold mb-2">Mesajınız:</label> <textarea id="message" name="message" value={formData.message} onChange={handleChange} rows="5" className="shadow appearance-none border border-gray-600 rounded-lg w-full py-3 px-4 text-white leading-tight focus:outline-none focus:shadow-outline bg-gray-900 placeholder-gray-500 resize-y" placeholder="Mesajınızı buraya yazın..." required ></textarea> </div> <div className="flex items-center justify-center"> <button type="submit" className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-transform transform hover:scale-105 focus:outline-none focus:shadow-outline flex items-center justify-center"> <MailIcon className="mr-2" /> Mesaj Gönder </button> </div> </form> </div> ); };
+        const WelcomeCard = ({ onStartExperience }) => { const welcomeText = "Piksenfoni'ye hoş geldiniz! Renklerle seslerin buluştuğu bu sınırsız dünyada görme engelli bireyler için sanatı işitsel ve dokunsal bir deneyime dönüştürüyoruz. Deneyime başlamak için aşağıdaki düğmeye tıklayın."; const handleStartClick = () => { speakText(welcomeText); onStartExperience(); }; return ( <div className="bg-gray-800/70 backdrop-blur-sm p-8 rounded-2xl shadow-2xl border border-pink-500 max-w-xl mx-auto text-center"> <h2 className="text-5xl font-bold text-pink-400 mb-6">Hoş Geldiniz!</h2> <p className="text-lg text-gray-300 mb-8"> Renklerle seslerin buluştuğu sınırsız dünyamıza adım atın. Görme engelli bireyler için sanatı işitsel ve dokunsal bir deneyime dönüştürüyoruz. </p> <button onClick={handleStartClick} className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-4 px-10 rounded-full shadow-lg transition-all transform hover:scale-105 flex items-center justify-center mx-auto text-xl" > <Volume2Icon className="mr-3" size={28} /> Deneyime Başla </button> </div> ); };
+        const AnaSayfaView = ({ onStartExperience }) => ( <div className="flex flex-col items-center justify-center text-center min-h-[calc(100vh-4rem)] w-full"> <img src="https://raw.githubusercontent.com/Sev84/Holodvision-Duyularin-Harmonisi/main/logo1111111.png" alt="PİKSENFONİ Logo" className="mx-auto mb-8 h-40"/> <h1 className="text-6xl font-bold text-pink-400 mb-4 tracking-wider">PİKSENFONİ</h1> <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-12"> Renklerle Seslerin Buluştuğu Sınırsız Dünya: Görme engelli bireyler için sanatı işitsel ve dokunsal bir deneyime dönüştürüyoruz. </p> <WelcomeCard onStartExperience={onStartExperience} /> </div> );
 
-            useEffect(() => {
-                const observer = new IntersectionObserver(([entry]) => {
-                    if (entry.isIntersecting) {
-                        setIsVisible(true);
-                        observer.unobserve(entry.target);
-                    }
-                }, options);
+        const LiveSensorDemoView = () => {
+            const [detectedColor, setDetectedColor] = useState({ name: 'Bekleniyor...', code: 'default' });
+            const [isConnected, setIsConnected] = useState(false);
+            const [isManualMode, setIsManualMode] = useState(false);
+            const audioRef = useRef(new Audio());
+            const connectionTimeoutRef = useRef(null);
 
-                const currentRef = ref.current;
-                if (currentRef) { observer.observe(currentRef); }
-                return () => { if (currentRef) { observer.unobserve(currentRef); } };
-            }, [ref, options]);
-
-            return [ref, isVisible];
-        };
-        
-        // --- BİLEŞENLER ---
-        
-        const WelcomeModal = ({ isOpen, onClose }) => {
-            const textToSpeak = `Piksenfoni, Duyuların Harmonisi Sanat Atölyesi'ne hoş geldiniz. Bu platform, görme engelli bireylerin sanatı işitsel ve dokunsal yollarla deneyimlemesi için tasarlanmıştır. Sayfayı aşağı kaydırarak proje detaylarını ve eser galerisini keşfedebilirsiniz. Galerideki eserlerin üzerine gelerek sesli ipuçları alabilir, QR kod tarayıcı ile eserlere özel bestelenmiş müzikleri dinleyebilirsiniz. Deneyime başlamak için Başla butonuna tıklayabilirsiniz.`;
-            const hasSpoken = useRef(false);
-
-            const speak = useCallback(() => {
-                if(hasSpoken.current) return;
-                speakText(textToSpeak);
-                hasSpoken.current = true;
-            }, []);
-
-            useEffect(() => {
-                if (isOpen) {
-                    const handleVoicesChanged = () => {
-                        if (isOpen) {
-                            setTimeout(speak, 100);
-                        }
-                    };
-                    const voices = window.speechSynthesis.getVoices();
-                    if (voices.length > 0) {
-                        handleVoicesChanged();
-                    } else {
-                        window.speechSynthesis.onvoiceschanged = handleVoicesChanged;
-                    }
-                    return () => {
-                        window.speechSynthesis.onvoiceschanged = null;
-                    };
-                }
-            }, [isOpen, speak]);
-
-            if (!isOpen) return null;
-
-            return (
-                <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4">
-                    <div className="bg-gradient-to-br from-gray-900 to-[#1a1a2e] p-8 rounded-2xl shadow-2xl border border-red-500/50 max-w-lg w-full text-center">
-                        <img src="https://raw.githubusercontent.com/Sev84/Holodvision-Duyularin-Harmonisi/main/logo1111111.png" alt="PİKSENFONİ Logo" className="mx-auto mb-4 h-20" onError={(e) => { e.target.style.display='none'; }}/>
-                        <h2 className="text-3xl font-bold text-red-400 mb-4">PİKSENFONİ'ye Hoş Geldiniz!</h2>
-                        <p className="text-gray-300 mb-8">Bu platform, görme engelli bireylerin sanatı işitsel ve dokunsal yollarla deneyimlemesi için tasarlanmıştır. Lütfen yönergeleri dinleyin.</p>
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <button onClick={onClose} className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition-colors w-full sm:w-auto">Deneyime Başla</button>
-                            <button onClick={() => speakText(textToSpeak)} className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center w-full sm:w-auto"><PlayCircle className="mr-2" /> Tekrar Dinle</button>
-                        </div>
-                    </div>
-                </div>
-            );
-        };
-
-        const AnimatedSection = ({ children, ...props }) => {
-            const [ref, isVisible] = useOnScreen({ threshold: 0.1 });
-            return ( <section ref={ref} className={`fade-in-section ${isVisible ? 'is-visible' : ''} py-20 px-4 sm:px-6 lg:px-8`} {...props}> {children} </section> );
-        };
-
-        const ParticleBackground = () => {
-            const canvasRef = useRef(null);
-            useEffect(() => {
-                const canvas = canvasRef.current; const ctx = canvas.getContext('2d');
-                let particles = []; canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-                const createParticles = () => {
-                    particles = []; let numberOfParticles = (canvas.height * canvas.width) / 9000;
-                    for (let i = 0; i < numberOfParticles; i++) { particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, size: Math.random() * 2 + 1, speedX: Math.random() * 1 - 0.5, speedY: Math.random() * 1 - 0.5, }); }
-                };
-                const animate = () => {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    for (let i = 0; i < particles.length; i++) {
-                        let p = particles[i]; p.x += p.speedX; p.y += p.speedY;
-                        if (p.x > canvas.width || p.x < 0) p.speedX *= -1;
-                        if (p.y > canvas.height || p.y < 0) p.speedY *= -1;
-                        ctx.fillStyle = 'rgba(233, 69, 96, 0.5)';
-                        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
-                    }
-                    requestAnimationFrame(animate);
-                };
-                createParticles(); animate();
-                const handleResize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; createParticles(); };
-                window.addEventListener('resize', handleResize);
-                return () => window.removeEventListener('resize', handleResize);
-            }, []);
-            return <canvas ref={canvasRef} className="fixed top-0 left-0 w-full h-full -z-10" />;
-        };
-
-        const Navbar = () => {
-            const [isOpen, setIsOpen] = useState(false);
-            const navLinks = [ { href: "#home", text: "Ana Sayfa" }, { href: "#project", text: "Proje" }, { href: "#gallery", text: "Galeri" }, { href: "#contact", text: "İletişim" }, ];
-            return (
-                <nav className="bg-black/20 backdrop-blur-md fixed w-full z-30 top-0">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="flex items-center justify-between h-16">
-                            <div className="flex-shrink-0"> <img className="h-10" src="https://raw.githubusercontent.com/Sev84/Holodvision-Duyularin-Harmonisi/main/logo1111111.png" alt="Logo"/> </div>
-                            <div className="hidden md:block">
-                                <div className="ml-10 flex items-baseline space-x-4"> {navLinks.map(link => ( <a key={link.href} href={link.href} className="text-gray-300 hover:bg-red-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">{link.text}</a> ))} </div>
-                            </div>
-                            <div className="-mr-2 flex md:hidden">
-                                <button onClick={() => setIsOpen(!isOpen)} className="bg-gray-800 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none">
-                                    <svg className={`${isOpen ? 'hidden' : 'block'} h-6 w-6`} stroke="currentColor" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
-                                    <svg className={`${isOpen ? 'block' : 'hidden'} h-6 w-6`} stroke="currentColor" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div className={`${isOpen ? 'block' : 'hidden'} md:hidden`}>
-                        <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3"> {navLinks.map(link => ( <a key={link.href} href={link.href} className="text-gray-300 hover:bg-red-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium transition-colors">{link.text}</a> ))} </div>
-                    </div>
-                </nav>
-            );
-        };
-
-        const InfoCard = ({ icon, title, children }) => (
-            <div className="bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl border border-gray-700 text-center transform hover:-translate-y-2 transition-transform duration-300">
-                <div className="text-red-500 mb-4 mx-auto w-16 h-16 flex items-center justify-center bg-gray-900 rounded-full">{icon}</div>
-                <h3 className="text-xl font-bold mb-2">{title}</h3>
-                <p className="text-gray-400">{children}</p>
-            </div>
-        );
-
-        const ArtCard = ({ item, onSelect, onHover }) => (
-          <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300 cursor-pointer" onMouseEnter={onHover} onClick={() => onSelect(item)}>
-            <img src={item.imageUrl} alt={item.artwork} className="w-full h-56 object-cover" onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/600x400/1f2937/ffffff?text=Resim+Yüklenemedi`; }}/>
-            <div className="p-4">
-              <h3 className="text-xl font-bold text-red-300">{item.artwork}</h3>
-              <p className="text-sm text-gray-300 mb-1">{item.artist}</p>
-              <p className="text-sm text-gray-400 mb-2 italic">🎨 {item.category}</p>
-              <p className="text-sm text-gray-400 mb-4 h-12 overflow-hidden">{item.description}</p>
-            </div>
-          </div>
-        );
-
-        const QrScanner = ({ onScanSuccess, onScanError, onStop }) => {
-          useEffect(() => {
-            const html5QrCode = new Html5Qrcode("qr-reader");
-            const qrCodeSuccessCallback = (decodedText, decodedResult) => { onScanSuccess(decodedText); html5QrCode.stop().catch(err => console.error("Tarama durdurulamadı.", err)); };
-            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
-            html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback).catch(err => { onScanError("Kamera başlatılamadı. Lütfen kamera izni verdiğinizden emin olun."); });
-            return () => { if (html5QrCode.isScanning) { html5QrCode.stop().catch(err => console.error("Temizleme sırasında tarama durdurulamadı.", err)); } };
-          }, [onScanSuccess, onScanError]);
-          return (
-            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                <div className="bg-gray-900 p-4 rounded-2xl shadow-2xl border border-gray-700 w-full max-w-md">
-                    <div id="qr-reader" className="rounded-lg overflow-hidden"></div>
-                    <p className="text-center text-gray-300 mt-4">QR kodu kameraya gösterin</p>
-                    <button onClick={onStop} className="w-full mt-4 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center transition-colors"> <XCircle className="mr-2" /> Kapat </button>
-                </div>
-            </div>
-          );
-        };
-        
-        // --- SESLENDİRME FONKSİYONU ---
-        let elevenLabsAudio = new Audio();
-        const speakText = async (text, setLoading) => {
-            if (setLoading) setLoading(true);
+            // GÜNCELLEME: pembe -> pmb olarak değiştirildi ve sound path'i güncellendi.
+            const colorData = {
+                krmz: { name: 'Kırmızı', hex: '#ef4444', sound: 'krmz' },
+                ysl: { name: 'Yeşil', hex: '#22c55e', sound: 'ysl' },
+                mavi: { name: 'Mavi', hex: '#3b82f6', sound: 'mavi' },
+                sari: { name: 'Sarı', hex: '#eab308', sound: 'sari' },
+                trnc: { name: 'Turuncu', hex: '#f97316', sound: 'trnc' },
+                mor: { name: 'Mor', hex: '#8b5cf6', sound: 'mor' },
+                pembe: { name: 'Pembe', hex: '#ec4899', sound: 'pmb' }, // pembe.wav yerine pmb.wav kullanılacak
+            };
             
-            // Mevcut tüm sesleri durdur
-            window.speechSynthesis.cancel();
-            if (elevenLabsAudio && !elevenLabsAudio.paused) {
-                elevenLabsAudio.pause();
-                elevenLabsAudio.currentTime = 0;
-            }
+            // GÜNCELLEME: Ses dosyası ana URL'i yeni repoyu gösterecek şekilde değiştirildi.
+            const soundBaseUrl = "https://sev84.github.io/Holodvision-Demo/";
 
-            // ElevenLabs API Anahtarı varsa onu kullan
-            if (ELEVENLABS_API_KEY) {
-                const VOICE_ID = '21m00Tcm4TlvDq8ikWAM'; // Rachel - Popüler ve stabil bir ses
-                const url = `https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}`;
-                const options = {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'audio/mpeg',
-                        'Content-Type': 'application/json',
-                        'xi-api-key': ELEVENLABS_API_KEY,
-                    },
-                    body: JSON.stringify({
-                        text: text,
-                        model_id: 'eleven_multilingual_v2',
-                        voice_settings: { stability: 0.5, similarity_boost: 0.75 },
-                    }),
-                };
-                try {
-                    const response = await fetch(url, options);
-                    if (!response.ok) {
-                        const errorBody = await response.json().catch(() => ({ detail: { message: response.statusText } }));
-                        const errorMessage = errorBody.detail ? errorBody.detail.message : `HTTP status ${response.status}`;
-                        throw new Error(`ElevenLabs API hatası: ${errorMessage}`);
-                    }
-                    const audioBlob = await response.blob();
-                    const audioUrl = URL.createObjectURL(audioBlob);
-                    elevenLabsAudio = new Audio(audioUrl);
-                    elevenLabsAudio.play();
-                    elevenLabsAudio.onended = () => { if (setLoading) setLoading(false); };
-                    return; 
-                } catch (error) {
-                    console.error("ElevenLabs sesi oynatılamadı, tarayıcı sesine geçiliyor:", error);
-                }
-            }
-            
-            // ElevenLabs başarısız olursa veya anahtar yoksa tarayıcı sesini kullan
-            console.warn("ElevenLabs API anahtarı bulunamadı veya hata oluştu. Tarayıcı sesi kullanılıyor.");
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'tr-TR';
-            utterance.rate = 0.9;
-            const voices = window.speechSynthesis.getVoices();
-            const turkishVoice = voices.find(voice => voice.lang === 'tr-TR');
-            if (turkishVoice) { utterance.voice = turkishVoice; }
-            utterance.onend = () => { if (setLoading) setLoading(false); };
-            window.speechSynthesis.speak(utterance);
-        };
-
-
-        const ArtworkDetailModal = ({ artwork, onClose, bgMusicRef, isBgMusicPlaying }) => {
-            const [isAnalyzing, setIsAnalyzing] = useState(false);
-            const [analysisText, setAnalysisText] = useState("");
-            const [chatHistory, setChatHistory] = useState([]);
-            const [userQuestion, setUserQuestion] = useState("");
-            const [isChatting, setIsChatting] = useState(false);
-            const [isListening, setIsListening] = useState(false);
-            const recognitionRef = useRef(null);
-
-            useEffect(() => {
-                if(isBgMusicPlaying) bgMusicRef.current?.pause();
-                return () => {
-                    if(isBgMusicPlaying) bgMusicRef.current?.play();
-                    window.speechSynthesis.cancel();
-                    if (elevenLabsAudio && !elevenLabsAudio.paused) {
-                        elevenLabsAudio.pause();
-                    }
-                };
-            }, [isBgMusicPlaying, bgMusicRef]);
-
-
-            const getArtAnalysis = async () => {
-                if (!artwork) return;
-                setIsAnalyzing(true);
-                setAnalysisText("");
-                const prompt = `Sen bir sanat tarihçisisin. Görme engelli bir kullanıcı için ${artwork.artist} tarafından yapılan '${artwork.artwork}' adlı tabloyu canlı, duygusal ve erişilebilir bir dille betimle. Renklerin hissettirdiği duyguları, tablonun atmosferini, kullanılan teknikleri ve olası hikayesini anlat. Cevabın bilgilendirici ve şiirsel olsun.`;
-                
-                try {
-                    const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
-                    const apiKey = "";
-                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                    if (!response.ok) { throw new Error(`API call failed with status: ${response.status}`); }
-                    const result = await response.json();
-                    if (result.candidates && result.candidates[0].content && result.candidates[0].content.parts[0].text) {
-                        const text = result.candidates[0].content.parts[0].text;
-                        setAnalysisText(text);
-                        speakText(text, setIsAnalyzing);
-                    } else { throw new Error("Modelden geçerli bir yanıt gelmedi."); }
-                } catch (error) {
-                    console.error("Gemini API error:", error);
-                    const mockAnalysis = `[DEMO MODU] '${artwork.artwork}' adlı bu eser, ${artwork.artist} tarafından yapılmış, ${artwork.category} sanat akımının bir örneğidir. Sanatçı, bu eserde duyguları ve formları kendine has bir dille yorumlamıştır. Bu analiz, yapay zeka tarafından üretilmiştir. Canlı bağlantı kurulamadığında bu örnek metin gösterilir.`;
-                    setAnalysisText(mockAnalysis);
-                    speakText(mockAnalysis, setIsAnalyzing);
-                }
+            const playColorSound = (colorInfo) => {
+                 if (!colorInfo || !colorInfo.sound) return;
+                 const audio = audioRef.current;
+                 audio.src = `${soundBaseUrl}${colorInfo.sound}.wav`;
+                 audio.play().catch(error => console.error("Ses çalma hatası:", error, audio.src));
             };
 
-            const handleChatSubmit = async (e) => {
+            const handleColorChange = (colorCode) => {
+                const colorInfo = colorData[colorCode.toLowerCase().trim()];
+                if (!colorInfo) {
+                    setDetectedColor({ name: 'Bilinmeyen Renk', code: 'default' });
+                    return;
+                };
+                setDetectedColor({ name: colorInfo.name, code: colorCode });
+                playColorSound(colorInfo);
+            };
+            
+            const handleManualSubmit = (e) => {
                 e.preventDefault();
-                if (!userQuestion.trim() || isChatting) return;
+                handleColorChange(e.target.manualInput.value);
+            };
 
-                const currentQuestion = userQuestion;
-                const newHistory = [...chatHistory, { role: 'user', text: currentQuestion }];
-                setChatHistory(newHistory);
-                setUserQuestion("");
-                setIsChatting(true);
+            useEffect(() => {
+                connectionTimeoutRef.current = setTimeout(() => {
+                    if (!isConnected) {
+                        setIsManualMode(true);
+                    }
+                }, 5000);
 
-                const prompt = `Bir sanat eseri hakkında sohbet ediyoruz. Eser: ${artwork.artist} tarafından yapılan '${artwork.artwork}'. Geçmiş konuşma: ${JSON.stringify(chatHistory)}. Kullanıcının yeni sorusu: "${currentQuestion}". Bu soruya bir sanat uzmanı gibi, eserin bağlamını dikkate alarak cevap ver.`;
+                if (window.firebaseDb && window.firebaseRef && window.firebaseOnValue) {
+                    const colorRef = window.firebaseRef(window.firebaseDb, '/sensorData/color');
 
-                try {
-                    const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
-                    const apiKey = "";
-                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
+                    const unsubscribe = window.firebaseOnValue(colorRef, (snapshot) => {
+                        if (connectionTimeoutRef.current) {
+                            clearTimeout(connectionTimeoutRef.current);
+                            connectionTimeoutRef.current = null;
+                        }
+                        setIsManualMode(false);
+
+                        const colorCode = snapshot.val();
+                        if (colorCode) {
+                            const colorInfo = colorData[colorCode.toLowerCase().trim()];
+                            if (colorInfo) {
+                                setDetectedColor({ name: colorInfo.name, code: colorCode });
+                                playColorSound(colorInfo);
+                                setIsConnected(true);
+                            } else {
+                                setDetectedColor({ name: 'Bilinmeyen Renk', code: 'default' });
+                                setIsConnected(true);
+                            }
+                        } else {
+                            setDetectedColor({ name: 'Bekleniyor...', code: 'default' });
+                            setIsConnected(false);
+                        }
+                    }, (error) => {
+                        console.error("Firebase'den veri okuma hatası:", error);
+                        setDetectedColor({ name: 'Hata!', code: 'default' });
+                        setIsConnected(false);
+                        setIsManualMode(true);
                     });
-                     if (!response.ok) { throw new Error(`API call failed with status: ${response.status}`); }
-                    const result = await response.json();
-                    if (result.candidates && result.candidates[0].content.parts[0].text) {
-                        const botResponse = result.candidates[0].content.parts[0].text;
-                        setChatHistory(prev => [...prev, { role: 'model', text: botResponse }]);
-                        speakText(botResponse, setIsChatting);
-                    } else { throw new Error("Modelden geçerli bir yanıt gelmedi."); }
-                } catch (error) {
-                     const mockResponse = "[DEMO MODU] Bu soruya şu an yanıt veremiyorum, ancak sanatçının bu dönemdeki diğer eserlerini inceleyebilirsiniz.";
-                     setChatHistory(prev => [...prev, { role: 'model', text: mockResponse }]);
-                     speakText(mockResponse, setIsChatting);
+
+                    return () => {
+                        unsubscribe();
+                        if (connectionTimeoutRef.current) {
+                            clearTimeout(connectionTimeoutRef.current);
+                        }
+                    }; 
+                } else {
+                    setIsConnected(false);
+                    setIsManualMode(true);
                 }
-            };
+            }, [isConnected]);
 
-            const handleVoiceInput = () => {
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                if (!SpeechRecognition) {
-                    alert("Üzgünüz, tarayıcınız ses tanıma özelliğini desteklemiyor.");
-                    return;
+            useEffect(() => {
+                const rootElement = document.getElementById('root');
+                if (rootElement) {
+                    rootElement.style.transition = 'background-color 0.5s ease';
+                    rootElement.style.backgroundColor = colorData[detectedColor.code]?.hex || '#0c0a18';
                 }
-
-                if (isListening) {
-                    recognitionRef.current.stop();
-                    setIsListening(false);
-                    return;
+                
+                return () => {
+                    const rootElement = document.getElementById('root');
+                    if (rootElement) {
+                        rootElement.style.backgroundColor = '#0c0a18';
+                    }
                 }
-
-                const recognition = new SpeechRecognition();
-                recognition.lang = 'tr-TR';
-                recognition.interimResults = false;
-                recognition.maxAlternatives = 1;
-                recognitionRef.current = recognition;
-
-                recognition.onstart = () => setIsListening(true);
-                recognition.onresult = (event) => setUserQuestion(event.results[0][0].transcript);
-                recognition.onerror = (event) => { console.error('Ses tanıma hatası:', event.error); alert(`Ses tanıma hatası: ${event.error}`); };
-                recognition.onend = () => setIsListening(false);
-                recognition.start();
-            };
-
-            if (!artwork) return null;
+            }, [detectedColor]);
 
             return (
-                <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-40 p-4 modal-enter-active">
-                    <div className="bg-gradient-to-br from-gray-900 to-[#1a1a2e] p-6 rounded-2xl shadow-2xl border border-red-500/50 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-                        <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-3xl font-bold text-red-400">{artwork.artwork}</h2>
-                            <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors"><XCircle size={28} /></button>
+                <div className="w-full max-w-2xl mx-auto text-center">
+                    <h1 className="text-4xl font-bold text-white mb-2">Canlı Sensör Verisi</h1>
+                    <p className="text-gray-400 mb-6">Deneyap Kart'tan gelen canlı renk verisi burada gösterilir.</p>
+                    
+                    {isManualMode ? (
+                        <div className="p-6 bg-gray-900/70 rounded-xl shadow-lg border border-red-500">
+                            <p className="text-lg text-red-300 mb-4">
+                                Firebase bağlantısı kurulamadı veya veri alınamıyor. Manuel simülasyon modundasınız.
+                            </p>
+                            <form onSubmit={handleManualSubmit} className="flex flex-col sm:flex-row gap-4 mb-6">
+                                <input 
+                                    type="text"
+                                    id="manualInput"
+                                    name="manualInput"
+                                    placeholder="Örn: krmz, mavi, ysl..."
+                                    className="flex-grow p-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500"
+                                />
+                                <button type="submit" className="p-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg">Renk Gönder</button>
+                            </form>
+                            <p className="text-lg text-gray-300">
+                                Algılanan renk: <strong className="font-bold text-2xl" style={{color: colorData[detectedColor.code]?.hex || '#a78bfa' }}>{detectedColor.name}</strong>
+                            </p>
                         </div>
-                        <img src={artwork.imageUrl} alt={artwork.artwork} className="w-full h-72 object-cover rounded-xl mb-4 shadow-lg" onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/800x600/1f2937/ffffff?text=Resim+Yüklenemedi`; }}/>
-                        <p className="text-gray-300 mb-4 text-lg">{artwork.artist}</p>
-                        <audio controls autoPlay className="w-full mb-4" src={artwork.musicUrl} aria-label={`${artwork.artwork} için müzik çalar`}>Tarayıcınız ses çalmayı desteklemiyor.</audio>
-                        <p className="text-gray-400 mb-6">{artwork.description}</p>
-                        
-                        <div className="pt-6 border-t border-gray-700">
-                            <button onClick={getArtAnalysis} disabled={isAnalyzing} className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed">
-                                {isAnalyzing ? <Loader /> : <Sparkles className="mr-2" />}
-                                {isAnalyzing ? "Analiz Ediliyor..." : "✨ Sanatsal Analiz Al"}
-                            </button>
-                            {analysisText && (
-                                <div className="mt-4 p-4 bg-gray-900/70 rounded-lg">
-                                    <h4 className="font-bold text-lg text-red-300 mb-2">Sanatsal Analiz</h4>
-                                    <p className="text-gray-300 whitespace-pre-wrap">{analysisText}</p>
-                                    
-                                    <div className="mt-6">
-                                        <h4 className="font-bold text-lg text-red-300 mb-2">✨ Eserle Sohbet Et</h4>
-                                        <div className="space-y-2 mb-4 h-40 overflow-y-auto p-2 bg-black/20 rounded">
-                                            {chatHistory.map((msg, index) => (
-                                                <div key={index} className={`p-2 rounded-lg ${msg.role === 'user' ? 'bg-blue-900/50 text-right' : 'bg-gray-700/50'}`}>
-                                                    {msg.text}
-                                                </div>
-                                            ))}
-                                            {isChatting && <div className="p-2 rounded-lg bg-gray-700/50"><Loader className="inline-block"/></div>}
-                                        </div>
-                                        <form onSubmit={handleChatSubmit} className="flex gap-2">
-                                            <input type="text" value={userQuestion} onChange={(e) => setUserQuestion(e.target.value)} placeholder={isListening ? "Dinleniyor..." : "Eser hakkında bir soru sorun..."} className="flex-grow bg-gray-800 border border-gray-600 rounded-lg p-2 text-white focus:ring-2 focus:ring-red-500"/>
-                                            <button type="button" onClick={handleVoiceInput} className={`p-3 rounded-lg ${isListening ? 'bg-green-500 animate-pulse' : 'bg-blue-600 hover:bg-blue-700'}`}><Mic /></button>
-                                            <button type="submit" disabled={isChatting} className="bg-red-600 p-3 rounded-lg hover:bg-red-700 disabled:opacity-50"><Send /></button>
-                                        </form>
-                                    </div>
-                                </div>
-                            )}
+                    ) : (
+                        <div className="p-6 bg-gray-900/70 rounded-xl shadow-lg border border-gray-700">
+                            <p className="text-lg text-gray-300 mb-4">
+                                Bağlantı Durumu: <strong className={`font-bold text-xl ${isConnected ? 'text-green-400' : 'text-red-400'}`}>{isConnected ? 'Bağlı' : 'Bağlı Değil'}</strong>
+                            </p>
+                            <p className="text-lg text-gray-300">
+                                Algılanan renk: <strong className="font-bold text-2xl" style={{color: colorData[detectedColor.code]?.hex || '#a78bfa' }}>{detectedColor.name}</strong>
+                            </p>
                         </div>
-                    </div>
+                    )}
+                    
+                    <p className="text-sm text-gray-500 mt-4">
+                        Bu bölüm, Deneyap Kart'tan gelen gerçek zamanlı renk verilerini gösterir.
+                        Kartınızın Firebase Realtime Database'e doğru şekilde veri gönderdiğinden emin olun.
+                    </p>
                 </div>
             );
-        }
+        };
 
+        const App = () => {
+            const [activeView, setActiveView] = useState("home");
+            const [isMusicPlaying, setIsMusicPlaying] = useState(false);
+            const bgMusicRef = useRef(null);
+            const [notification, setNotification] = useState(null);
 
-        // --- ANA UYGULAMA BİLEŞENİ ---
-        function App() {
-          const [allArtworks, setAllArtworks] = useState([]);
-          const [filteredArtworks, setFilteredArtworks] = useState([]);
-          const [selectedArtwork, setSelectedArtwork] = useState(null);
-          const [filterCategory, setFilterCategory] = useState("Tümü");
-          const [isLoading, setIsLoading] = useState(true);
-          const [isScanning, setIsScanning] = useState(false);
-          const [gloveStatus, setGloveStatus] = useState('Bağlı Değil');
-          const [isWelcomeModalOpen, setIsWelcomeModalOpen] = useState(true);
-          
-          const bgMusicRef = useRef(null);
-          const [isBgMusicPlaying, setIsBgMusicPlaying] = useState(false);
-          const hoverSound = useRef(null);
+            const handleWelcomeExperienceStart = () => {};
 
-          const startAudioContext = useCallback(() => {
-            if (Tone.context.state !== 'running') { Tone.start(); }
-            if (!hoverSound.current) { hoverSound.current = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 1 } }).toDestination(); }
-          }, []);
+            useEffect(() => {
+                bgMusicRef.current = document.getElementById('bg-music-player');
+                if (bgMusicRef.current) {
+                    bgMusicRef.current.volume = 0.3;
+                }
+            }, []);
 
-          const playHoverSound = useCallback(() => { if (hoverSound.current) { hoverSound.current.triggerAttackRelease("C5", "8n"); } }, []);
+            const toggleMusic = () => {
+                if (bgMusicRef.current) {
+                    if (isMusicPlaying) {
+                        bgMusicRef.current.pause();
+                    } else {
+                        bgMusicRef.current.play().catch(e => console.error("Müzik çalma hatası:", e));
+                    }
+                    setIsMusicPlaying(!isMusicPlaying);
+                }
+            };
 
-          useEffect(() => {
-            const repoBaseUrl = "https://raw.githubusercontent.com/Sev84/Holodvision-Duyularin-Harmonisi/main/";
-            const artworksData = [
-                { "id": 1, "artwork": "Mona Lisa", "qr": "MONA_ORJ", "musicUrl": `${repoBaseUrl}Monalisa%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Monalisa.jpeg`, "artist": "Leonardo da Vinci", "description": "Rönesans döneminin en ünlü portrelerinden biri.", "category": "Klasik" },
-                { "id": 2, "artwork": "İnci Küpeli Kız", "qr": "INCI_ORJ", "musicUrl": `${repoBaseUrl}Inci%20Kupeli%20Kız%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Inci%20Kupeli%20Kız.jpeg`, "artist": "Johannes Vermeer", "description": "Hollandalı sanatçının ışık kullanımıyla öne çıkan başyapıtı.", "category": "Klasik" },
-                { "id": 3, "artwork": "Picasso - Olga", "qr": "PICA_ORJ", "musicUrl": `${repoBaseUrl}Picasso%20Olga%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Picasso%20Olga.jpg`, "artist": "Pablo Picasso", "description": "Picasso'nun eşi Olga Khokhlova'nın portresi.", "category": "Klasik" },
-                { "id": 4, "artwork": "Mona Lisa (Küp Versiyon)", "qr": "MONA_KUP", "musicUrl": `${repoBaseUrl}Monalisa%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Monalisa1.jpg`, "artist": "Leonardo da Vinci", "description": "Mona Lisa tablosunun kübist bir yorumu.", "category": "Kübist" },
-                { "id": 5, "artwork": "İnci Küpeli Kız (Küp Versiyon)", "qr": "INCI_KUP", "musicUrl": `${repoBaseUrl}Inci%20Kupeli%20Kız%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Inci%20Kupeli%20Kız1.jpg`, "artist": "Johannes Vermeer", "description": "İnci Küpeli Kız tablosunun kübist bir yorumu.", "category": "Kübist" },
-                { "id": 6, "artwork": "Picasso - Olga (Küp Versiyon)", "qr": "PICA_KUP", "musicUrl": `${repoBaseUrl}Picasso%20Olga%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Picasso%20Olga1.jpg`, "artist": "Pablo Picasso", "description": "Kübist dokunuşlarla modern bir portre çalışması.", "category": "Kübist" }
-            ];
-            setAllArtworks(artworksData); setIsLoading(false);
-          }, []);
-          
-          useEffect(() => {
-            if (!bgMusicRef.current) { bgMusicRef.current = document.getElementById('bg-music-player'); }
-            const audioEl = bgMusicRef.current;
-            if (audioEl) {
-                audioEl.volume = 0.2;
-                if (isBgMusicPlaying) { audioEl.play().catch(error => { setIsBgMusicPlaying(false); }); } 
-                else { audioEl.pause(); }
-            }
-          }, [isBgMusicPlaying]);
+            const clearNotification = () => {
+                setNotification(null);
+            };
 
-          useEffect(() => {
-            if (filterCategory === "Tümü") { setFilteredArtworks(allArtworks); } 
-            else { setFilteredArtworks(allArtworks.filter(item => item.category === filterCategory)); }
-          }, [filterCategory, allArtworks]);
-
-          const handleSelectArtwork = (artwork) => {
-            setSelectedArtwork(artwork);
-          };
-          
-          const handleScanSuccess = (decodedText) => {
-            setIsScanning(false);
-            const result = allArtworks.find((item) => item.qr === decodedText);
-            if (result) {
-                setSelectedArtwork(result);
-            } else {
-                alert("Eşleşen eser bulunamadı.");
-            }
-          };
-
-          const handleScanError = (errorMessage) => { setIsScanning(false); alert(errorMessage); };
-          const handleGloveConnect = () => {
-            setGloveStatus('Bağlanıyor...');
-            setTimeout(() => { setGloveStatus(prev => prev === 'Bağlandı' ? 'Bağlı Değil' : 'Bağlandı'); }, 1500);
-          };
-
-          const handleCloseWelcomeModal = () => {
-            window.speechSynthesis.cancel();
-            setIsWelcomeModalOpen(false);
-            setIsBgMusicPlaying(true);
-            startAudioContext();
-          };
-
-          return (
-            <div className="bg-[#0c0a18] text-white font-sans">
-              <WelcomeModal isOpen={isWelcomeModalOpen} onClose={handleCloseWelcomeModal} />
-              <ParticleBackground />
-              <Navbar />
-              
-              <main>
-                <AnimatedSection id="home" className="min-h-screen flex items-center justify-center text-center">
-                    <div>
-                        <img src="https://raw.githubusercontent.com/Sev84/Holodvision-Duyularin-Harmonisi/main/logo1111111.png" alt="PİKSENFONİ Logo" className="mx-auto mb-4 h-28" onError={(e) => { e.target.style.display='none'; }}/>
-                        <h1 className="text-5xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-pink-400 mb-4">PİKSENFONİ</h1>
-                        <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">Renklerle Seslerin Buluştuğu Sınırsız Dünya: Görme engelli bireyler için sanatı işitsel ve dokunsal bir deneyime dönüştürüyoruz.</p>
-                    </div>
-                </AnimatedSection>
-                <AnimatedSection id="project">
-                    <h2 className="text-4xl font-bold text-center mb-12">Proje Hakkında</h2>
-                    <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-8">
-                        <InfoCard icon={<Eye size={32}/>} title="Amacımız">Görme engelli bireylerin sanata erişimini artırmak ve sanat eserlerini çoklu duyusal yollarla, özgürce deneyimlemelerini sağlamak.</InfoCard>
-                        <InfoCard icon={<Cpu size={32}/>} title="Teknolojimiz">RGB renk sensörlü akıllı eldiven, renkleri notalara ve titreşimlere dönüştürür. QR kod tabanlı web uygulamamız ise eserlere özel müziklere anında erişim sunar.</InfoCard>
-                        <InfoCard icon={<Users size={32}/>} title="Hedef Kitlemiz">Görme engelli bireyler, özel eğitim kurumları, müzeler, sanat galerileri ve sanata erişilebilir bir pencereden bakmak isteyen herkes.</InfoCard>
-                    </div>
-                </AnimatedSection>
-                <AnimatedSection id="glove" className="bg-black/20">
-                    <div className="max-w-2xl mx-auto text-center">
-                        <h2 className="text-4xl font-bold mb-4">Renk ve Ses Eldiveni</h2>
-                        <p className="text-gray-400 mb-8">Eldiveni kullanarak tablolardaki renklere dokunun ve notaları duyun. Sanatla aranızdaki engelleri kaldırın.</p>
-                        <div className="p-6 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl inline-flex flex-col items-center gap-4">
-                            <button onClick={handleGloveConnect} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50" disabled={gloveStatus === 'Bağlanıyor...'}>
-                                <Zap className="mr-2" /> 
-                                {gloveStatus === 'Bağlandı' ? 'Bağlantıyı Kes' : 'Eldiveni Bağla'}
+            return (
+                <div className="min-h-screen text-white">
+                    <nav className="fixed top-0 left-0 right-0 bg-gray-900/80 backdrop-blur-md z-30 shadow-lg py-4 px-6 flex justify-between items-center rounded-b-xl border-b border-gray-700">
+                        <div className="flex items-center">
+                            <img src="https://raw.githubusercontent.com/Sev84/Holodvision-Duyularin-Harmonisi/main/logo1111111.png" alt="PİKSENFONİ Logo" className="h-10 mr-3"/>
+                            <span className="text-2xl font-bold text-pink-400 hidden sm:block">PİKSENFONİ</span>
+                        </div>
+                        <div className="flex space-x-4">
+                            <button onClick={() => setActiveView("home")} className={`p-2 rounded-full transition-colors flex items-center ${activeView === "home" ? 'bg-red-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`} title="Ana Sayfa"><HomeIcon className="mr-1" /> <span className="hidden sm:inline">Ana Sayfa</span></button>
+                            <button onClick={() => setActiveView("gallery")} className={`p-2 rounded-full transition-colors flex items-center ${activeView === "gallery" ? 'bg-red-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`} title="Galeri"><EyeIcon className="mr-1" /> <span className="hidden sm:inline">Galeri</span></button>
+                            <button onClick={() => setActiveView("composer")} className={`p-2 rounded-full transition-colors flex items-center ${activeView === "composer" ? 'bg-red-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`} title="Besteci"><MusicIcon className="mr-1" /> <span className="hidden sm:inline">Besteci</span></button>
+                            <button onClick={() => setActiveView("sensor")} className={`p-2 rounded-full transition-colors flex items-center ${activeView === "sensor" ? 'bg-red-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`} title="Sensör Simülatörü"><RssIcon className="mr-1" /> <span className="hidden sm:inline">Sensör</span></button>
+                            <button onClick={() => setActiveView("project")} className={`p-2 rounded-full transition-colors flex items-center ${activeView === "project" ? 'bg-red-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`} title="Proje Hakkında"><FileTextIcon className="mr-1" /> <span className="hidden sm:inline">Proje</span></button>
+                            <button onClick={() => setActiveView("contact")} className={`p-2 rounded-full transition-colors flex items-center ${activeView === "contact" ? 'bg-red-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`} title="İletişim"><MailIcon className="mr-1" /> <span className="hidden sm:inline">İletişim</span></button>
+                            <button onClick={toggleMusic} className="p-2 rounded-full text-gray-300 hover:bg-gray-700 transition-colors" title={isMusicPlaying ? "Müziği Durdur" : "Müziği Başlat"}>
+                                {isMusicPlaying ? <Volume2Icon /> : <VolumeXIcon />}
                             </button>
-                            <div className="flex items-center gap-2">
-                                <span className={`w-3 h-3 rounded-full ${gloveStatus === 'Bağlandı' ? 'bg-green-500 animate-pulse' : (gloveStatus === 'Bağlanıyor...' ? 'bg-yellow-500 animate-spin' : 'bg-red-500')}`}></span>
-                                <span>{gloveStatus}</span>
-                            </div>
                         </div>
-                    </div>
-                </AnimatedSection>
-                <AnimatedSection id="gallery">
-                    <h2 className="text-4xl font-bold text-center mb-12">Eser Galerisi</h2>
-                    <div className="max-w-5xl mx-auto mb-12 sticky top-20 z-20 bg-gray-900/70 backdrop-blur-md p-4 rounded-xl border border-gray-700">
-                        <div className="grid md:grid-cols-2 gap-4 items-end">
-                            <div>
-                                <label htmlFor="category-filter" className="block mb-2 font-medium text-gray-300">🎨 Kategoriye Göre Filtrele</label>
-                                <select id="category-filter" className="w-full p-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-red-500 focus:border-red-500 transition" value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}>
-                                    <option value="Tümü">Tümü</option>
-                                    <option value="Klasik">Klasik</option>
-                                    <option value="Kübist">Kübist</option>
-                                </select>
-                            </div>
-                            <button onClick={() => setIsScanning(true)} className="w-full p-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg flex items-center justify-center transition-colors"> <Camera className="mr-2" /> QR Kod Tara </button>
-                        </div>
-                    </div>
-                    
-                    {isLoading ? ( <div className="flex justify-center items-center p-10"><Loader size={48} className="text-red-500"/><p className="ml-4 text-xl">Sanat eserleri yükleniyor...</p></div> ) : (
-                      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-                        {filteredArtworks.map((item) => <ArtCard key={item.id} item={item} onSelect={handleSelectArtwork} onHover={playHoverSound} />)}
-                      </div>
-                    )}
-                </AnimatedSection>
-                <AnimatedSection id="contact" className="bg-black/20">
-                    <div className="max-w-2xl mx-auto text-center">
-                        <h2 className="text-4xl font-bold mb-4">İletişim</h2>
-                        <p className="text-gray-400 mb-8">Projemiz hakkında daha fazla bilgi almak veya iş birliği yapmak için bizimle iletişime geçebilirsiniz.</p>
-                        <a href="mailto:info@holodvision.com" className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg transition-colors">Bize Ulaşın</a>
-                    </div>
-                </AnimatedSection>
-              </main>
+                    </nav>
 
-              <div className="fixed bottom-5 right-5 z-50">
-                <button onClick={() => setIsBgMusicPlaying(!isBgMusicPlaying)} className="bg-gray-700/50 hover:bg-gray-600/70 backdrop-blur-sm text-white font-bold p-3 rounded-full shadow-lg transition-colors" aria-label={isBgMusicPlaying ? "Müziği Kapat" : "Müziği Aç"}>
-                    {isBgMusicPlaying ? <Volume2 /> : <VolumeX />}
-                </button>
-              </div>
+                    <main className="pt-24 pb-8">
+                        <AnimatedSection id="home-section" style={{ display: activeView === "home" ? 'flex' : 'none' }}>
+                            <AnaSayfaView onStartExperience={handleWelcomeExperienceStart} />
+                        </AnimatedSection>
+                        <AnimatedSection id="gallery-section" style={{ display: activeView === "gallery" ? 'flex' : 'none' }}>
+                            <GalleryView setNotification={setNotification} />
+                        </AnimatedSection>
+                        <AnimatedSection id="composer-section" style={{ display: activeView === "composer" ? 'flex' : 'none' }}>
+                            <ComposerView />
+                        </AnimatedSection>
+                        <AnimatedSection id="sensor-section" style={{ display: activeView === "sensor" ? 'flex' : 'none' }}>
+                            <LiveSensorDemoView />
+                        </AnimatedSection>
+                        <AnimatedSection id="project-section" style={{ display: activeView === "project" ? 'flex' : 'none' }}>
+                            <ProjeView />
+                        </AnimatedSection>
+                        <AnimatedSection id="contact-section" style={{ display: activeView === "contact" ? 'flex' : 'none' }}>
+                            <IletisimView setNotification={setNotification} />
+                        </AnimatedSection>
+                    </main>
 
-              <footer className="text-center text-sm text-gray-500 py-8">
-                <p>© 2025 PİKSENFONİ - HOLO-D-VISION Takımı. Tüm hakları saklıdır.</p>
-                <p>TEKNOFEST Engelsiz Yaşam Teknolojileri Yarışması</p>
-              </footer>
-              
-              {isScanning && <QrScanner onScanSuccess={handleScanSuccess} onScanError={handleScanError} onStop={() => setIsScanning(false)} />}
-              {selectedArtwork && <ArtworkDetailModal artwork={selectedArtwork} onClose={() => setSelectedArtwork(null)} bgMusicRef={bgMusicRef} isBgMusicPlaying={isBgMusicPlaying} />}
-            </div>
-          );
-        }
+                    <Notification message={notification} onClear={clearNotification} />
+                </div>
+            );
+        };
 
         const container = document.getElementById('root');
         const root = ReactDOM.createRoot(container);
         root.render(<App />);
-
     </script>
 </body>
 </html>
