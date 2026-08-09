@@ -1,21 +1,23 @@
 "use strict";
 
-const CACHE_NAME = "nsosyal-duyu-studio-v2.0.0-web";
+const CACHE_NAME = "nsosyal-duyu-studio-v2.1.0";
 const APP_SHELL = [
   "./",
   "./index.html",
+  "./usability.html",
   "./styles.css",
   "./app.js",
+  "./usability.js",
   "./manifest.webmanifest",
-  "../Inci%20Kupeli%20K%C4%B1z.jpeg",
-  "../Inci%20Kupeli%20K%C4%B1z1.jpg",
-  "../Monalisa.jpeg",
-  "../Monalisa1.jpg",
-  "../Picasso%20Olga1.jpg",
-  "../Inci%20Kupeli%20K%C4%B1z%20Son%20Hali.mp3",
-  "../Monalisa%20Son%20Hali.mp3",
-  "../Picasso%20Olga%20Son%20Hali.mp3",
-  "../fon%20muzik.mp3"
+  "./assets/images/inci-kupeli-kiz.jpg",
+  "./assets/images/inci-kupeli-kiz-piksel.jpg",
+  "./assets/images/mona-lisa.jpg",
+  "./assets/images/mona-lisa-piksel.jpg",
+  "./assets/images/picasso-olga-piksel.jpg",
+  "./assets/audio/inci-kupeli-kiz.mp3",
+  "./assets/audio/mona-lisa.mp3",
+  "./assets/audio/picasso-olga.mp3",
+  "./assets/audio/fon-muzigi.mp3"
 ];
 
 self.addEventListener("install", (event) => {

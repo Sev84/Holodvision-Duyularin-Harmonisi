@@ -27,6 +27,7 @@
       </a>
       <nav aria-label="Ana menü">
         <a href="#composer">Besteci</a>
+        <a href="#share-studio">NSosyal Gönderisi</a>
         <a href="#archive">Arşiv</a>
         <a href="#gallery">Galeri</a>
         <a href="#sensor">Sensör</a>
@@ -196,9 +197,67 @@
               <label for="composition-title">Çalışmanın adı</label>
               <input id="composition-title" type="text" maxlength="80" placeholder="Örneğin: Gün Batımı Senfonisi" />
               <button id="save-archive" class="primary-button full" type="button" disabled>🗂️ Özel arşive kaydet</button>
-              <button id="share-composition" class="secondary-button full" type="button" disabled>↗ Erişilebilir NSosyal metniyle paylaş</button>
+              <button id="share-composition" class="secondary-button full" type="button" disabled>↗ NSosyal gönderisini hazırla</button>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section id="share-studio" class="share-studio section-shell" aria-labelledby="share-studio-title">
+        <div class="section-heading split-heading">
+          <div>
+            <span class="eyebrow">NSosyal'e hazır erişilebilir içerik</span>
+            <h2 id="share-studio-title">Gönderi Stüdyosu</h2>
+            <p>Bestenizi erişilebilir betimleme, üretim etiketi ve önerilen etiketlerle paylaşılabilir bir NSosyal gönderisine dönüştürün.</p>
+          </div>
+          <span id="share-readiness" class="status-pill" role="status">Önce beste oluşturun</span>
+        </div>
+
+        <div class="share-grid">
+          <div class="share-form">
+            <label for="share-title">Gönderi başlığı
+              <input id="share-title" type="text" maxlength="80" placeholder="Örneğin: Gün Batımı Senfonisi" disabled />
+            </label>
+            <label for="share-caption">Gönderi metni
+              <textarea id="share-caption" rows="4" maxlength="600" disabled></textarea>
+            </label>
+            <label for="share-alt">Erişilebilir görsel betimlemesi
+              <textarea id="share-alt" rows="4" maxlength="500" disabled></textarea>
+              <small>Bu alan ekran okuyucu kullanıcıları için görselin temel biçim, renk ve parlaklık özelliklerini açıklar.</small>
+            </label>
+            <label for="share-hashtags">Etiketler
+              <input id="share-hashtags" type="text" maxlength="180" value="#NSosyalDUYU #PİKSENFONİ #ErişilebilirSanat #NSosyalİnovasyon" disabled />
+            </label>
+            <label class="check-row" for="share-disclosure">
+              <input id="share-disclosure" type="checkbox" checked disabled />
+              “Görselden açıklanabilir algoritmayla üretildi” etiketi gönderide görünsün.
+            </label>
+            <label class="check-row" for="share-rights">
+              <input id="share-rights" type="checkbox" disabled />
+              Bu içeriği NSosyal'de paylaşma hakkına sahibim; erişilebilir betimlemeyi kontrol ettim.
+            </label>
+            <div class="share-actions">
+              <button id="refresh-share" class="secondary-button" type="button" disabled>↻ Önizlemeyi yenile</button>
+              <button id="copy-share" class="secondary-button" type="button" disabled>⧉ Metni kopyala</button>
+              <button id="publish-share" class="primary-button" type="button" disabled>↗ NSosyal'de paylaş</button>
+            </div>
+            <p class="share-note">Uygulama izniniz olmadan otomatik yayın yapmaz. Son paylaşım, cihazın güvenli paylaşım ekranında sizin onayınızla tamamlanır.</p>
+          </div>
+
+          <article class="ns-post-preview" aria-labelledby="preview-title">
+            <div class="ns-post-head">
+              <span class="avatar" aria-hidden="true">D</span>
+              <div><strong>NSosyal DUYU</strong><small>@duyustudio · erişilebilir içerik</small></div>
+              <span class="access-tag">♿ Betimlemeli</span>
+            </div>
+            <img id="share-preview-image" alt="Gönderi önizlemesi için henüz görsel oluşturulmadı" />
+            <div class="ns-post-body">
+              <h3 id="preview-title">Gönderi önizlemesi</h3>
+              <p id="share-preview-text">Bestenizi oluşturduğunuzda NSosyal gönderisi burada hazırlanacaktır.</p>
+              <p id="share-preview-alt" class="preview-alt"><strong>Görsel betimlemesi:</strong> Henüz hazır değil.</p>
+              <small id="share-preview-disclosure">Açıklanabilir üretim etiketi bekleniyor.</small>
+            </div>
+          </article>
         </div>
       </section>
 
@@ -254,6 +313,7 @@
           <article><span aria-hidden="true">🧠</span><h3>Açıklanabilir dönüşüm</h3><p>Her notanın renk, parlaklık ve doygunluk karşılığı kullanıcıya gösterilir.</p></article>
           <article><span aria-hidden="true">🛡️</span><h3>Mahremiyet</h3><p>Yerel işleme, açık onay, özel arşiv, silme hakkı ve anahtarsız güvenli prototip.</p></article>
         </div>
+        <p class="test-callout"><strong>Kullanılabilirlik doğrulaması:</strong> Yarışma pilotu için görev tamamlama, erişilebilirlik ve memnuniyet verilerini etik biçimde toplayın. <a href="usability.html">Pilot kullanıcı testi aracını açın →</a></p>
       </section>
     </main>
 
@@ -275,10 +335,10 @@
       </div>
     </dialog>
 
-    <audio id="background-music" src="../fon%20muzik.mp3" loop preload="none"></audio>
+    <audio id="background-music" src="assets/audio/fon-muzigi.mp3" loop preload="none"></audio>
     <div id="guide-status" class="visually-hidden" role="status" aria-live="assertive"></div>
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
-    <footer><strong>NSosyal DUYU Studio</strong><span>HOLO-D-VISION × PİKSENFONİ · Yarışma prototipi · 2026</span></footer>
+    <footer><strong>NSosyal DUYU Studio 2.1</strong><span>HOLO-D-VISION × PİKSENFONİ · NSosyal'e özgü erişilebilir içerik prototipi · 2026</span></footer>
     <script src="app.js" defer></script>
   </body>
 </html>

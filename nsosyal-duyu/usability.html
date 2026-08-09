@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#16104f" />
+    <meta name="color-scheme" content="dark light" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; img-src 'self' data: blob:; connect-src 'self'; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>NSosyal DUYU · Pilot Kullanılabilirlik Testi</title>
+  </head>
+  <body class="test-page">
+    <a class="skip-link" href="#test-main">Ana içeriğe geç</a>
+    <header class="topbar test-topbar">
+      <a class="brand" href="index.html" aria-label="NSosyal DUYU Studio'ya dön">
+        <span class="brand-mark" aria-hidden="true">D</span>
+        <span><strong>NSosyal</strong><em>PİLOT TEST</em></span>
+      </a>
+      <a class="secondary-button" href="index.html">← Uygulamaya dön</a>
+    </header>
+
+    <main id="test-main" class="test-shell">
+      <section class="test-hero">
+        <span class="eyebrow">Etik kullanıcı araştırması · anonim kayıt</span>
+        <h1>NSosyal DUYU Pilot Kullanılabilirlik Testi</h1>
+        <p>Bu araç gerçek katılımcı testlerini düzenli ve kişisel veri toplamadan kaydetmek için hazırlanmıştır. Sonuçlar yalnızca bu cihazda tutulur; dışa aktarma sizin seçiminizdir.</p>
+      </section>
+
+      <form id="usability-form">
+        <section class="test-card" aria-labelledby="participant-title">
+          <h2 id="participant-title">1. Katılımcı ve onay</h2>
+          <div class="test-fields">
+            <label for="participant-code">Anonim katılımcı kodu
+              <input id="participant-code" name="participantCode" type="text" maxlength="12" placeholder="Örn. P01" required />
+            </label>
+            <label for="participant-profile">Kullanım profili
+              <select id="participant-profile" name="profile" required>
+                <option value="">Seçiniz</option>
+                <option>Görme engelli - ekran okuyucu kullanıyor</option>
+                <option>Az gören - büyük yazı/yüksek kontrast kullanıyor</option>
+                <option>Engeli olmayan kullanıcı</option>
+                <option>Öğretmen/eğitmen</option>
+                <option>İçerik üreticisi</option>
+              </select>
+            </label>
+            <label for="device">Cihaz ve tarayıcı
+              <input id="device" name="device" type="text" maxlength="80" placeholder="Örn. Android 14, Chrome" required />
+            </label>
+            <label for="assistive-tech">Yardımcı teknoloji
+              <input id="assistive-tech" name="assistiveTech" type="text" maxlength="80" placeholder="Örn. TalkBack / kullanılmadı" />
+            </label>
+          </div>
+          <label class="check-row" for="research-consent">
+            <input id="research-consent" name="consent" type="checkbox" required />
+            Testin amacı açıklandı; gönüllü katılım, istediğim anda bırakma ve anonim kayıt koşullarını kabul ediyorum.
+          </label>
+        </section>
+
+        <section class="test-card" aria-labelledby="tasks-title">
+          <h2 id="tasks-title">2. Görev tamamlama</h2>
+          <p>Katılımcıya görevi okuyun; uygulamayı nasıl kullanacağını öğretmeden gözlemleyin. Süreyi saniye olarak kaydedin.</p>
+          <div id="task-list" class="task-list"></div>
+        </section>
+
+        <section class="test-card" aria-labelledby="sus-title">
+          <h2 id="sus-title">3. Sistem Kullanılabilirlik Ölçeği (SUS)</h2>
+          <p>1: Kesinlikle katılmıyorum, 5: Kesinlikle katılıyorum.</p>
+          <div id="sus-list" class="sus-list"></div>
+        </section>
+
+        <section class="test-card" aria-labelledby="feedback-title">
+          <h2 id="feedback-title">4. Açık geri bildirim</h2>
+          <label for="best-part">En yararlı veya anlaşılır bölüm neydi?
+            <textarea id="best-part" name="bestPart" rows="3" maxlength="600"></textarea>
+          </label>
+          <label for="hard-part">En zor veya kafa karıştırıcı bölüm neydi?
+            <textarea id="hard-part" name="hardPart" rows="3" maxlength="600"></textarea>
+          </label>
+          <label for="suggestion">Bir sonraki sürüm için öneriniz nedir?
+            <textarea id="suggestion" name="suggestion" rows="3" maxlength="600"></textarea>
+          </label>
+        </section>
+
+        <section class="test-card test-actions" aria-labelledby="save-title">
+          <h2 id="save-title">5. Kaydet ve dışa aktar</h2>
+          <p id="test-status" role="status" aria-live="polite">Henüz kayıt oluşturulmadı.</p>
+          <div>
+            <button id="save-test" class="primary-button" type="submit">Test kaydını cihazda sakla</button>
+            <button id="export-json" class="secondary-button" type="button">JSON dışa aktar</button>
+            <button id="export-csv" class="secondary-button" type="button">CSV özetini dışa aktar</button>
+            <button id="clear-tests" class="secondary-button danger-button" type="button">Tüm yerel testleri sil</button>
+          </div>
+          <small>Gerçek kullanıcı testi yapılmadan yarışma raporuna kullanıcı sonucu yazmayın. Bu araç yalnızca doğrulanmış gözlem kayıtlarını dışa aktarır.</small>
+        </section>
+      </form>
+    </main>
+    <script src="usability.js" defer></script>
+  </body>
+</html>
