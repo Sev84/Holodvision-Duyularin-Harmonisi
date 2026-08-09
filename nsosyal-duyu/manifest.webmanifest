@@ -1,0 +1,13 @@
+{
+  "name": "NSosyal DUYU Studio · PİKSENFONİ Besteci",
+  "short_name": "DUYU Studio",
+  "description": "Görselleri piksellere, notalara, vuruşlara, eslere ve dokunsal geri bildirime dönüştüren erişilebilir içerik bestecisi.",
+  "lang": "tr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f4f6f8",
+  "theme_color": "#16104f",
+  "categories": ["accessibility", "music", "education", "social"]
+}
