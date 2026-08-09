@@ -1,7 +1,7 @@
 {
   "name": "NSosyal DUYU Studio · PİKSENFONİ Besteci",
   "short_name": "DUYU Studio",
-  "description": "Görselleri piksellere, notalara, vuruşlara ve erişilebilir NSosyal gönderilerine dönüştüren kapsayıcı içerik bestecisi.",
+  "description": "Görselleri piksellere, notalara, vuruşlara, eslere ve dokunsal geri bildirime dönüştüren erişilebilir içerik bestecisi.",
   "lang": "tr",
   "start_url": "./index.html",
   "scope": "./",

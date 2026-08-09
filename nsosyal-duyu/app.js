@@ -7,8 +7,8 @@ const artworks = [
     artist: "Johannes Vermeer",
     category: "original",
     categoryLabel: "Orijinal eser",
-    image: "assets/images/inci-kupeli-kiz.jpg",
-    audio: "assets/audio/inci-kupeli-kiz.mp3",
+    image: "../Inci%20Kupeli%20K%C4%B1z.jpeg",
+    audio: "../Inci%20Kupeli%20K%C4%B1z%20Son%20Hali.mp3",
     description: "Koyu bir fonun önünde omzunun üzerinden izleyiciye bakan genç bir figür görülür. Mavi başörtüsü, sarı kumaş şeridi ve ışığı yakalayan inci küpe yüzü çevreleyen başlıca ayrıntılardır.",
     colors: [
       { name: "Gece laciverti", hex: "#12131d", note: 220 },
@@ -23,8 +23,8 @@ const artworks = [
     artist: "PİKSENFONİ Atölyesi",
     category: "pixel",
     categoryLabel: "Piksel yorum",
-    image: "assets/images/inci-kupeli-kiz-piksel.jpg",
-    audio: "assets/audio/inci-kupeli-kiz.mp3",
+    image: "../Inci%20Kupeli%20K%C4%B1z1.jpg",
+    audio: "../Inci%20Kupeli%20K%C4%B1z%20Son%20Hali.mp3",
     description: "İnci Küpeli Kız büyük renk kareleriyle yeniden kurulmuştur. Koyu lacivert zemin üzerinde sıcak ten tonları, parlak maviler ve altın sarıları görsel bir ritim oluşturur.",
     colors: [
       { name: "Derin lacivert", hex: "#08072f", note: 196 },
@@ -39,8 +39,8 @@ const artworks = [
     artist: "Leonardo da Vinci",
     category: "original",
     categoryLabel: "Orijinal eser",
-    image: "assets/images/mona-lisa.jpg",
-    audio: "assets/audio/mona-lisa.mp3",
+    image: "../Monalisa.jpeg",
+    audio: "../Monalisa%20Son%20Hali.mp3",
     description: "Ön planda ellerini birbiri üzerine koymuş sakin bakışlı bir kadın oturur. Arkasında kıvrılarak uzaklaşan yollar, sular ve sisli dağlardan oluşan düşsel bir manzara bulunur.",
     colors: [
       { name: "Zeytin yeşili", hex: "#73794d", note: 220 },
@@ -55,8 +55,8 @@ const artworks = [
     artist: "PİKSENFONİ Atölyesi",
     category: "pixel",
     categoryLabel: "Piksel yorum",
-    image: "assets/images/mona-lisa-piksel.jpg",
-    audio: "assets/audio/mona-lisa.mp3",
+    image: "../Monalisa1.jpg",
+    audio: "../Monalisa%20Son%20Hali.mp3",
     description: "Mona Lisa'nın yüzü ve elleri altın sarısı karelerle; saçları ve giysisi bordo, mor ve gece mavisi bloklarla anlatılır. Üst bölümdeki yeşiller manzarayı çağrıştırır.",
     colors: [
       { name: "Canlı yeşil", hex: "#62c900", note: 246.94 },
@@ -71,8 +71,8 @@ const artworks = [
     artist: "Pablo Picasso esinli PİKSENFONİ yorumu",
     category: "pixel",
     categoryLabel: "Piksel yorum",
-    image: "assets/images/picasso-olga-piksel.jpg",
-    audio: "assets/audio/picasso-olga.mp3",
+    image: "../Picasso%20Olga1.jpg",
+    audio: "../Picasso%20Olga%20Son%20Hali.mp3",
     description: "Koyu kahverengi ve lacivert bir zemin üzerinde turkuaz, canlı yeşil ve sarı bloklar merkezdeki figürü kurar. Turuncu ve altın tonları baş bölümünde yükselir.",
     colors: [
       { name: "Turkuaz", hex: "#51bdc8", note: 233.08 },
@@ -147,17 +147,6 @@ const elements = {
   compositionTitle: document.querySelector("#composition-title"),
   archiveGrid: document.querySelector("#archive-grid"),
   archiveEmpty: document.querySelector("#archive-empty"),
-  shareReadiness: document.querySelector("#share-readiness"),
-  shareTitle: document.querySelector("#share-title"),
-  shareCaption: document.querySelector("#share-caption"),
-  shareAlt: document.querySelector("#share-alt"),
-  shareHashtags: document.querySelector("#share-hashtags"),
-  shareDisclosure: document.querySelector("#share-disclosure"),
-  shareRights: document.querySelector("#share-rights"),
-  sharePreviewImage: document.querySelector("#share-preview-image"),
-  sharePreviewText: document.querySelector("#share-preview-text"),
-  sharePreviewAlt: document.querySelector("#share-preview-alt"),
-  sharePreviewDisclosure: document.querySelector("#share-preview-disclosure"),
 };
 
 const ctx = elements.canvas.getContext("2d", { willReadFrequently: true });
@@ -299,7 +288,6 @@ async function loadComposerImage(source, name = "Yeni Görsel") {
   state.sequence = [];
   state.cursorIndex = 0;
   elements.compositionTitle.value = `${state.sourceName} Senfonisi`;
-  resetShareStudio();
   elements.emptyCanvas.hidden = true;
   buildImageModel();
   setComposerButtons(true, false);
@@ -316,28 +304,6 @@ function setComposerButtons(hasImage, hasMusic) {
   ["play-button", "stop-button", "download-audio", "save-archive", "share-composition"].forEach((id) => {
     document.getElementById(id).disabled = !hasMusic;
   });
-}
-
-function setShareControls(enabled) {
-  [elements.shareTitle, elements.shareCaption, elements.shareAlt, elements.shareHashtags, elements.shareDisclosure, elements.shareRights].forEach((element) => {
-    element.disabled = !enabled;
-  });
-  ["refresh-share", "copy-share"].forEach((id) => { document.getElementById(id).disabled = !enabled; });
-  document.getElementById("publish-share").disabled = !enabled || !elements.shareRights.checked;
-}
-
-function resetShareStudio() {
-  setShareControls(false);
-  elements.shareReadiness.textContent = "Önce beste oluşturun";
-  elements.shareTitle.value = "";
-  elements.shareCaption.value = "";
-  elements.shareAlt.value = "";
-  elements.shareRights.checked = false;
-  elements.sharePreviewImage.removeAttribute("src");
-  elements.sharePreviewImage.alt = "Gönderi önizlemesi için henüz görsel oluşturulmadı";
-  elements.sharePreviewText.textContent = "Bestenizi oluşturduğunuzda NSosyal gönderisi burada hazırlanacaktır.";
-  elements.sharePreviewAlt.innerHTML = "<strong>Görsel betimlemesi:</strong> Henüz hazır değil.";
-  elements.sharePreviewDisclosure.textContent = "Açıklanabilir üretim etiketi bekleniyor.";
 }
 
 function getAverageCell(data, width, x0, y0, cellWidth, cellHeight) {
@@ -636,7 +602,6 @@ function composeMusic() {
   }).join("  ");
   elements.musicStatus.textContent = `${state.sequence.length} olay hazır`;
   setComposerButtons(true, true);
-  prepareShareDraft();
   const summary = `Beste hazır. ${counts.note || 0} nota, ${(counts.kick || 0) + (counts.snare || 0) + (counts.hat || 0)} vuruş ve ${counts.rest || 0} es oluşturuldu. Beyaz alanlar sessizlik olarak işlendi.`;
   announce(summary, true, [60, 30, 60, 30, 110]);
 }
@@ -1038,85 +1003,6 @@ function createShareText(title, analysis = state.analysis, sequence = state.sequ
   return `${title}\n\nErişilebilir betimleme: ${analysis?.description || "Görselden oluşturulan PİKSENFONİ bestesi."}\n\nBeste: ${eventCounts.note || 0} renk notası, ${(eventCounts.kick || 0) + (eventCounts.snare || 0) + (eventCounts.hat || 0)} vuruş, ${eventCounts.rest || 0} es.\n\n#NSosyalDUYU #PİKSENFONİ #ErişilebilirSanat #NSosyalİnovasyon`;
 }
 
-function compositionCounts(sequence = state.sequence) {
-  return sequence.reduce((result, event) => {
-    result[event.type] = (result[event.type] || 0) + 1;
-    return result;
-  }, {});
-}
-
-function normalizedHashtags(value) {
-  return String(value || "")
-    .split(/\s+/)
-    .map((tag) => tag.trim())
-    .filter(Boolean)
-    .map((tag) => tag.startsWith("#") ? tag : `#${tag.replace(/^#+/, "")}`)
-    .slice(0, 8)
-    .join(" ");
-}
-
-function prepareShareDraft({ scroll = false } = {}) {
-  if (!state.sequence.length || !state.analysis) {
-    announce("Önce bir görsel seçip besteyi oluşturun.", true, [90, 40, 90]);
-    return;
-  }
-  const title = elements.compositionTitle.value.trim() || `${state.sourceName} Senfonisi`;
-  const counts = compositionCounts();
-  elements.shareTitle.value = title;
-  elements.shareCaption.value = `${state.sourceName} görselinden ${counts.note || 0} renk notası, ${(counts.kick || 0) + (counts.snare || 0) + (counts.hat || 0)} vuruş ve ${counts.rest || 0} es içeren erişilebilir bir PİKSENFONİ oluşturdum.`;
-  elements.shareAlt.value = state.analysis.description;
-  elements.shareDisclosure.checked = true;
-  elements.shareRights.checked = false;
-  elements.sharePreviewImage.src = canvasThumbnail();
-  setShareControls(true);
-  updateSharePreview();
-  elements.shareReadiness.textContent = "Gönderi taslağı hazır";
-  if (scroll) document.querySelector("#share-studio").scrollIntoView({ behavior: "smooth", block: "start" });
-}
-
-function shareDraftText() {
-  const title = elements.shareTitle.value.trim() || "NSosyal DUYU Bestesi";
-  const caption = elements.shareCaption.value.trim();
-  const alt = elements.shareAlt.value.trim();
-  const hashtags = normalizedHashtags(elements.shareHashtags.value);
-  const disclosure = elements.shareDisclosure.checked ? "Görselden açıklanabilir renk-ses algoritmasıyla üretildi." : "";
-  return [title, caption, alt ? `Erişilebilir görsel betimlemesi: ${alt}` : "", disclosure, hashtags].filter(Boolean).join("\n\n");
-}
-
-function updateSharePreview() {
-  if (!state.sequence.length) return;
-  const title = elements.shareTitle.value.trim() || "NSosyal DUYU Bestesi";
-  const caption = elements.shareCaption.value.trim() || "Gönderi metni bekleniyor.";
-  const hashtags = normalizedHashtags(elements.shareHashtags.value);
-  const alt = elements.shareAlt.value.trim() || "Betimleme eklenmedi.";
-  elements.sharePreviewImage.alt = alt;
-  elements.sharePreviewText.textContent = `${title}\n\n${caption}\n\n${hashtags}`;
-  elements.sharePreviewAlt.innerHTML = `<strong>Görsel betimlemesi:</strong> ${escapeHtml(alt)}`;
-  elements.sharePreviewDisclosure.textContent = elements.shareDisclosure.checked
-    ? "Şeffaflık etiketi: Görselden açıklanabilir renk-ses algoritmasıyla üretildi."
-    : "Şeffaflık etiketi kapalı.";
-  document.getElementById("publish-share").disabled = !elements.shareRights.checked;
-}
-
-async function copyShareDraft() {
-  const text = shareDraftText();
-  try {
-    await navigator.clipboard.writeText(text);
-    announce("NSosyal gönderi metni panoya kopyalandı.", true, [60, 30, 90]);
-  } catch {
-    announce("Metin kopyalanamadı; cihazın pano iznini kontrol edin.", true, [100, 40, 100]);
-  }
-}
-
-function publishShareDraft() {
-  if (!elements.shareRights.checked) {
-    announce("Paylaşmadan önce kullanım hakkı ve betimleme onayını işaretleyin.", true, [90, 40, 90]);
-    elements.shareRights.focus();
-    return;
-  }
-  shareText(elements.shareTitle.value.trim() || "NSosyal DUYU Bestesi", shareDraftText());
-}
-
 async function shareText(title, text) {
   const bridge = nativeBridge();
   if (bridge && typeof bridge.share === "function") {
@@ -1249,7 +1135,7 @@ function bindEvents() {
   });
   document.querySelector("#sample-button").addEventListener("click", async () => {
     elements.rightsConsent.checked = true;
-    try { await loadComposerImage("assets/images/mona-lisa.jpg", "Mona Lisa Örneği"); }
+    try { await loadComposerImage("../Monalisa.jpeg", "Mona Lisa Örneği"); }
     catch { announce("Örnek görsel açılamadı.", true); }
   });
   elements.fileInput.addEventListener("change", (event) => handleImageFile(event.target.files?.[0]));
@@ -1289,16 +1175,7 @@ function bindEvents() {
   document.querySelector("#download-audio").addEventListener("click", downloadCurrentAudio);
   document.querySelector("#describe-image").addEventListener("click", () => speak(state.analysis?.description || "Görsel analizi bulunmuyor."));
   document.querySelector("#save-archive").addEventListener("click", saveCurrentArchive);
-  document.querySelector("#share-composition").addEventListener("click", () => prepareShareDraft({ scroll: true }));
-
-  [elements.shareTitle, elements.shareCaption, elements.shareAlt, elements.shareHashtags].forEach((element) => {
-    element.addEventListener("input", updateSharePreview);
-  });
-  elements.shareDisclosure.addEventListener("change", updateSharePreview);
-  elements.shareRights.addEventListener("change", updateSharePreview);
-  document.querySelector("#refresh-share").addEventListener("click", updateSharePreview);
-  document.querySelector("#copy-share").addEventListener("click", copyShareDraft);
-  document.querySelector("#publish-share").addEventListener("click", publishShareDraft);
+  document.querySelector("#share-composition").addEventListener("click", () => shareText(elements.compositionTitle.value || state.sourceName, createShareText(elements.compositionTitle.value || state.sourceName)));
 
   document.querySelectorAll("[data-move]").forEach((button) => button.addEventListener("click", () => moveManual(button.dataset.move)));
   elements.canvas.addEventListener("pointerdown", (event) => {
@@ -1369,7 +1246,6 @@ async function initialize() {
   renderSensorButtons();
   updateNetworkStatus();
   setComposerButtons(false, false);
-  resetShareStudio();
   bindEvents();
   try { await openArchiveDb(); await renderArchive(); } catch { /* archive status is shown on demand */ }
   if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
