@@ -1,335 +1,377 @@
-<!DOCTYPE html>
-<html lang="tr" style="scroll-behavior: smooth;">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PİKSENFONİ - Bütünleşik Deneyim</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
-    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-    
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#16104f" />
+    <meta name="color-scheme" content="dark light" />
+    <meta
+      name="description"
+      content="HARMONY SENSE turns images into colour, notes, rhythm, accessible descriptions and haptic feedback."
+    />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self' data: blob:; img-src 'self' data: blob:; media-src 'self' data: blob:; connect-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'"
+    />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>HARMONY SENSE · See, Hear, Feel, Share</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Ana içeriğe geç</a>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-        
-        const firebaseConfig = {
-            apiKey: "AIzaSyC77aQt7K6CicZYwgcxgLEH8sGmErcbkdc",
-            authDomain: "holodvision-piksenfoni.firebaseapp.com",
-            databaseURL: "https://holodvision-piksenfoni-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "holodvision-piksenfoni",
-            storageBucket: "holodvision-piksenfoni.firebasestorage.com",
-            messagingSenderId: "924131810834",
-            appId: "1:924131810834:web:abf8f10b5250e38fc702cb"
-        };
+    <header class="topbar">
+      <a class="brand" href="#hero" aria-label="HARMONY SENSE ana sayfa">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48" focusable="false">
+            <path d="M7 24c5-12 11-18 17-18s12 6 17 18c-5 12-11 18-17 18S12 36 7 24Z" />
+            <path d="M13 25h6l3-8 5 15 4-9 4 2" />
+          </svg>
+        </span>
+        <span><strong>HARMONY SENSE</strong><em>SEE · HEAR · FEEL</em></span>
+      </a>
+      <nav aria-label="Ana menü">
+        <a href="#composer">Besteci</a>
+        <a href="#share-studio">Paylaşım</a>
+        <a href="#archive">Arşiv</a>
+        <a href="#gallery">Galeri</a>
+        <a href="privacy.html">Gizlilik</a>
+      </nav>
+      <div class="access-actions" aria-label="Erişilebilirlik araçları">
+        <div class="language-switcher" role="group" aria-label="Interface language">
+          <button type="button" class="language-button active" data-language="en" aria-pressed="true" title="English">EN</button>
+          <button type="button" class="language-button" data-language="tr" aria-pressed="false" title="Türkçe">TR</button>
+          <button type="button" class="language-button" data-language="el" aria-pressed="false" title="Ελληνικά">EL</button>
+        </div>
+        <button id="large-text" class="icon-button" type="button" aria-pressed="false" aria-label="Büyük yazıyı aç veya kapat">A+</button>
+        <button id="contrast" class="icon-button" type="button" aria-pressed="false" aria-label="Yüksek kontrastı aç veya kapat">◐</button>
+        <button id="guide-toggle" class="icon-button wide" type="button" aria-pressed="true">🔊 Rehber</button>
+        <button id="music-toggle" class="icon-button wide" type="button" aria-pressed="false">♫ Fon</button>
+      </div>
+    </header>
 
-        const app = initializeApp(firebaseConfig);
-        window.firebaseDb = getDatabase(app);
-        window.firebaseRef = ref;
-        window.firebaseOnValue = onValue;
-    </script>
+    <main id="main">
+      <section id="hero" class="hero section-shell">
+        <div class="hero-copy">
+          <span class="eyebrow">Erişilebilir sosyal içerik stüdyosu</span>
+          <h1>Görseli gör.<br /><span>Sese ve hisse dönüştür.</span></h1>
+          <p>Bir görsel seçin. HARMONY SENSE renkleri nota, ritim, betimleme ve titreşime dönüştürsün; erişilebilir içeriğinizi istediğiniz platform için hazırlasın.</p>
+          <div class="hero-actions">
+            <a class="primary-button" href="#composer">Besteciyi aç</a>
+            <button id="welcome-speak" class="secondary-button" type="button">🔊 Projeyi dinle</button>
+          </div>
+          <div class="platform-strip" aria-label="Desteklenen paylaşım hedefleri">
+            <span>Instagram</span><span>TikTok</span><span>YouTube</span><span>Facebook</span>
+            <span>X</span><span>LinkedIn</span><span>WhatsApp</span><span>Web</span>
+          </div>
+          <p class="offline-badge"><span aria-hidden="true">●</span> <strong id="network-label">Bağlantı kontrol ediliyor</strong> · Temel besteci internetsiz de çalışır</p>
+        </div>
+        <div class="hero-visual" aria-label="Renklerin notalara dönüştüğü soyut PİKSENFONİ görseli">
+          <svg class="sense-wave" viewBox="0 0 500 120" aria-hidden="true">
+            <path d="M0 62h78l18-1 12-22 24 50 24-75 30 89 28-61 20 20h44l20-2 16-31 26 64 25-51 18 20H500" />
+          </svg>
+          <div class="pulse pulse-one"></div>
+          <div class="pulse pulse-two"></div>
+          <div class="note-orbit">
+            <span style="--i: 0">Do</span><span style="--i: 1">Re</span><span style="--i: 2">Mi</span>
+            <span style="--i: 3">Fa</span><span style="--i: 4">Sol</span><span style="--i: 5">La</span>
+          </div>
+          <div class="hero-core"><strong>HARMONY</strong><span>SENSE</span><small>SEE · HEAR · FEEL · SHARE</small></div>
+        </div>
+      </section>
 
-    <style>
-        body {
-            margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-                'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-                sans-serif;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            background-color: #0c0a18; /* Varsayılan arka plan rengi */
-            color: #fff;
-        }
-        #qr-reader video { border-style: none !important; }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #1a1a2e; }
-        ::-webkit-scrollbar-thumb { background: #e94560; border-radius: 10px; }
-        .fade-in-section {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-        .fade-in-section.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    </style>
-</head>
-<body>
-    <div id="root"></div>
-    <audio id="bg-music-player" src="https://raw.githubusercontent.com/Sev84/Holodvision-Duyularin-Harmonisi/main/fon%20muzik.mp3" loop></audio>
+      <section class="how section-shell" aria-labelledby="how-title">
+        <div class="section-heading">
+          <span class="eyebrow">Dört adımlı erişilebilir akış</span>
+          <h2 id="how-title">Her işlemde sesli ve dokunsal yönlendirme</h2>
+        </div>
+        <ol class="feature-grid workflow-list">
+          <li><span aria-hidden="true">📷</span><h3>1. Görsel seç</h3><p>Kamerayla çek veya galeriden yükle.</p></li>
+          <li><span aria-hidden="true">🟪</span><h3>2. Dönüştür</h3><p>Kare piksel, ana–ara renk, neon veya gri görünüm seç.</p></li>
+          <li><span aria-hidden="true">🎼</span><h3>3. Bestele</h3><p>Renkleri notaya; siyah ve griyi vuruşa, beyazı ese dönüştür.</p></li>
+          <li><span aria-hidden="true">🗂️</span><h3>4. Arşivle</h3><p>Çalışmanı kaydet, indir veya erişilebilir sosyal medya metniyle paylaş.</p></li>
+        </ol>
+      </section>
 
-    <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
+      <section id="composer" class="composer-lab section-shell" aria-labelledby="composer-title">
+        <div class="section-heading split-heading">
+          <div>
+            <span class="eyebrow">PİKSENFONİ erişilebilir içerik stüdyosu</span>
+            <h2 id="composer-title">Görselden Müzik Bestecisi</h2>
+            <p>İşlem cihazda yapılır. Fotoğraf, siz paylaşmayı seçmediğiniz sürece dışarı gönderilmez.</p>
+          </div>
+          <div class="privacy-chip" aria-label="Gizlilik durumu">🔒 Cihazda işleme</div>
+        </div>
 
-        // --- API & GÜVENLİK ---
-        const ELEVENLABS_API_KEY = "sk_463721d6208745ce0f2f1e28d344aa5492b27f0a388cb5b8";
-        const GEMINI_API_KEY = "AIzaSyA45T_vxxutVkt8F80fljk3nJRRcORhgE"; 
+        <div class="consent-panel">
+          <label class="check-row" for="rights-consent">
+            <input id="rights-consent" type="checkbox" />
+            Bu görseli kullanma hakkına sahibim; kişisel veri ve paylaşım sorumluluğunu anladım.
+          </label>
+          <button id="privacy-speak" type="button" class="text-button">Aydınlatmayı dinle</button>
+        </div>
 
-        // --- ICON BILEŞENLERİ ---
-        const EyeIcon = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>);
-        const MusicIcon = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>);
-        const RssIcon = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>);
-        const XCircleIcon = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>);
-        const LoaderIcon = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-spin" {...props}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>);
-        const SparklesIcon = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="m12 3-1.9 5.8-5.8 1.9 5.8 1.9L12 18l1.9-5.8 5.8-1.9-5.8-1.9L12 3z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>);
-        const CameraIcon = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>);
-        const Volume2Icon = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>);
-        const VolumeXIcon = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>);
-        const HomeIcon = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>);
-        const FileTextIcon = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>);
-        const MailIcon = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>);
+        <div class="composer-upload" aria-labelledby="step-one-title">
+          <div>
+            <span class="step-number" aria-hidden="true">1</span>
+            <h3 id="step-one-title">Görseli al</h3>
+            <p>Portre, manzara, nesne, çizim veya sanat eseri olabilir.</p>
+          </div>
+          <div class="upload-actions">
+            <button id="camera-button" class="primary-button" type="button">📷 Kamerayla çek</button>
+            <button id="gallery-button" class="secondary-button" type="button">🖼️ Galeriden yükle</button>
+            <button id="sample-button" class="secondary-button" type="button">✨ Örnekle dene</button>
+          </div>
+          <input id="composer-file" class="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp" />
+          <input id="camera-file" class="visually-hidden" type="file" accept="image/*" capture="environment" />
+        </div>
 
-        // Diğer bileşenler ve fonksiyonlar... (değişiklik yok)
-        const speakText = (() => { let elevenLabsAudio = new Audio(); const speakWithBrowser = (text, resolve, reject) => { const utterance = new SpeechSynthesisUtterance(text); utterance.lang = 'tr-TR'; utterance.rate = 0.9; utterance.onend = resolve; utterance.onerror = (e) => reject(new Error(`SpeechSynthesis Hatası: ${e.error}`)); window.speechSynthesis.speak(utterance); }; return (text) => { return new Promise(async (resolve, reject) => { window.speechSynthesis.cancel(); if (elevenLabsAudio && !elevenLabsAudio.paused) { elevenLabsAudio.pause(); elevenLabsAudio.currentTime = 0; } if (ELEVENLABS_API_KEY && ELEVENLABS_API_KEY.startsWith("sk_")) { const VOICE_ID = '21m00Tcm4TlvDq8ikWAM'; const url = `https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}`; const options = { method: 'POST', headers: { 'Accept': 'audio/mpeg', 'Content-Type': 'application/json', 'xi-api-key': ELEVENLABS_API_KEY }, body: JSON.stringify({ text, model_id: 'eleven_multilingual_v2', voice_settings: { stability: 0.5, similarity_boost: 0.75 } }), }; try { const response = await fetch(url, options); if (!response.ok) { const errorText = await response.text(); let errorDetail = errorText; try { const errorJson = JSON.parse(errorText); errorDetail = errorJson.detail?.message || JSON.stringify(errorJson); } catch (e) {} throw new Error(`HTTP ${response.status} - ${response.statusText}. Detay: ${errorDetail}`); } const audioBlob = await response.blob(); const audioUrl = URL.createObjectURL(audioBlob); elevenLabsAudio = new Audio(audioUrl); elevenLabsAudio.onended = resolve; elevenLabsAudio.onerror = reject; await elevenLabsAudio.play(); } catch (error) { console.error("ElevenLabs API hatası. Tarayıcı sesine geçiliyor:", error); speakWithBrowser(text, resolve, reject); } } else { if (ELEVENLABS_API_KEY) console.warn("Geçersiz veya kotası dolmuş ElevenLabs API anahtarı. Tarayıcı sesi kullanılıyor."); speakWithBrowser(text, resolve, reject); } }); }; })();
-        const useOnScreen = (options) => { const ref = useRef(null); const [isVisible, setIsVisible] = useState(false); useEffect(() => { const observer = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) { setIsVisible(true); observer.unobserve(entry.target); } }, options); const currentRef = ref.current; if (currentRef) observer.observe(currentRef); return () => { if (currentRef) observer.unobserve(currentRef); }; }, [ref, options]); return [ref, isVisible]; };
-        const AnimatedSection = ({ children, ...props }) => { const [ref, isVisible] = useOnScreen({ threshold: 0.1 }); return ( <div ref={ref} className={`fade-in-section ${isVisible ? 'is-visible' : ''} py-16 px-4 sm:px-6 lg:px-8 min-h-screen flex items-center`} {...props}> {children} </div> ); };
-        const Notification = ({ message, onClear }) => { if (!message) return null; useEffect(() => { const timer = setTimeout(() => { onClear(); }, 4000); return () => clearTimeout(timer); }, [message, onClear]); return ( <div className="fixed bottom-5 left-1/2 -translate-x-1/2 bg-red-600 text-white py-3 px-6 rounded-lg shadow-lg z-[100] transition-transform animate-bounce"> {message} </div> ); };
-        const ArtCard = ({ item, onSelect }) => ( <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300 cursor-pointer" onClick={() => onSelect(item)}> <img src={item.imageUrl} alt={item.artwork} className="w-full h-56 object-cover" onError={(e) => { e.target.src=`https://placehold.co/600x400/1f2937/ffffff?text=Resim+Yüklenemedi`; }}/> <div className="p-4"> <h3 className="text-xl font-bold text-red-300">{item.artwork}</h3> <p className="text-sm text-gray-300 mb-2">{item.artist} | {item.category}</p> <p className="text-sm text-gray-400 h-12 overflow-hidden">{item.description}</p> </div> </div> );
-        const QrScannerModal = ({ onScanSuccess, onScanError, onStop }) => { useEffect(() => { const html5QrCode = new Html5Qrcode("qr-reader"); const qrCodeSuccessCallback = (decodedText, decodedResult) => { onScanSuccess(decodedText); html5QrCode.stop().catch(err => console.error("Tarama durdurulamadı.", err)); }; const config = { fps: 10, qrbox: { width: 250, height: 250 } }; html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback) .catch(err => { onScanError("Kamera başlatılamadı. Lütfen kamera izni verdiğinizden emin olun."); }); return () => { if (html5QrCode.isScanning) { html5QrCode.stop().catch(err => {}); } }; }, [onScanSuccess, onScanError]); return ( <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"> <div className="bg-gray-900 p-4 rounded-2xl shadow-2xl border border-gray-700 w-full max-w-md"> <div id="qr-reader" className="rounded-lg overflow-hidden"></div> <p className="text-center text-gray-300 mt-4">QR kodu kameraya gösterin</p> <button onClick={onStop} className="w-full mt-4 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center transition-colors"><XCircleIcon className="mr-2" /> Kapat</button> </div> </div> ); };
-        const ArtworkDetailModal = ({ artwork, onClose, setNotification }) => { const [isAnalyzing, setIsAnalyzing] = useState(false); const [analysisText, setAnalysisText] = useState(""); const getArtAnalysis = async () => { if (!artwork || isAnalyzing) return; if (GEMINI_API_KEY === "AIzaSyDjpXSAhc5eCcp4LeW-KItyj7yH-1Sb-bQ") { setNotification("Lütfen geçerli bir Gemini API anahtarı girin."); return; } setIsAnalyzing(true); setAnalysisText(""); try { const prompt = `Sen bir sanat tarihçisisin. Görme engelli bir kullanıcı için ${artwork.artist} tarafından yapılan '${artwork.artwork}' adlı tabloyu canlı, duygusal ve erişilebilir bir dille betimle. Renklerin hissettirdiği duyguları, tablonun atmosferini, kullanılan teknikleri ve olası hikayesini anlat. Cevabın bilgilendirici ve şiirsel olsun.`; const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`; const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] }; const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); if (!response.ok) throw new Error(`Gemini API çağrısı başarısız: ${response.status}`); const result = await response.json(); if (result.candidates && result.candidates[0]?.content?.parts?.[0]?.text) { const text = result.candidates[0].content.parts[0].text; setAnalysisText(text); await speakText(text); } else { throw new Error("API'den geçersiz yanıt formatı alındı."); } } catch (error) { if (error.message?.includes('interrupted')) { console.log("Analiz seslendirmesi kullanıcı tarafından kesildi."); } else { console.error("Yapay zeka analizi sırasında hata:", error); const errorMessage = `Analiz sırasında bir hata oluştu. Lütfen API anahtarınızı ve internet bağlantınızı kontrol edin.`; setAnalysisText(`[HATA] ${errorMessage}`); setNotification(errorMessage); } } finally { setIsAnalyzing(false); } }; const handleClose = () => { window.speechSynthesis.cancel(); onClose(); }; if (!artwork) return null; return ( <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-40 p-4"> <div className="bg-gradient-to-br from-gray-900 to-[#1a1a2e] p-6 rounded-2xl shadow-2xl border border-red-500/50 max-w-2xl w-full max-h-[90vh] overflow-y-auto"> <div className="flex justify-between items-start mb-4"> <div> <h2 className="text-3xl font-bold text-red-400">{artwork.artwork}</h2> <p className="text-gray-300 text-lg">{artwork.artist}</p> </div> <button onClick={handleClose} className="text-gray-400 hover:text-white transition-colors"><XCircleIcon size={28} /></button> </div> <img src={item.imageUrl} alt={item.artwork} className="w-full h-72 object-cover" onError={(e) => { e.target.src=`https://placehold.co/600x400/1f2937/ffffff?text=Resim+Yüklenemedi`; }}/> <audio controls autoPlay className="w-full mb-4" src={artwork.musicUrl}>Tarayıcınız ses çalmayı desteklemiyor.</audio> <p className="text-gray-400 mb-6">{artwork.description}</p> <div className="pt-6 border-t border-gray-700"> <button onClick={getArtAnalysis} disabled={isAnalyzing} className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed"> {isAnalyzing ? <LoaderIcon /> : <SparklesIcon className="mr-2" />} {isAnalyzing ? "Analiz Ediliyor..." : "✨ Sanatsal Analiz Al"} </button> {analysisText && ( <div className="mt-4 p-4 bg-gray-900/70 rounded-lg"> <h4 className="font-bold text-lg text-red-300 mb-2">Sanatsal Analiz</h4> <p className="text-gray-300 whitespace-pre-wrap">{analysisText}</p> </div> )} </div> </div> </div> ); };
-        const GalleryView = ({setNotification}) => { const [allArtworks, setAllArtworks] = useState([]); const [filteredArtworks, setFilteredArtworks] = useState([]); const [selectedArtwork, setSelectedArtwork] = useState(null); const [filterCategory, setFilterCategory] = useState("Tümü"); const [isLoading, setIsLoading] = useState(true); const [isScanning, setIsScanning] = useState(false); useEffect(() => { const repoBaseUrl = "https://raw.githubusercontent.com/Sev84/Holodvision-Duyularin-Harmonisi/main/"; const artworksData = [ { "id": 1, "artwork": "Mona Lisa", "qr": "MONA_ORJ", "musicUrl": `${repoBaseUrl}Monalisa%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Monalisa.jpeg`, "artist": "Leonardo da Vinci", "description": "Rönesans döneminin en ünlü portrelerinden biri.", "category": "Klasik" }, { "id": 2, "artwork": "İnci Küpeli Kız", "qr": "INCI_ORJ", "musicUrl": `${repoBaseUrl}Inci%20Kupeli%20Kız%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Inci%20Kupeli%20Kız.jpeg`, "artist": "Johannes Vermeer", "description": "Hollandalı sanatçının ışık kullanımıyla öne çıkan başyapıtı.", "category": "Klasik" }, { "id": 5, "artwork": "İnci Küpeli Kız (Küp Versiyon)", "qr": "INCI_KUP", "musicUrl": `${repoBaseUrl}Inci%20Kupeli%20Kız%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Inci%20Kupeli%20Kız1.jpg`, "artist": "Johannes Vermeer", "description": "İnci Küpeli Kız tablosunun kübist bir yorumu.", "category": "Kübist" }, { "id": 6, "artwork": "Picasso - Olga (Küp Versiyon)", "qr": "PICA_KUP", "musicUrl": `${repoBaseUrl}Picasso%20Olga%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Picasso%20Olga1.jpg`, "artist": "Pablo Picasso", "description": "Kübist dokunuşlarla modern bir portre çalışması.", "category": "Kübist" }, { "id": 8, "artwork": "Mona Lisa (Küp Versiyon)", "qr": "MONA_KUP", "musicUrl": `${repoBaseUrl}Monalisa%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Monalisa1.jpg`, "artist": "Leonardo da Vinci", "description": "Mona Lisa tablosunun kübist bir yorumu.", "category": "Kübist" }, { "id": 9, "artwork": "Picasso - Olga (Klasik Versiyon)", "qr": "PICA_KLASIK", "musicUrl": `${repoBaseUrl}Picasso%20Olga%20Son%20Hali.mp3`, "imageUrl": `${repoBaseUrl}Picasso%20Olga.jpg`, "artist": "Pablo Picasso", "description": "Pablo Picasso'nun Olga portresinin klasik bir yorumu.", "category": "Klasik" } ]; setAllArtworks(artworksData); setFilteredArtworks(artworksData); setIsLoading(false); }, []); useEffect(() => { if (filterCategory === "Tümü") setFilteredArtworks(allArtworks); else setFilteredArtworks(allArtworks.filter(item => item.category === filterCategory)); }, [filterCategory, allArtworks]); const handleScanSuccess = (decodedText) => { setIsScanning(false); const result = allArtworks.find((item) => item.qr === decodedText); if (result) setSelectedArtwork(result); else setNotification("Eşleşen eser bulunamadı."); }; return ( <div className="w-full"> <h2 className="text-4xl font-bold text-center mb-12">Eser Galerisi</h2> <div className="max-w-3xl mx-auto mb-8 sticky top-20 z-20 bg-gray-900/70 backdrop-blur-md p-4 rounded-xl border border-gray-700"> <div className="grid md:grid-cols-2 gap-4 items-end"> <div> <label htmlFor="category-filter" className="block mb-2 font-medium text-gray-300">Kategoriye Göre Filtrele</label> <select id="category-filter" className="w-full p-3 bg-gray-800 border border-gray-600 rounded-lg text-white" value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}> <option value="Tümü">Tümü</option> <option value="Klasik">Klasik</option> <option value="Kübist">Kübist</option> </select> </div> <button onClick={() => setIsScanning(true)} className="w-full p-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg flex items-center justify-center"><CameraIcon className="mr-2" /> QR Kod Tara</button> </div> </div> {isLoading ? <div className="text-center p-10"><LoaderIcon size={48} /></div> : <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">{filteredArtworks.map((item) => <ArtCard key={item.id} item={item} onSelect={setSelectedArtwork} />)}</div>} {isScanning && <QrScannerModal onScanSuccess={handleScanSuccess} onScanError={(err) => {setIsScanning(false); setNotification(err);}} onStop={() => setIsScanning(false)} />} {selectedArtwork && <ArtworkDetailModal artwork={selectedArtwork} onClose={() => setSelectedArtwork(null)} setNotification={setNotification} />} </div> ); };
-        const ComposerView = () => ( <div className="w-full text-center"> <h2 className="text-4xl font-bold text-center mb-4">PİKSENFONİ Besteci</h2> <p className="text-center text-gray-400 mb-8">Resimlerinizden müzik yaratın. Bu özellik yakında geliyor!</p> <a href="https://sev84.github.io/Holodvision-Piksenfoni-Besteci/" target="_blank" rel="noopener noreferrer" className="inline-block bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-transform transform hover:scale-105">Besteciyi Ayrı Sekmede Aç</a> </div> );
-        const ProjeView = () => ( <div className="w-full max-w-5xl mx-auto"> <h2 className="text-4xl font-bold text-center mb-12">Proje Hakkında</h2> <div className="grid md:grid-cols-3 gap-8 mb-16 text-center"> <div className="bg-gray-800/50 p-6 rounded-xl"> <h3 className="text-2xl font-bold text-red-300 mb-3">Amacımız</h3> <p className="text-gray-400">Görme engelli bireylerin sanata erişimini artırmak ve sanat eserlerini çoklu duyusal yollarla, özgürce deneyimlemelerini sağlamak.</p> </div> <div className="bg-gray-800/50 p-6 rounded-xl"> <h3 className="text-2xl font-bold text-red-300 mb-3">Teknolojimiz</h3> <p className="text-gray-400">RGB renk sensörlü akıllı eldiven, renkleri notalara ve titreşimlere dönüştürür. QR kod tabanlı web uygulamamız ise eserlere özel müziklere anında erişim sunar.</p> </div> <div className="bg-gray-800/50 p-6 rounded-xl"> <h3 className="text-2xl font-bold text-red-300 mb-3">Hedef Kitlemiz</h3> <p className="text-gray-400">Görme engelli bireyler, özel eğitim kurumları, müzeler, sanat galerileri ve sanata erişilebilir bir pencereden bakmak isteyen herkes.</p> </div> </div> <div className="text-center bg-gray-800/50 p-8 rounded-xl"> <h3 className="text-3xl font-bold mb-4">Renk ve Ses Eldiveni</h3> <p className="text-gray-400 max-w-2xl mx-auto mb-6">Eldiveni kullanarak tablolardaki renklere dokunun ve notaları duyun. Sanatla aranızdaki engelleri kaldırın.</p> <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105"> ⚡ Firebase Bağlantısı Kuruldu </button> <p className="text-sm text-gray-500 mt-3">Canlı sensör verisi için "Sensör Simülatörü" bölümünü ziyaret edin.</p> </div> </div> );
-        const IletisimView = ({ setNotification }) => { const [formData, setFormData] = useState({ name: '', email: '', message: '' }); const handleChange = (e) => { const { name, value } = e.target; setFormData(prev => ({ ...prev, [name]: value })); }; const handleSubmit = (e) => { e.preventDefault(); console.log("İletişim Formu Gönderildi:", formData); setNotification("Mesajınız başarıyla gönderildi! Teşekkür ederiz."); setFormData({ name: '', email: '', message: '' }); }; return ( <div className="w-full max-w-2xl mx-auto text-center"> <h2 className="text-4xl font-bold mb-4">İletişim</h2> <p className="text-gray-400 mb-8">Sorularınız, geri bildirimleriniz veya işbirliği teklifleriniz için bizimle iletişime geçin.</p> <form onSubmit={handleSubmit} className="bg-gray-800/50 p-8 rounded-xl shadow-lg border border-gray-700"> <div className="mb-6 text-left"> <label htmlFor="name" className="block text-gray-300 text-sm font-bold mb-2">Adınız:</label> <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} className="shadow appearance-none border border-gray-600 rounded-lg w-full py-3 px-4 text-white leading-tight focus:outline-none focus:shadow-outline bg-gray-900 placeholder-gray-500" placeholder="Adınız Soyadınız" required /> </div> <div className="mb-6 text-left"> <label htmlFor="email" className="block text-gray-300 text-sm font-bold mb-2">E-posta Adresiniz:</label> <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} className="shadow appearance-none border border-gray-600 rounded-lg w-full py-3 px-4 text-white leading-tight focus:outline-none focus:shadow-outline bg-gray-900 placeholder-gray-500" placeholder="ornek@email.com" required /> </div> <div className="mb-8 text-left"> <label htmlFor="message" className="block text-gray-300 text-sm font-bold mb-2">Mesajınız:</label> <textarea id="message" name="message" value={formData.message} onChange={handleChange} rows="5" className="shadow appearance-none border border-gray-600 rounded-lg w-full py-3 px-4 text-white leading-tight focus:outline-none focus:shadow-outline bg-gray-900 placeholder-gray-500 resize-y" placeholder="Mesajınızı buraya yazın..." required ></textarea> </div> <div className="flex items-center justify-center"> <button type="submit" className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-transform transform hover:scale-105 focus:outline-none focus:shadow-outline flex items-center justify-center"> <MailIcon className="mr-2" /> Mesaj Gönder </button> </div> </form> </div> ); };
-        const WelcomeCard = ({ onStartExperience }) => { const welcomeText = "Piksenfoni'ye hoş geldiniz! Renklerle seslerin buluştuğu bu sınırsız dünyada görme engelli bireyler için sanatı işitsel ve dokunsal bir deneyime dönüştürüyoruz. Deneyime başlamak için aşağıdaki düğmeye tıklayın."; const handleStartClick = () => { speakText(welcomeText); onStartExperience(); }; return ( <div className="bg-gray-800/70 backdrop-blur-sm p-8 rounded-2xl shadow-2xl border border-pink-500 max-w-xl mx-auto text-center"> <h2 className="text-5xl font-bold text-pink-400 mb-6">Hoş Geldiniz!</h2> <p className="text-lg text-gray-300 mb-8"> Renklerle seslerin buluştuğu sınırsız dünyamıza adım atın. Görme engelli bireyler için sanatı işitsel ve dokunsal bir deneyime dönüştürüyoruz. </p> <button onClick={handleStartClick} className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-4 px-10 rounded-full shadow-lg transition-all transform hover:scale-105 flex items-center justify-center mx-auto text-xl" > <Volume2Icon className="mr-3" size={28} /> Deneyime Başla </button> </div> ); };
-        const AnaSayfaView = ({ onStartExperience }) => ( <div className="flex flex-col items-center justify-center text-center min-h-[calc(100vh-4rem)] w-full"> <img src="https://raw.githubusercontent.com/Sev84/Holodvision-Duyularin-Harmonisi/main/logo1111111.png" alt="PİKSENFONİ Logo" className="mx-auto mb-8 h-40"/> <h1 className="text-6xl font-bold text-pink-400 mb-4 tracking-wider">PİKSENFONİ</h1> <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-12"> Renklerle Seslerin Buluştuğu Sınırsız Dünya: Görme engelli bireyler için sanatı işitsel ve dokunsal bir deneyime dönüştürüyoruz. </p> <WelcomeCard onStartExperience={onStartExperience} /> </div> );
+        <div id="composer-workspace" class="composer-workspace" aria-busy="false">
+          <div class="canvas-card">
+            <div class="canvas-head">
+              <div><span class="step-number" aria-hidden="true">2</span><h3>Görünümü dönüştür</h3></div>
+              <span id="image-status" class="status-pill">Görsel bekleniyor</span>
+            </div>
+            <div class="canvas-wrap" id="canvas-wrap">
+              <canvas id="composer-canvas" width="720" height="540" role="img" aria-label="Seçilen görselin besteci önizlemesi"></canvas>
+              <div id="scan-cursor" class="scan-cursor" hidden></div>
+              <div id="empty-canvas" class="empty-canvas">
+                <span aria-hidden="true">🎨</span>
+                <strong>Henüz görsel seçilmedi</strong>
+                <small>Kamera, galeri veya örnek görsel düğmesini kullanın.</small>
+              </div>
+            </div>
+            <div class="view-tabs" role="group" aria-label="Görsel dönüşüm türü">
+              <button class="view-tab active" type="button" data-view="natural" aria-pressed="true">Orijinal piksel</button>
+              <button class="view-tab" type="button" data-view="palette" aria-pressed="false">Ana–ara renk</button>
+              <button class="view-tab" type="button" data-view="neon" aria-pressed="false">Neon</button>
+              <button class="view-tab" type="button" data-view="gray" aria-pressed="false">Siyah–beyaz</button>
+            </div>
+            <label class="range-label" for="pixel-size">Piksel boyutu <output id="pixel-size-value">24</output> px</label>
+            <input id="pixel-size" type="range" min="8" max="48" step="4" value="24" />
+            <div class="canvas-actions">
+              <button id="download-image" type="button" disabled>⬇️ Görseli indir</button>
+              <button id="describe-image" type="button" disabled>🔊 Ön tanıyı dinle</button>
+            </div>
+          </div>
 
-        const LiveSensorDemoView = () => {
-            const [detectedColor, setDetectedColor] = useState({ name: 'Bekleniyor...', code: 'default' });
-            const [isConnected, setIsConnected] = useState(false);
-            const [isManualMode, setIsManualMode] = useState(false);
-            const audioRef = useRef(new Audio());
-            const connectionTimeoutRef = useRef(null);
+          <div class="control-card">
+            <div class="canvas-head">
+              <div><span class="step-number" aria-hidden="true">3</span><h3>Besteyi oluştur</h3></div>
+              <span id="music-status" class="status-pill">Hazır değil</span>
+            </div>
 
-            // GÜNCELLEME: pembe -> pmb olarak değiştirildi ve sound path'i güncellendi.
-            const colorData = {
-                krmz: { name: 'Kırmızı', hex: '#ef4444', sound: 'krmz' },
-                ysl: { name: 'Yeşil', hex: '#22c55e', sound: 'ysl' },
-                mavi: { name: 'Mavi', hex: '#3b82f6', sound: 'mavi' },
-                sari: { name: 'Sarı', hex: '#eab308', sound: 'sari' },
-                trnc: { name: 'Turuncu', hex: '#f97316', sound: 'trnc' },
-                mor: { name: 'Mor', hex: '#8b5cf6', sound: 'mor' },
-                pembe: { name: 'Pembe', hex: '#ec4899', sound: 'pmb' }, // pembe.wav yerine pmb.wav kullanılacak
-            };
-            
-            // GÜNCELLEME: Ses dosyası ana URL'i yeni repoyu gösterecek şekilde değiştirildi.
-            const soundBaseUrl = "https://sev84.github.io/Holodvision-Demo/";
+            <div class="analysis-card" aria-live="polite">
+              <h4>Cihaz içi açıklanabilir ön analiz</h4>
+              <p id="scene-description">Görsel seçildiğinde biçim, renk ve parlaklık analizi burada açıklanır.</p>
+              <div id="analysis-chips" class="analysis-chips"></div>
+              <div id="dominant-palette" class="dominant-palette" aria-label="Baskın renk paleti"></div>
+              <small>Bu sonuç yüz kimliği tanımaz; yalnızca görsel özelliklerden ön sınıflandırma yapar.</small>
+            </div>
 
-            const playColorSound = (colorInfo) => {
-                 if (!colorInfo || !colorInfo.sound) return;
-                 const audio = audioRef.current;
-                 audio.src = `${soundBaseUrl}${colorInfo.sound}.wav`;
-                 audio.play().catch(error => console.error("Ses çalma hatası:", error, audio.src));
-            };
+            <div class="control-grid">
+              <label for="tempo">Tempo <output id="tempo-value">96</output> BPM
+                <input id="tempo" type="range" min="48" max="180" step="4" value="96" />
+              </label>
+              <label for="instrument">Enstrüman
+                <select id="instrument">
+                  <option value="synth">Sentezleyici</option>
+                  <option value="piano">Piyano</option>
+                  <option value="violin">Keman</option>
+                  <option value="guitar">Akustik gitar</option>
+                </select>
+              </label>
+            </div>
 
-            const handleColorChange = (colorCode) => {
-                const colorInfo = colorData[colorCode.toLowerCase().trim()];
-                if (!colorInfo) {
-                    setDetectedColor({ name: 'Bilinmeyen Renk', code: 'default' });
-                    return;
-                };
-                setDetectedColor({ name: colorInfo.name, code: colorCode });
-                playColorSound(colorInfo);
-            };
-            
-            const handleManualSubmit = (e) => {
-                e.preventDefault();
-                handleColorChange(e.target.manualInput.value);
-            };
+            <div class="music-actions">
+              <button id="compose-button" class="primary-button" type="button" disabled>🎼 Otomatik bestele</button>
+              <button id="play-button" type="button" disabled>▶ Besteyi çal</button>
+              <button id="stop-button" type="button" disabled>■ Durdur</button>
+              <button id="download-audio" type="button" disabled>⬇ WAV indir</button>
+            </div>
 
-            useEffect(() => {
-                connectionTimeoutRef.current = setTimeout(() => {
-                    if (!isConnected) {
-                        setIsManualMode(true);
-                    }
-                }, 5000);
+            <details class="manual-box">
+              <summary>Manuel dokun–çal modu</summary>
+              <p>Kare üzerinde dokunun veya yön düğmeleriyle ilerleyin. Her hücre ses ve titreşimle bildirilir.</p>
+              <div class="arrow-pad" aria-label="Manuel tarama yönleri">
+                <button type="button" data-move="up" aria-label="Yukarı git">↑</button>
+                <button type="button" data-move="left" aria-label="Sola git">←</button>
+                <button type="button" data-move="down" aria-label="Aşağı git">↓</button>
+                <button type="button" data-move="right" aria-label="Sağa git">→</button>
+              </div>
+            </details>
 
-                if (window.firebaseDb && window.firebaseRef && window.firebaseOnValue) {
-                    const colorRef = window.firebaseRef(window.firebaseDb, '/sensorData/color');
+            <div class="music-sheet-wrap">
+              <h4>Nota defteri</h4>
+              <div id="music-sheet" class="music-sheet" role="log" aria-live="polite">Henüz beste oluşturulmadı.</div>
+            </div>
 
-                    const unsubscribe = window.firebaseOnValue(colorRef, (snapshot) => {
-                        if (connectionTimeoutRef.current) {
-                            clearTimeout(connectionTimeoutRef.current);
-                            connectionTimeoutRef.current = null;
-                        }
-                        setIsManualMode(false);
+            <div class="archive-actions">
+              <label for="composition-title">Çalışmanın adı</label>
+              <input id="composition-title" type="text" maxlength="80" placeholder="Örneğin: Gün Batımı Senfonisi" />
+              <button id="save-archive" class="primary-button full" type="button" disabled>🗂️ Özel arşive kaydet</button>
+              <button id="share-composition" class="secondary-button full" type="button" disabled>↗ sosyal medya gönderisini hazırla</button>
+            </div>
+          </div>
+        </div>
+      </section>
 
-                        const colorCode = snapshot.val();
-                        if (colorCode) {
-                            const colorInfo = colorData[colorCode.toLowerCase().trim()];
-                            if (colorInfo) {
-                                setDetectedColor({ name: colorInfo.name, code: colorCode });
-                                playColorSound(colorInfo);
-                                setIsConnected(true);
-                            } else {
-                                setDetectedColor({ name: 'Bilinmeyen Renk', code: 'default' });
-                                setIsConnected(true);
-                            }
-                        } else {
-                            setDetectedColor({ name: 'Bekleniyor...', code: 'default' });
-                            setIsConnected(false);
-                        }
-                    }, (error) => {
-                        console.error("Firebase'den veri okuma hatası:", error);
-                        setDetectedColor({ name: 'Hata!', code: 'default' });
-                        setIsConnected(false);
-                        setIsManualMode(true);
-                    });
+      <section id="share-studio" class="share-studio section-shell" aria-labelledby="share-studio-title">
+        <div class="section-heading split-heading">
+          <div>
+            <span class="eyebrow">Her platform için erişilebilir içerik</span>
+            <h2 id="share-studio-title">Gönderi Stüdyosu</h2>
+            <p>Bestenizi seçtiğiniz platformun diline uygun metin, erişilebilir betimleme ve şeffaflık etiketiyle hazırlayın.</p>
+          </div>
+          <span id="share-readiness" class="status-pill" role="status">Önce beste oluşturun</span>
+        </div>
 
-                    return () => {
-                        unsubscribe();
-                        if (connectionTimeoutRef.current) {
-                            clearTimeout(connectionTimeoutRef.current);
-                        }
-                    }; 
-                } else {
-                    setIsConnected(false);
-                    setIsManualMode(true);
-                }
-            }, [isConnected]);
+        <div class="share-grid">
+          <div class="share-form">
+            <fieldset class="platform-selector">
+              <legend>Paylaşım hedefi</legend>
+              <div class="platform-grid" aria-label="Sosyal platform seçin">
+                <button class="platform-button active" type="button" data-platform="instagram" aria-pressed="true"><span aria-hidden="true">◎</span> Instagram</button>
+                <button class="platform-button" type="button" data-platform="tiktok" aria-pressed="false"><span aria-hidden="true">♪</span> TikTok</button>
+                <button class="platform-button" type="button" data-platform="youtube" aria-pressed="false"><span aria-hidden="true">▶</span> YouTube</button>
+                <button class="platform-button" type="button" data-platform="facebook" aria-pressed="false"><span aria-hidden="true">f</span> Facebook</button>
+                <button class="platform-button" type="button" data-platform="x" aria-pressed="false"><span aria-hidden="true">𝕏</span> X</button>
+                <button class="platform-button" type="button" data-platform="linkedin" aria-pressed="false"><span aria-hidden="true">in</span> LinkedIn</button>
+                <button class="platform-button" type="button" data-platform="whatsapp" aria-pressed="false"><span aria-hidden="true">◉</span> WhatsApp</button>
+                <button class="platform-button" type="button" data-platform="web" aria-pressed="false"><span aria-hidden="true">⌘</span> Web</button>
+              </div>
+              <p id="platform-hint">Instagram için görsel odaklı, kısa ve etiketli gönderi biçimi.</p>
+            </fieldset>
+            <label for="share-title">Gönderi başlığı
+              <input id="share-title" type="text" maxlength="80" placeholder="Örneğin: Gün Batımı Senfonisi" disabled />
+            </label>
+            <label for="share-caption">Gönderi metni
+              <textarea id="share-caption" rows="4" maxlength="600" disabled></textarea>
+            </label>
+            <label for="share-alt">Erişilebilir görsel betimlemesi
+              <textarea id="share-alt" rows="4" maxlength="500" disabled></textarea>
+              <small>Bu alan ekran okuyucu kullanıcıları için görselin temel biçim, renk ve parlaklık özelliklerini açıklar.</small>
+            </label>
+            <label for="share-hashtags">Etiketler
+              <input id="share-hashtags" type="text" maxlength="180" value="#HARMONYSENSE #PİKSENFONİ #Accessibility #InclusiveDesign" disabled />
+            </label>
+            <label class="check-row" for="share-disclosure">
+              <input id="share-disclosure" type="checkbox" checked disabled />
+              “Görselden açıklanabilir algoritmayla üretildi” etiketi gönderide görünsün.
+            </label>
+            <label class="check-row" for="share-rights">
+              <input id="share-rights" type="checkbox" disabled />
+              Bu içeriği paylaşma hakkına sahibim; erişilebilir betimlemeyi kontrol ettim.
+            </label>
+            <div class="share-actions">
+              <button id="refresh-share" class="secondary-button" type="button" disabled>↻ Önizlemeyi yenile</button>
+              <button id="copy-share" class="secondary-button" type="button" disabled>⧉ Metni kopyala</button>
+              <button id="publish-share" class="primary-button" type="button" disabled>↗ Instagram için hazırla</button>
+            </div>
+            <p class="share-note">Uygulama izniniz olmadan otomatik yayın yapmaz. Son paylaşım, cihazın güvenli paylaşım ekranında sizin onayınızla tamamlanır.</p>
+          </div>
 
-            useEffect(() => {
-                const rootElement = document.getElementById('root');
-                if (rootElement) {
-                    rootElement.style.transition = 'background-color 0.5s ease';
-                    rootElement.style.backgroundColor = colorData[detectedColor.code]?.hex || '#0c0a18';
-                }
-                
-                return () => {
-                    const rootElement = document.getElementById('root');
-                    if (rootElement) {
-                        rootElement.style.backgroundColor = '#0c0a18';
-                    }
-                }
-            }, [detectedColor]);
+          <article class="social-post-preview" aria-labelledby="preview-title">
+            <div class="social-post-head">
+              <span class="avatar" aria-hidden="true">D</span>
+              <div><strong>HARMONY SENSE</strong><small id="preview-platform">Instagram · erişilebilir içerik</small></div>
+              <span class="access-tag">♿ Betimlemeli</span>
+            </div>
+            <img id="share-preview-image" alt="Gönderi önizlemesi için henüz görsel oluşturulmadı" />
+            <div class="social-post-body">
+              <h3 id="preview-title">Gönderi önizlemesi</h3>
+              <p id="share-preview-text">Bestenizi oluşturduğunuzda sosyal medya gönderisi burada hazırlanacaktır.</p>
+              <p id="share-preview-alt" class="preview-alt"><strong>Görsel betimlemesi:</strong> Henüz hazır değil.</p>
+              <small id="share-preview-disclosure">Açıklanabilir üretim etiketi bekleniyor.</small>
+            </div>
+          </article>
+        </div>
+      </section>
 
-            return (
-                <div className="w-full max-w-2xl mx-auto text-center">
-                    <h1 className="text-4xl font-bold text-white mb-2">Canlı Sensör Verisi</h1>
-                    <p className="text-gray-400 mb-6">Deneyap Kart'tan gelen canlı renk verisi burada gösterilir.</p>
-                    
-                    {isManualMode ? (
-                        <div className="p-6 bg-gray-900/70 rounded-xl shadow-lg border border-red-500">
-                            <p className="text-lg text-red-300 mb-4">
-                                Firebase bağlantısı kurulamadı veya veri alınamıyor. Manuel simülasyon modundasınız.
-                            </p>
-                            <form onSubmit={handleManualSubmit} className="flex flex-col sm:flex-row gap-4 mb-6">
-                                <input 
-                                    type="text"
-                                    id="manualInput"
-                                    name="manualInput"
-                                    placeholder="Örn: krmz, mavi, ysl..."
-                                    className="flex-grow p-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500"
-                                />
-                                <button type="submit" className="p-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg">Renk Gönder</button>
-                            </form>
-                            <p className="text-lg text-gray-300">
-                                Algılanan renk: <strong className="font-bold text-2xl" style={{color: colorData[detectedColor.code]?.hex || '#a78bfa' }}>{detectedColor.name}</strong>
-                            </p>
-                        </div>
-                    ) : (
-                        <div className="p-6 bg-gray-900/70 rounded-xl shadow-lg border border-gray-700">
-                            <p className="text-lg text-gray-300 mb-4">
-                                Bağlantı Durumu: <strong className={`font-bold text-xl ${isConnected ? 'text-green-400' : 'text-red-400'}`}>{isConnected ? 'Bağlı' : 'Bağlı Değil'}</strong>
-                            </p>
-                            <p className="text-lg text-gray-300">
-                                Algılanan renk: <strong className="font-bold text-2xl" style={{color: colorData[detectedColor.code]?.hex || '#a78bfa' }}>{detectedColor.name}</strong>
-                            </p>
-                        </div>
-                    )}
-                    
-                    <p className="text-sm text-gray-500 mt-4">
-                        Bu bölüm, Deneyap Kart'tan gelen gerçek zamanlı renk verilerini gösterir.
-                        Kartınızın Firebase Realtime Database'e doğru şekilde veri gönderdiğinden emin olun.
-                    </p>
-                </div>
-            );
-        };
+      <section id="archive" class="archive-section section-shell" aria-labelledby="archive-title">
+        <div class="section-heading split-heading">
+          <div><span class="eyebrow">Cihaz içi özel arşiv</span><h2 id="archive-title">Bestelerim</h2><p>Arşiv varsayılan olarak yalnızca bu cihazda tutulur. Silme ve paylaşma sizin kontrolünüzdedir.</p></div>
+          <button id="archive-guide" class="secondary-button" type="button">🔊 Arşivi dinle</button>
+        </div>
+        <div id="archive-grid" class="archive-grid" aria-live="polite"></div>
+        <p id="archive-empty" class="empty-archive">Henüz kayıt yok. İlk bestenizi oluşturup arşive kaydedin.</p>
+      </section>
 
-        const App = () => {
-            const [activeView, setActiveView] = useState("home");
-            const [isMusicPlaying, setIsMusicPlaying] = useState(false);
-            const bgMusicRef = useRef(null);
-            const [notification, setNotification] = useState(null);
+      <section id="gallery" class="gallery section-shell" aria-labelledby="gallery-title">
+        <div class="section-heading split-heading">
+          <div><span class="eyebrow">Duyuların Harmonisi sanat atölyesi</span><h2 id="gallery-title">Erişilebilir eser galerisi</h2></div>
+          <div class="filter-group" aria-label="Galeri filtresi">
+            <button type="button" class="filter active" data-filter="all" aria-pressed="true">Tümü</button>
+            <button type="button" class="filter" data-filter="original" aria-pressed="false">Orijinal</button>
+            <button type="button" class="filter" data-filter="pixel" aria-pressed="false">Piksel yorum</button>
+          </div>
+        </div>
+        <div id="gallery-grid" class="gallery-grid" aria-live="polite"></div>
+      </section>
 
-            const handleWelcomeExperienceStart = () => {};
+      <section id="sensor" class="sensor-section" aria-labelledby="sensor-title">
+        <div class="section-shell sensor-grid">
+          <div>
+            <span class="eyebrow light">IoT renk eldiveni ve erişilebilir dokunuş</span>
+            <h2 id="sensor-title">Renge dokun, notayı duy</h2>
+            <p>
+              TCS34725 renk sensörlü eldivenden alınacak renk değeri aynı nota–titreşim motoruna bağlanabilir.
+              Paket içindeki güvenli demoda renk düğmelerini kullanın.
+            </p>
+            <div id="sensor-buttons" class="sensor-buttons" aria-label="Renk notaları"></div>
+          </div>
+          <div id="sensor-output" class="sensor-output" role="status" aria-live="polite">
+            <span class="sensor-dot"></span><small>Algılanan renk</small><strong>Bir renk seçin</strong><em>Nota bekleniyor</em>
+          </div>
+        </div>
+      </section>
 
-            useEffect(() => {
-                bgMusicRef.current = document.getElementById('bg-music-player');
-                if (bgMusicRef.current) {
-                    bgMusicRef.current.volume = 0.3;
-                }
-            }, []);
+      <section id="project" class="project-section section-shell" aria-labelledby="project-title">
+        <div class="section-heading">
+          <span class="eyebrow">Toplumsal sürdürülebilirlik için duyusal erişim</span>
+          <h2 id="project-title">Erişilebilir içerikten eşit dijital katılıma</h2>
+          <p>
+            HARMONY SENSE, önceki HOLO-D-VISION/PİKSENFONİ çalışmalarından doğan renk–ses yaklaşımını;
+            kamera, erişilebilir sosyal içerik üretimi, özel arşiv ve çoklu platform paylaşımıyla bağımsız bir dijital kapsayıcılık ürününe dönüştürür.
+          </p>
+        </div>
+        <div class="feature-grid project-grid">
+          <article><span aria-hidden="true">♿</span><h3>Kapsayıcı UX</h3><p>TalkBack uyumlu etiketler, büyük hedefler, sesli rehber, kontrast ve titreşim.</p></article>
+          <article><span aria-hidden="true">🧠</span><h3>Açıklanabilir dönüşüm</h3><p>Her notanın renk, parlaklık ve doygunluk karşılığı kullanıcıya gösterilir.</p></article>
+          <article><span aria-hidden="true">🛡️</span><h3>Mahremiyet</h3><p>Yerel işleme, açık onay, özel arşiv, silme hakkı ve anahtarsız güvenli prototip.</p></article>
+          <article><span aria-hidden="true">🤝</span><h3>Sosyal iyi oluş</h3><p>Sanat üzerinden ifade, paylaşım ve topluluk katılımını destekler; klinik terapi iddiasında bulunmaz.</p></article>
+        </div>
+        <p class="test-callout"><strong>Kullanılabilirlik doğrulaması:</strong> Yarışma pilotu için görev tamamlama, erişilebilirlik ve memnuniyet verilerini etik biçimde toplayın. <a href="usability.html">Pilot kullanıcı testi aracını açın →</a></p>
+      </section>
+    </main>
 
-            const toggleMusic = () => {
-                if (bgMusicRef.current) {
-                    if (isMusicPlaying) {
-                        bgMusicRef.current.pause();
-                    } else {
-                        bgMusicRef.current.play().catch(e => console.error("Müzik çalma hatası:", e));
-                    }
-                    setIsMusicPlaying(!isMusicPlaying);
-                }
-            };
+    <dialog id="art-dialog" aria-labelledby="dialog-title">
+      <div class="dialog-shell">
+        <button id="dialog-close" class="dialog-close" type="button" aria-label="Eser ayrıntısını kapat">×</button>
+        <div class="dialog-media"><img id="dialog-image" alt="" /></div>
+        <div class="dialog-content">
+          <span id="dialog-category" class="eyebrow"></span><h2 id="dialog-title"></h2><p id="dialog-artist" class="dialog-artist"></p>
+          <p id="dialog-description"></p><div id="dialog-palette" class="palette" aria-label="Baskın renkler"></div>
+          <audio id="dialog-audio" controls preload="metadata"></audio>
+          <div class="dialog-actions">
+            <button id="dialog-speak" type="button">🔊 Betimlemeyi dinle</button>
+            <button id="dialog-melody" type="button">✨ Renk melodisini çal</button>
+            <button id="dialog-compose" type="button">🎼 Bestecide aç</button>
+            <button id="dialog-share" type="button">↗ Paylaş</button>
+          </div>
+        </div>
+      </div>
+    </dialog>
 
-            const clearNotification = () => {
-                setNotification(null);
-            };
-
-            return (
-                <div className="min-h-screen text-white">
-                    <nav className="fixed top-0 left-0 right-0 bg-gray-900/80 backdrop-blur-md z-30 shadow-lg py-4 px-6 flex justify-between items-center rounded-b-xl border-b border-gray-700">
-                        <div className="flex items-center">
-                            <img src="https://raw.githubusercontent.com/Sev84/Holodvision-Duyularin-Harmonisi/main/logo1111111.png" alt="PİKSENFONİ Logo" className="h-10 mr-3"/>
-                            <span className="text-2xl font-bold text-pink-400 hidden sm:block">PİKSENFONİ</span>
-                        </div>
-                        <div className="flex space-x-4">
-                            <button onClick={() => setActiveView("home")} className={`p-2 rounded-full transition-colors flex items-center ${activeView === "home" ? 'bg-red-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`} title="Ana Sayfa"><HomeIcon className="mr-1" /> <span className="hidden sm:inline">Ana Sayfa</span></button>
-                            <button onClick={() => setActiveView("gallery")} className={`p-2 rounded-full transition-colors flex items-center ${activeView === "gallery" ? 'bg-red-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`} title="Galeri"><EyeIcon className="mr-1" /> <span className="hidden sm:inline">Galeri</span></button>
-                            <button onClick={() => setActiveView("composer")} className={`p-2 rounded-full transition-colors flex items-center ${activeView === "composer" ? 'bg-red-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`} title="Besteci"><MusicIcon className="mr-1" /> <span className="hidden sm:inline">Besteci</span></button>
-                            <button onClick={() => setActiveView("sensor")} className={`p-2 rounded-full transition-colors flex items-center ${activeView === "sensor" ? 'bg-red-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`} title="Sensör Simülatörü"><RssIcon className="mr-1" /> <span className="hidden sm:inline">Sensör</span></button>
-                            <button onClick={() => setActiveView("project")} className={`p-2 rounded-full transition-colors flex items-center ${activeView === "project" ? 'bg-red-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`} title="Proje Hakkında"><FileTextIcon className="mr-1" /> <span className="hidden sm:inline">Proje</span></button>
-                            <button onClick={() => setActiveView("contact")} className={`p-2 rounded-full transition-colors flex items-center ${activeView === "contact" ? 'bg-red-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`} title="İletişim"><MailIcon className="mr-1" /> <span className="hidden sm:inline">İletişim</span></button>
-                            <button onClick={toggleMusic} className="p-2 rounded-full text-gray-300 hover:bg-gray-700 transition-colors" title={isMusicPlaying ? "Müziği Durdur" : "Müziği Başlat"}>
-                                {isMusicPlaying ? <Volume2Icon /> : <VolumeXIcon />}
-                            </button>
-                        </div>
-                    </nav>
-
-                    <main className="pt-24 pb-8">
-                        <AnimatedSection id="home-section" style={{ display: activeView === "home" ? 'flex' : 'none' }}>
-                            <AnaSayfaView onStartExperience={handleWelcomeExperienceStart} />
-                        </AnimatedSection>
-                        <AnimatedSection id="gallery-section" style={{ display: activeView === "gallery" ? 'flex' : 'none' }}>
-                            <GalleryView setNotification={setNotification} />
-                        </AnimatedSection>
-                        <AnimatedSection id="composer-section" style={{ display: activeView === "composer" ? 'flex' : 'none' }}>
-                            <ComposerView />
-                        </AnimatedSection>
-                        <AnimatedSection id="sensor-section" style={{ display: activeView === "sensor" ? 'flex' : 'none' }}>
-                            <LiveSensorDemoView />
-                        </AnimatedSection>
-                        <AnimatedSection id="project-section" style={{ display: activeView === "project" ? 'flex' : 'none' }}>
-                            <ProjeView />
-                        </AnimatedSection>
-                        <AnimatedSection id="contact-section" style={{ display: activeView === "contact" ? 'flex' : 'none' }}>
-                            <IletisimView setNotification={setNotification} />
-                        </AnimatedSection>
-                    </main>
-
-                    <Notification message={notification} onClear={clearNotification} />
-                </div>
-            );
-        };
-
-        const container = document.getElementById('root');
-        const root = ReactDOM.createRoot(container);
-        root.render(<App />);
-    </script>
-</body>
+    <audio id="background-music" src="assets/audio/fon-muzigi.mp3" loop preload="none"></audio>
+    <div id="guide-status" class="visually-hidden" role="status" aria-live="assertive"></div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <footer>
+      <strong>HARMONY SENSE 3.1</strong>
+      <span>HOLO-D-VISION × PİKSENFONİ · Erişilebilir sosyal içerik ve dijital katılım · 2026</span>
+      <a href="privacy.html">Gizlilik Politikası</a>
+    </footer>
+    <script src="i18n.js" defer></script>
+    <script src="app.js" defer></script>
+  </body>
 </html>

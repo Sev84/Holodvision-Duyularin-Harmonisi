@@ -7,8 +7,8 @@ const artworks = [
     artist: "Johannes Vermeer",
     category: "original",
     categoryLabel: "Orijinal eser",
-    image: "../Inci%20Kupeli%20K%C4%B1z.jpeg",
-    audio: "../Inci%20Kupeli%20K%C4%B1z%20Son%20Hali.mp3",
+    image: "assets/images/inci-kupeli-kiz.jpg",
+    audio: "assets/audio/inci-kupeli-kiz.mp3",
     description: "Koyu bir fonun önünde omzunun üzerinden izleyiciye bakan genç bir figür görülür. Mavi başörtüsü, sarı kumaş şeridi ve ışığı yakalayan inci küpe yüzü çevreleyen başlıca ayrıntılardır.",
     colors: [
       { name: "Gece laciverti", hex: "#12131d", note: 220 },
@@ -23,8 +23,8 @@ const artworks = [
     artist: "PİKSENFONİ Atölyesi",
     category: "pixel",
     categoryLabel: "Piksel yorum",
-    image: "../Inci%20Kupeli%20K%C4%B1z1.jpg",
-    audio: "../Inci%20Kupeli%20K%C4%B1z%20Son%20Hali.mp3",
+    image: "assets/images/inci-kupeli-kiz-piksel.jpg",
+    audio: "assets/audio/inci-kupeli-kiz.mp3",
     description: "İnci Küpeli Kız büyük renk kareleriyle yeniden kurulmuştur. Koyu lacivert zemin üzerinde sıcak ten tonları, parlak maviler ve altın sarıları görsel bir ritim oluşturur.",
     colors: [
       { name: "Derin lacivert", hex: "#08072f", note: 196 },
@@ -39,8 +39,8 @@ const artworks = [
     artist: "Leonardo da Vinci",
     category: "original",
     categoryLabel: "Orijinal eser",
-    image: "../Monalisa.jpeg",
-    audio: "../Monalisa%20Son%20Hali.mp3",
+    image: "assets/images/mona-lisa.jpg",
+    audio: "assets/audio/mona-lisa.mp3",
     description: "Ön planda ellerini birbiri üzerine koymuş sakin bakışlı bir kadın oturur. Arkasında kıvrılarak uzaklaşan yollar, sular ve sisli dağlardan oluşan düşsel bir manzara bulunur.",
     colors: [
       { name: "Zeytin yeşili", hex: "#73794d", note: 220 },
@@ -55,8 +55,8 @@ const artworks = [
     artist: "PİKSENFONİ Atölyesi",
     category: "pixel",
     categoryLabel: "Piksel yorum",
-    image: "../Monalisa1.jpg",
-    audio: "../Monalisa%20Son%20Hali.mp3",
+    image: "assets/images/mona-lisa-piksel.jpg",
+    audio: "assets/audio/mona-lisa.mp3",
     description: "Mona Lisa'nın yüzü ve elleri altın sarısı karelerle; saçları ve giysisi bordo, mor ve gece mavisi bloklarla anlatılır. Üst bölümdeki yeşiller manzarayı çağrıştırır.",
     colors: [
       { name: "Canlı yeşil", hex: "#62c900", note: 246.94 },
@@ -71,8 +71,8 @@ const artworks = [
     artist: "Pablo Picasso esinli PİKSENFONİ yorumu",
     category: "pixel",
     categoryLabel: "Piksel yorum",
-    image: "../Picasso%20Olga1.jpg",
-    audio: "../Picasso%20Olga%20Son%20Hali.mp3",
+    image: "assets/images/picasso-olga-piksel.jpg",
+    audio: "assets/audio/picasso-olga.mp3",
     description: "Koyu kahverengi ve lacivert bir zemin üzerinde turkuaz, canlı yeşil ve sarı bloklar merkezdeki figürü kurar. Turuncu ve altın tonları baş bölümünde yükselir.",
     colors: [
       { name: "Turkuaz", hex: "#51bdc8", note: 233.08 },
@@ -108,6 +108,49 @@ const paletteTargets = [
   [25, 185, 190], [50, 95, 225], [135, 65, 190], [235, 90, 165],
   [25, 25, 35], [118, 118, 125], [244, 244, 238],
 ];
+
+const socialPlatforms = {
+  instagram: {
+    label: "Instagram",
+    hint: "Görsel odaklı, kısa açıklamalı ve erişilebilir betimlemeli gönderi biçimi.",
+    hashtags: "#HARMONYSENSE #PİKSENFONİ #ErişilebilirSanat #KapsayıcıTasarım",
+  },
+  tiktok: {
+    label: "TikTok",
+    hint: "Kısa video veya görsel anlatımı için canlı, doğrudan ve ses deneyimini öne çıkaran metin.",
+    hashtags: "#HARMONYSENSE #DuyusalSanat #Erişilebilirİçerik #SesliGörsel",
+  },
+  youtube: {
+    label: "YouTube",
+    hint: "Video ya da Shorts açıklaması için başlık, erişilebilir betimleme ve üretim bilgisi.",
+    hashtags: "#HARMONYSENSE #PİKSENFONİ #Erişilebilirlik #DijitalSanat",
+  },
+  facebook: {
+    label: "Facebook",
+    hint: "Topluluk paylaşımı için anlaşılır, açıklayıcı ve katılıma davet eden gönderi.",
+    hashtags: "#HARMONYSENSE #ErişilebilirSanat #DijitalKapsayıcılık #SosyalKatılım",
+  },
+  x: {
+    label: "X",
+    hint: "Ana mesajı ve erişilebilirlik bilgisini öne çıkaran kısa paylaşım biçimi.",
+    hashtags: "#HARMONYSENSE #Erişilebilirlik",
+  },
+  linkedin: {
+    label: "LinkedIn",
+    hint: "Toplumsal etkiyi, kapsayıcı tasarımı ve açıklanabilir dönüşümü öne çıkaran profesyonel metin.",
+    hashtags: "#HARMONYSENSE #InclusiveDesign #DigitalAccessibility #SocialInnovation",
+  },
+  whatsapp: {
+    label: "WhatsApp",
+    hint: "Kişi ve gruplarda kolay okunabilen kısa, doğrudan ve betimlemeli mesaj.",
+    hashtags: "#HARMONYSENSE",
+  },
+  web: {
+    label: "Web",
+    hint: "Web sayfası ve bloglar için erişilebilir betimlemeyi öne alan yayın metni.",
+    hashtags: "#HARMONYSENSE #PİKSENFONİ #WebErişilebilirliği #KapsayıcıTasarım",
+  },
+};
 
 const elements = {
   gallery: document.querySelector("#gallery-grid"),
@@ -147,6 +190,20 @@ const elements = {
   compositionTitle: document.querySelector("#composition-title"),
   archiveGrid: document.querySelector("#archive-grid"),
   archiveEmpty: document.querySelector("#archive-empty"),
+  shareReadiness: document.querySelector("#share-readiness"),
+  shareTitle: document.querySelector("#share-title"),
+  shareCaption: document.querySelector("#share-caption"),
+  shareAlt: document.querySelector("#share-alt"),
+  shareHashtags: document.querySelector("#share-hashtags"),
+  shareDisclosure: document.querySelector("#share-disclosure"),
+  shareRights: document.querySelector("#share-rights"),
+  sharePreviewImage: document.querySelector("#share-preview-image"),
+  sharePreviewText: document.querySelector("#share-preview-text"),
+  sharePreviewAlt: document.querySelector("#share-preview-alt"),
+  sharePreviewDisclosure: document.querySelector("#share-preview-disclosure"),
+  previewPlatform: document.querySelector("#preview-platform"),
+  platformHint: document.querySelector("#platform-hint"),
+  publishShare: document.querySelector("#publish-share"),
 };
 
 const ctx = elements.canvas.getContext("2d", { willReadFrequently: true });
@@ -167,6 +224,7 @@ const state = {
   audioContext: null,
   toastTimer: null,
   archiveDb: null,
+  activePlatform: "instagram",
 };
 
 function escapeHtml(value) {
@@ -182,13 +240,36 @@ function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
 }
 
+function interfaceLanguage() {
+  return window.DuyuI18n?.language || "en";
+}
+
+function localized(value) {
+  return window.DuyuI18n?.t(String(value)) || String(value);
+}
+
+function localizedAnalysisDescription(analysis = state.analysis) {
+  if (!analysis) return localized("Görsel analizi bulunmuyor.");
+  const type = localized(analysis.type);
+  const orientation = localized(analysis.orientation);
+  const palette = analysis.palette.slice(0, 3).map((item) => localized(item.name)).join(", ");
+  if (interfaceLanguage() === "tr") {
+    return `${type}. Güven yüzde ${analysis.confidence}. Görsel ${orientation}; baskın renkler ${palette}. Ortalama parlaklık 255 üzerinden ${analysis.averageBrightness}.`;
+  }
+  if (interfaceLanguage() === "el") {
+    return `${type}. Βεβαιότητα ${analysis.confidence}%. Η εικόνα είναι ${orientation}. Κυρίαρχα χρώματα: ${palette}. Μέση φωτεινότητα ${analysis.averageBrightness} από 255.`;
+  }
+  return `${type}. Confidence ${analysis.confidence}%. The image is ${orientation}. Dominant colours: ${palette}. Average brightness ${analysis.averageBrightness} out of 255.`;
+}
+
 function announce(message, speakMessage = false, vibration = [45]) {
+  const localizedMessage = window.DuyuI18n?.t(message) || message;
   window.clearTimeout(state.toastTimer);
-  elements.toast.textContent = message;
+  elements.toast.textContent = localizedMessage;
   elements.toast.classList.add("visible");
-  elements.guideStatus.textContent = message;
+  elements.guideStatus.textContent = localizedMessage;
   state.toastTimer = window.setTimeout(() => elements.toast.classList.remove("visible"), 3200);
-  if (speakMessage && state.guideEnabled) speak(message);
+  if (speakMessage && state.guideEnabled) speak(localizedMessage);
   if (vibration) vibrate(vibration);
 }
 
@@ -198,15 +279,16 @@ function nativeBridge() {
 
 function speak(text) {
   if (!text) return;
+  const localizedText = window.DuyuI18n?.t(String(text)) || String(text);
   const bridge = nativeBridge();
   if (bridge && typeof bridge.speak === "function") {
-    bridge.speak(String(text));
+    bridge.speak(localizedText);
     return;
   }
   if (!("speechSynthesis" in window)) return;
   window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(String(text));
-  utterance.lang = "tr-TR";
+  const utterance = new SpeechSynthesisUtterance(localizedText);
+  utterance.lang = window.DuyuI18n?.speechLanguage() || "en-US";
   utterance.rate = 0.93;
   window.speechSynthesis.speak(utterance);
 }
@@ -288,13 +370,19 @@ async function loadComposerImage(source, name = "Yeni Görsel") {
   state.sequence = [];
   state.cursorIndex = 0;
   elements.compositionTitle.value = `${state.sourceName} Senfonisi`;
+  resetShareStudio();
   elements.emptyCanvas.hidden = true;
   buildImageModel();
   setComposerButtons(true, false);
   elements.imageStatus.textContent = "Analiz tamamlandı";
   elements.musicStatus.textContent = "Bestelenmeye hazır";
   elements.workspace.scrollIntoView({ behavior: "smooth", block: "start" });
-  announce(`Görsel hazır. ${state.analysis.description} İkinci adım: görünümü seçin, ardından otomatik bestele düğmesine dokunun.`, true, [45, 30, 80]);
+  const readyMessage = interfaceLanguage() === "tr"
+    ? `Görsel hazır. ${localizedAnalysisDescription()} İkinci adım: görünümü seçin, ardından otomatik bestele düğmesine dokunun.`
+    : interfaceLanguage() === "el"
+      ? `Η εικόνα είναι έτοιμη. ${localizedAnalysisDescription()} Επιλέξτε προβολή και μετά πατήστε Αυτόματη σύνθεση.`
+      : `Image ready. ${localizedAnalysisDescription()} Choose a view, then select Compose automatically.`;
+  announce(readyMessage, true, [45, 30, 80]);
 }
 
 function setComposerButtons(hasImage, hasMusic) {
@@ -304,6 +392,29 @@ function setComposerButtons(hasImage, hasMusic) {
   ["play-button", "stop-button", "download-audio", "save-archive", "share-composition"].forEach((id) => {
     document.getElementById(id).disabled = !hasMusic;
   });
+}
+
+function setShareControls(enabled) {
+  [elements.shareTitle, elements.shareCaption, elements.shareAlt, elements.shareHashtags, elements.shareDisclosure, elements.shareRights].forEach((element) => {
+    element.disabled = !enabled;
+  });
+  ["refresh-share", "copy-share"].forEach((id) => { document.getElementById(id).disabled = !enabled; });
+  document.getElementById("publish-share").disabled = !enabled || !elements.shareRights.checked;
+}
+
+function resetShareStudio() {
+  setShareControls(false);
+  elements.shareReadiness.textContent = "Önce beste oluşturun";
+  elements.shareTitle.value = "";
+  elements.shareCaption.value = "";
+  elements.shareAlt.value = "";
+  elements.shareRights.checked = false;
+  elements.sharePreviewImage.removeAttribute("src");
+  elements.sharePreviewImage.alt = "Gönderi önizlemesi için henüz görsel oluşturulmadı";
+  elements.sharePreviewText.textContent = "Bestenizi oluşturduğunuzda sosyal medya gönderisi burada hazırlanacaktır.";
+  elements.sharePreviewAlt.innerHTML = "<strong>Görsel betimlemesi:</strong> Henüz hazır değil.";
+  elements.sharePreviewDisclosure.textContent = "Açıklanabilir üretim etiketi bekleniyor.";
+  updatePlatformUi();
 }
 
 function getAverageCell(data, width, x0, y0, cellWidth, cellHeight) {
@@ -522,16 +633,16 @@ function rgbToHex(r, g, b) {
 function renderAnalysis() {
   const analysis = state.analysis;
   if (!analysis) return;
-  elements.sceneDescription.textContent = analysis.description;
+  elements.sceneDescription.textContent = localizedAnalysisDescription(analysis);
   elements.analysisChips.innerHTML = [
-    `${analysis.type} · %${analysis.confidence}`,
-    `${analysis.orientation} · ${analysis.originalWidth}×${analysis.originalHeight}`,
-    `Parlaklık ${analysis.averageBrightness}/255`,
-    `Doygunluk %${analysis.averageSaturation}`,
-    `${state.cells.length} piksel hücresi`,
+    `${localized(analysis.type)} · ${analysis.confidence}%`,
+    `${localized(analysis.orientation)} · ${analysis.originalWidth}×${analysis.originalHeight}`,
+    interfaceLanguage() === "tr" ? `Parlaklık ${analysis.averageBrightness}/255` : interfaceLanguage() === "el" ? `Φωτεινότητα ${analysis.averageBrightness}/255` : `Brightness ${analysis.averageBrightness}/255`,
+    interfaceLanguage() === "tr" ? `Doygunluk %${analysis.averageSaturation}` : interfaceLanguage() === "el" ? `Κορεσμός ${analysis.averageSaturation}%` : `Saturation ${analysis.averageSaturation}%`,
+    interfaceLanguage() === "tr" ? `${state.cells.length} piksel hücresi` : interfaceLanguage() === "el" ? `${state.cells.length} κελιά pixel` : `${state.cells.length} pixel cells`,
   ].map((text) => `<span>${escapeHtml(text)}</span>`).join("");
   elements.dominantPalette.innerHTML = analysis.palette.map((color) =>
-    `<button type="button" style="background:${color.hex}" aria-label="${escapeHtml(color.name)}, yüzde ${color.percent}" title="${escapeHtml(color.name)} · %${color.percent}"></button>`,
+    `<button type="button" style="background:${color.hex}" aria-label="${escapeHtml(localized(color.name))}, ${color.percent}%" title="${escapeHtml(localized(color.name))} · ${color.percent}%"></button>`,
   ).join("");
 }
 
@@ -602,6 +713,7 @@ function composeMusic() {
   }).join("  ");
   elements.musicStatus.textContent = `${state.sequence.length} olay hazır`;
   setComposerButtons(true, true);
+  prepareShareDraft();
   const summary = `Beste hazır. ${counts.note || 0} nota, ${(counts.kick || 0) + (counts.snare || 0) + (counts.hat || 0)} vuruş ve ${counts.rest || 0} es oluşturuldu. Beyaz alanlar sessizlik olarak işlendi.`;
   announce(summary, true, [60, 30, 60, 30, 110]);
 }
@@ -880,7 +992,7 @@ function openArchiveDb() {
       reject(new Error("Bu cihaz arşiv özelliğini desteklemiyor"));
       return;
     }
-    const request = indexedDB.open("nsosyal-duyu-studio", 1);
+    const request = indexedDB.open("duyu-sense-studio", 1);
     request.onupgradeneeded = () => {
       const db = request.result;
       if (!db.objectStoreNames.contains("compositions")) db.createObjectStore("compositions", { keyPath: "id" });
@@ -954,7 +1066,7 @@ async function renderArchive() {
         <img src="${record.thumbnail}" alt="${escapeHtml(record.analysis?.description || record.title)}" />
         <div class="archive-card-body">
           <h3>${escapeHtml(record.title)}</h3>
-          <p>${new Date(record.createdAt).toLocaleString("tr-TR")} · ${record.sequence.length} olay · ${record.tempo} BPM</p>
+          <p>${new Date(record.createdAt).toLocaleString(window.DuyuI18n?.dateLocale() || "en-GB")} · ${record.sequence.length} olay · ${record.tempo} BPM</p>
           <div class="archive-card-actions">
             <button type="button" data-archive-action="play">▶ Dinle</button>
             <button type="button" data-archive-action="download">⬇ WAV</button>
@@ -1000,7 +1112,196 @@ function createShareText(title, analysis = state.analysis, sequence = state.sequ
     result[event.type] = (result[event.type] || 0) + 1;
     return result;
   }, {});
-  return `${title}\n\nErişilebilir betimleme: ${analysis?.description || "Görselden oluşturulan PİKSENFONİ bestesi."}\n\nBeste: ${eventCounts.note || 0} renk notası, ${(eventCounts.kick || 0) + (eventCounts.snare || 0) + (eventCounts.hat || 0)} vuruş, ${eventCounts.rest || 0} es.\n\n#NSosyalDUYU #PİKSENFONİ #ErişilebilirSanat #NSosyalİnovasyon`;
+  const notes = eventCounts.note || 0;
+  const beats = (eventCounts.kick || 0) + (eventCounts.snare || 0) + (eventCounts.hat || 0);
+  const rests = eventCounts.rest || 0;
+  const description = analysis ? localizedAnalysisDescription(analysis) : localized("Görselden oluşturulan PİKSENFONİ bestesi.");
+  if (interfaceLanguage() === "tr") return `${title}\n\nErişilebilir betimleme: ${description}\n\nBeste: ${notes} renk notası, ${beats} vuruş, ${rests} es.\n\n#HARMONYSENSE #PİKSENFONİ #ErişilebilirSanat #KapsayıcıTasarım`;
+  if (interfaceLanguage() === "el") return `${title}\n\nΠροσβάσιμη περιγραφή: ${description}\n\nΣύνθεση: ${notes} νότες χρωμάτων, ${beats} χτύποι, ${rests} παύσεις.\n\n#HARMONYSENSE #PİKSENFONİ #Προσβασιμότητα #ΣυμπεριληπτικόςΣχεδιασμός`;
+  return `${title}\n\nAccessible description: ${description}\n\nComposition: ${notes} colour notes, ${beats} beats, ${rests} rests.\n\n#HARMONYSENSE #PİKSENFONİ #AccessibleArt #InclusiveDesign`;
+}
+
+function compositionCounts(sequence = state.sequence) {
+  return sequence.reduce((result, event) => {
+    result[event.type] = (result[event.type] || 0) + 1;
+    return result;
+  }, {});
+}
+
+function normalizedHashtags(value) {
+  return String(value || "")
+    .split(/\s+/)
+    .map((tag) => tag.trim())
+    .filter(Boolean)
+    .map((tag) => tag.startsWith("#") ? tag : `#${tag.replace(/^#+/, "")}`)
+    .slice(0, 8)
+    .join(" ");
+}
+
+function platformHashtags(platformKey) {
+  if (interfaceLanguage() === "tr") return socialPlatforms[platformKey].hashtags;
+  if (interfaceLanguage() === "el") return `#HARMONYSENSE #PİKSENFONİ #Προσβασιμότητα #ΣυμπεριληπτικόςΣχεδιασμός`;
+  return `#HARMONYSENSE #PİKSENFONİ #Accessibility #InclusiveDesign`;
+}
+
+function platformHint(platformKey) {
+  const en = {
+    instagram: "A concise, image-led post with an accessible description.",
+    tiktok: "Direct copy that highlights the short visual, sound and vibration experience.",
+    youtube: "A title and accessible description for video or Shorts.",
+    facebook: "Clear community copy that invites participation.",
+    x: "A short post focused on the main message and accessibility.",
+    linkedin: "Professional copy focused on social impact and inclusive design.",
+    whatsapp: "A concise described message for people and groups.",
+    web: "Publication copy with a prominent accessible description.",
+  };
+  const el = {
+    instagram: "Σύντομη ανάρτηση με έμφαση στην εικόνα και προσβάσιμη περιγραφή.",
+    tiktok: "Άμεσο κείμενο που αναδεικνύει την εμπειρία εικόνας, ήχου και δόνησης.",
+    youtube: "Τίτλος και προσβάσιμη περιγραφή για βίντεο ή Shorts.",
+    facebook: "Σαφές κείμενο κοινότητας που προσκαλεί σε συμμετοχή.",
+    x: "Σύντομη ανάρτηση με έμφαση στο κύριο μήνυμα και την προσβασιμότητα.",
+    linkedin: "Επαγγελματικό κείμενο με έμφαση στον κοινωνικό αντίκτυπο και τον συμπεριληπτικό σχεδιασμό.",
+    whatsapp: "Σύντομο περιγραφικό μήνυμα για άτομα και ομάδες.",
+    web: "Κείμενο δημοσίευσης με εμφανή προσβάσιμη περιγραφή.",
+  };
+  if (interfaceLanguage() === "tr") return socialPlatforms[platformKey].hint;
+  return (interfaceLanguage() === "el" ? el : en)[platformKey];
+}
+
+function platformCaption(platformKey, counts = compositionCounts()) {
+  const notes = counts.note || 0;
+  const beats = (counts.kick || 0) + (counts.snare || 0) + (counts.hat || 0);
+  const rests = counts.rest || 0;
+  const source = state.sourceName || (interfaceLanguage() === "tr" ? "Seçilen görsel" : interfaceLanguage() === "el" ? "Επιλεγμένη εικόνα" : "Selected image");
+  const english = {
+    instagram: `I transformed ${source} into an accessible PİKSENFONİ with ${notes} colour notes, ${beats} beats and ${rests} rests. The image can now be heard and felt.`,
+    tiktok: `${source} became sound and vibration with HARMONY SENSE: ${notes} notes, ${beats} beats, ${rests} rests.`,
+    youtube: `HARMONY SENSE transformed the colours in ${source} into notes, rhythm and haptic feedback. This work contains ${notes} colour notes, ${beats} beats and ${rests} rests.`,
+    facebook: `I created an accessible sensory artwork from ${source}. HARMONY SENSE mapped its colours to ${notes} notes, ${beats} beats and ${rests} rests.`,
+    x: `${source} became an accessible PİKSENFONİ with HARMONY SENSE: ${notes} notes, ${beats} beats, ${rests} rests.`,
+    linkedin: `With HARMONY SENSE, we transformed ${source} into accessible digital content. The explainable colour-to-sound mapping produced ${notes} notes, ${beats} beats and ${rests} rests.`,
+    whatsapp: `I transformed ${source} into sound with HARMONY SENSE: ${notes} notes, ${beats} beats and ${rests} rests. The accessible description follows.`,
+    web: `HARMONY SENSE transformed ${source} into an accessible digital artwork with ${notes} notes, ${beats} beats and ${rests} rests.`,
+  };
+  const turkish = {
+    instagram: `${source} görselini ${notes} renk notası, ${beats} vuruş ve ${rests} es içeren erişilebilir bir PİKSENFONİ'ye dönüştürdüm. Görsel artık duyuluyor ve hissediliyor.`,
+    tiktok: `${source}, HARMONY SENSE ile sese ve titreşime dönüştü: ${notes} nota, ${beats} vuruş, ${rests} es.`,
+    youtube: `${source} görselinin renklerini HARMONY SENSE ile nota, ritim ve dokunsal geri bildirime dönüştürdüm. Bu çalışmada ${notes} renk notası, ${beats} vuruş ve ${rests} es bulunuyor.`,
+    facebook: `${source} görselinden erişilebilir bir duyusal sanat çalışması oluşturdum. HARMONY SENSE renkleri ${notes} notaya, ${beats} vuruşa ve ${rests} ese dönüştürdü.`,
+    x: `${source}, HARMONY SENSE ile erişilebilir bir PİKSENFONİ'ye dönüştü: ${notes} nota, ${beats} vuruş, ${rests} es.`,
+    linkedin: `HARMONY SENSE ile ${source} görselini erişilebilir dijital içeriğe dönüştürdük. Açıklanabilir renk-ses eşlemesi ${notes} nota, ${beats} vuruş ve ${rests} es üretti.`,
+    whatsapp: `${source} görselini HARMONY SENSE ile sese dönüştürdüm: ${notes} nota, ${beats} vuruş, ${rests} es. Erişilebilir betimleme aşağıda.`,
+    web: `${source} görseli, HARMONY SENSE'in açıklanabilir renk-ses dönüşümüyle ${notes} nota, ${beats} vuruş ve ${rests} esten oluşan erişilebilir bir dijital esere dönüştürüldü.`,
+  };
+  const greek = {
+    instagram: `Μετέτρεψα την εικόνα ${source} σε προσβάσιμο PİKSENFONİ με ${notes} νότες χρωμάτων, ${beats} χτύπους και ${rests} παύσεις. Η εικόνα τώρα ακούγεται και γίνεται αισθητή.`,
+    tiktok: `Η εικόνα ${source} έγινε ήχος και δόνηση με το HARMONY SENSE: ${notes} νότες, ${beats} χτύποι, ${rests} παύσεις.`,
+    youtube: `Το HARMONY SENSE μετέτρεψε τα χρώματα της εικόνας ${source} σε νότες, ρυθμό και απτική ανάδραση. Το έργο περιέχει ${notes} νότες, ${beats} χτύπους και ${rests} παύσεις.`,
+    facebook: `Δημιούργησα ένα προσβάσιμο αισθητηριακό έργο από την εικόνα ${source}. Το HARMONY SENSE αντιστοίχισε τα χρώματα σε ${notes} νότες, ${beats} χτύπους και ${rests} παύσεις.`,
+    x: `Η εικόνα ${source} έγινε προσβάσιμο PİKSENFONİ με το HARMONY SENSE: ${notes} νότες, ${beats} χτύποι, ${rests} παύσεις.`,
+    linkedin: `Με το HARMONY SENSE μετατρέψαμε την εικόνα ${source} σε προσβάσιμο ψηφιακό περιεχόμενο. Η επεξηγήσιμη αντιστοίχιση παρήγαγε ${notes} νότες, ${beats} χτύπους και ${rests} παύσεις.`,
+    whatsapp: `Μετέτρεψα την εικόνα ${source} σε ήχο με το HARMONY SENSE: ${notes} νότες, ${beats} χτύπους και ${rests} παύσεις. Ακολουθεί η προσβάσιμη περιγραφή.`,
+    web: `Το HARMONY SENSE μετέτρεψε την εικόνα ${source} σε προσβάσιμο ψηφιακό έργο με ${notes} νότες, ${beats} χτύπους και ${rests} παύσεις.`,
+  };
+  const templates = interfaceLanguage() === "tr" ? turkish : interfaceLanguage() === "el" ? greek : english;
+  return templates[platformKey] || templates.instagram;
+}
+
+function updatePlatformUi() {
+  const platform = socialPlatforms[state.activePlatform] || socialPlatforms.instagram;
+  document.querySelectorAll("[data-platform]").forEach((button) => {
+    const active = button.dataset.platform === state.activePlatform;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
+  elements.platformHint.textContent = platformHint(state.activePlatform);
+  const accessibleLabel = interfaceLanguage() === "tr" ? "erişilebilir içerik" : interfaceLanguage() === "el" ? "προσβάσιμο περιεχόμενο" : "accessible content";
+  const prepareLabel = interfaceLanguage() === "tr" ? `${platform.label} için hazırla` : interfaceLanguage() === "el" ? `Προετοιμασία για ${platform.label}` : `Prepare for ${platform.label}`;
+  elements.previewPlatform.textContent = `${platform.label} · ${accessibleLabel}`;
+  elements.publishShare.textContent = `↗ ${prepareLabel}`;
+}
+
+function selectPlatform(platformKey) {
+  if (!socialPlatforms[platformKey]) return;
+  state.activePlatform = platformKey;
+  updatePlatformUi();
+  if (state.sequence.length) {
+    elements.shareCaption.value = platformCaption(platformKey);
+    elements.shareHashtags.value = platformHashtags(platformKey);
+    updateSharePreview();
+  }
+  const selectedMessage = interfaceLanguage() === "tr" ? `${socialPlatforms[platformKey].label} paylaşım biçimi seçildi.` : interfaceLanguage() === "el" ? `Επιλέχθηκε μορφή κοινοποίησης ${socialPlatforms[platformKey].label}.` : `${socialPlatforms[platformKey].label} sharing format selected.`;
+  announce(selectedMessage, true, [45]);
+}
+
+function prepareShareDraft({ scroll = false } = {}) {
+  if (!state.sequence.length || !state.analysis) {
+    announce("Önce bir görsel seçip besteyi oluşturun.", true, [90, 40, 90]);
+    return;
+  }
+  const title = elements.compositionTitle.value.trim() || (interfaceLanguage() === "tr" ? `${state.sourceName} Senfonisi` : interfaceLanguage() === "el" ? `Συμφωνία ${state.sourceName}` : `${state.sourceName} Symphony`);
+  const counts = compositionCounts();
+  elements.shareTitle.value = title;
+  elements.shareCaption.value = platformCaption(state.activePlatform, counts);
+  elements.shareAlt.value = localizedAnalysisDescription(state.analysis);
+  elements.shareHashtags.value = platformHashtags(state.activePlatform);
+  elements.shareDisclosure.checked = true;
+  elements.shareRights.checked = false;
+  elements.sharePreviewImage.src = canvasThumbnail();
+  setShareControls(true);
+  updateSharePreview();
+  elements.shareReadiness.textContent = "Gönderi taslağı hazır";
+  if (scroll) document.querySelector("#share-studio").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function shareDraftText() {
+  const title = elements.shareTitle.value.trim() || (interfaceLanguage() === "tr" ? "HARMONY SENSE Bestesi" : interfaceLanguage() === "el" ? "Σύνθεση HARMONY SENSE" : "HARMONY SENSE Composition");
+  const caption = elements.shareCaption.value.trim();
+  const alt = elements.shareAlt.value.trim();
+  const hashtags = normalizedHashtags(elements.shareHashtags.value);
+  const disclosure = elements.shareDisclosure.checked
+    ? interfaceLanguage() === "tr" ? "Görselden açıklanabilir renk-ses algoritmasıyla üretildi." : interfaceLanguage() === "el" ? "Δημιουργήθηκε από εικόνα με επεξηγήσιμο αλγόριθμο χρώματος προς ήχο." : "Created from an image with an explainable colour-to-sound algorithm."
+    : "";
+  const altLabel = interfaceLanguage() === "tr" ? "Erişilebilir görsel betimlemesi" : interfaceLanguage() === "el" ? "Προσβάσιμη περιγραφή εικόνας" : "Accessible image description";
+  return [title, caption, alt ? `${altLabel}: ${alt}` : "", disclosure, hashtags].filter(Boolean).join("\n\n");
+}
+
+function updateSharePreview() {
+  if (!state.sequence.length) return;
+  const title = elements.shareTitle.value.trim() || (interfaceLanguage() === "tr" ? "HARMONY SENSE Bestesi" : interfaceLanguage() === "el" ? "Σύνθεση HARMONY SENSE" : "HARMONY SENSE Composition");
+  const caption = elements.shareCaption.value.trim() || (interfaceLanguage() === "tr" ? "Gönderi metni bekleniyor." : interfaceLanguage() === "el" ? "Αναμονή κειμένου ανάρτησης." : "Waiting for post copy.");
+  const hashtags = normalizedHashtags(elements.shareHashtags.value);
+  const alt = elements.shareAlt.value.trim() || (interfaceLanguage() === "tr" ? "Betimleme eklenmedi." : interfaceLanguage() === "el" ? "Δεν προστέθηκε περιγραφή." : "No description added.");
+  elements.sharePreviewImage.alt = alt;
+  elements.sharePreviewText.textContent = `${title}\n\n${caption}\n\n${hashtags}`;
+  const altLabel = interfaceLanguage() === "tr" ? "Görsel betimlemesi" : interfaceLanguage() === "el" ? "Περιγραφή εικόνας" : "Image description";
+  elements.sharePreviewAlt.innerHTML = `<strong>${altLabel}:</strong> ${escapeHtml(alt)}`;
+  elements.sharePreviewDisclosure.textContent = elements.shareDisclosure.checked
+    ? interfaceLanguage() === "tr" ? "Şeffaflık etiketi: Görselden açıklanabilir renk-ses algoritmasıyla üretildi." : interfaceLanguage() === "el" ? "Ετικέτα διαφάνειας: Δημιουργήθηκε με επεξηγήσιμο αλγόριθμο χρώματος προς ήχο." : "Transparency label: Created with an explainable colour-to-sound algorithm."
+    : interfaceLanguage() === "tr" ? "Şeffaflık etiketi kapalı." : interfaceLanguage() === "el" ? "Η ετικέτα διαφάνειας είναι απενεργοποιημένη." : "Transparency label disabled.";
+  document.getElementById("publish-share").disabled = !elements.shareRights.checked;
+}
+
+async function copyShareDraft() {
+  const text = shareDraftText();
+  try {
+    await navigator.clipboard.writeText(text);
+    announce(`${socialPlatforms[state.activePlatform].label} gönderi metni panoya kopyalandı.`, true, [60, 30, 90]);
+  } catch {
+    announce("Metin kopyalanamadı; cihazın pano iznini kontrol edin.", true, [100, 40, 100]);
+  }
+}
+
+function publishShareDraft() {
+  if (!elements.shareRights.checked) {
+    announce("Paylaşmadan önce kullanım hakkı ve betimleme onayını işaretleyin.", true, [90, 40, 90]);
+    elements.shareRights.focus();
+    return;
+  }
+  const platform = socialPlatforms[state.activePlatform];
+  const title = elements.shareTitle.value.trim() || (interfaceLanguage() === "tr" ? "HARMONY SENSE Bestesi" : interfaceLanguage() === "el" ? "Σύνθεση HARMONY SENSE" : "HARMONY SENSE Composition");
+  shareText(`${title} · ${platform.label}`, shareDraftText());
 }
 
 async function shareText(title, text) {
@@ -1082,7 +1383,7 @@ function bindEvents() {
   window.addEventListener("online", updateNetworkStatus);
   window.addEventListener("offline", updateNetworkStatus);
 
-  document.querySelector("#welcome-speak").addEventListener("click", () => speak("NSosyal DUYU Studio, herhangi bir görseli ses, ritim, es ve titreşime dönüştüren erişilebilir içerik bestecisidir. Besteciyi aç düğmesiyle başlayın."));
+  document.querySelector("#welcome-speak").addEventListener("click", () => speak("HARMONY SENSE, herhangi bir görseli ses, ritim, es ve titreşime dönüştüren erişilebilir içerik bestecisidir. Besteciyi aç düğmesiyle başlayın."));
   document.querySelector("#privacy-speak").addEventListener("click", () => speak("Görsel cihazda işlenir. Arşiv varsayılan olarak özeldir. Görseli paylaşmak ve buluta göndermek ayrı kullanıcı seçimi gerektirir. Yüz kimliği tanınmaz."));
   document.querySelector("#archive-guide").addEventListener("click", () => speak("Bestelerim arşivi yalnızca bu cihazda tutulan özel kayıtlarınızı gösterir. Her kaydı dinleyebilir, WAV indirebilir, paylaşabilir veya silebilirsiniz."));
 
@@ -1135,7 +1436,7 @@ function bindEvents() {
   });
   document.querySelector("#sample-button").addEventListener("click", async () => {
     elements.rightsConsent.checked = true;
-    try { await loadComposerImage("../Monalisa.jpeg", "Mona Lisa Örneği"); }
+    try { await loadComposerImage("assets/images/mona-lisa.jpg", "Mona Lisa Örneği"); }
     catch { announce("Örnek görsel açılamadı.", true); }
   });
   elements.fileInput.addEventListener("change", (event) => handleImageFile(event.target.files?.[0]));
@@ -1175,7 +1476,19 @@ function bindEvents() {
   document.querySelector("#download-audio").addEventListener("click", downloadCurrentAudio);
   document.querySelector("#describe-image").addEventListener("click", () => speak(state.analysis?.description || "Görsel analizi bulunmuyor."));
   document.querySelector("#save-archive").addEventListener("click", saveCurrentArchive);
-  document.querySelector("#share-composition").addEventListener("click", () => shareText(elements.compositionTitle.value || state.sourceName, createShareText(elements.compositionTitle.value || state.sourceName)));
+  document.querySelector("#share-composition").addEventListener("click", () => prepareShareDraft({ scroll: true }));
+
+  [elements.shareTitle, elements.shareCaption, elements.shareAlt, elements.shareHashtags].forEach((element) => {
+    element.addEventListener("input", updateSharePreview);
+  });
+  elements.shareDisclosure.addEventListener("change", updateSharePreview);
+  elements.shareRights.addEventListener("change", updateSharePreview);
+  document.querySelectorAll("[data-platform]").forEach((button) => {
+    button.addEventListener("click", () => selectPlatform(button.dataset.platform));
+  });
+  document.querySelector("#refresh-share").addEventListener("click", updateSharePreview);
+  document.querySelector("#copy-share").addEventListener("click", copyShareDraft);
+  document.querySelector("#publish-share").addEventListener("click", publishShareDraft);
 
   document.querySelectorAll("[data-move]").forEach((button) => button.addEventListener("click", () => moveManual(button.dataset.move)));
   elements.canvas.addEventListener("pointerdown", (event) => {
@@ -1225,12 +1538,12 @@ function bindEvents() {
     elements.rightsConsent.checked = true;
     await loadComposerImage(state.activeArtwork.image, state.activeArtwork.title);
   });
-  document.querySelector("#dialog-share").addEventListener("click", () => shareText(state.activeArtwork.title, `${state.activeArtwork.title} — ${state.activeArtwork.description}\n\n#NSosyalDUYU #PİKSENFONİ`));
+  document.querySelector("#dialog-share").addEventListener("click", () => shareText(state.activeArtwork.title, `${state.activeArtwork.title} — ${state.activeArtwork.description}\n\n#HARMONYSENSE #PİKSENFONİ`));
 }
 
-window.NSosyalNative = {
+window.DuyuSenseNative = {
   async onCameraImage(dataUrl) {
-    try { await loadComposerImage(dataUrl, `Kamera ${new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })}`); }
+    try { await loadComposerImage(dataUrl, `Kamera ${new Date().toLocaleTimeString(window.DuyuI18n?.dateLocale() || "en-GB", { hour: "2-digit", minute: "2-digit" })}`); }
     catch { announce("Kamera fotoğrafı işlenemedi.", true, [120, 50, 120]); }
   },
   onCameraError(message) {
@@ -1246,18 +1559,29 @@ async function initialize() {
   renderSensorButtons();
   updateNetworkStatus();
   setComposerButtons(false, false);
+  resetShareStudio();
   bindEvents();
   try { await openArchiveDb(); await renderArchive(); } catch { /* archive status is shown on demand */ }
   if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
     navigator.serviceWorker.register("service-worker.js").catch(() => undefined);
   }
   window.setTimeout(() => {
-    if (state.guideEnabled) speak("NSosyal DUYU Studio'ya hoş geldiniz. Besteci bölümünde kamera, galeri veya örnek düğmesiyle başlayabilirsiniz.");
+    if (state.guideEnabled) speak("HARMONY SENSE'e hoş geldiniz. Besteci bölümünde kamera, galeri veya örnek düğmesiyle başlayabilirsiniz.");
   }, 600);
 }
 
-if (window.__NSOSYAL_TEST__) {
-  window.NSosyalTest = {
+window.addEventListener("duyu:languagechange", async () => {
+  updateNetworkStatus();
+  const activeFilter = document.querySelector(".filter.active")?.dataset.filter || "all";
+  renderGallery(activeFilter);
+  renderSensorButtons();
+  updatePlatformUi();
+  if (elements.dialog.open && state.activeArtwork) openArtwork(state.activeArtwork.id);
+  try { await renderArchive(); } catch { /* archive may be unavailable in private browsing */ }
+});
+
+if (window.__DUYU_SENSE_TEST__) {
+  window.DuyuSenseTest = {
     analyzeImage,
     cellToEvent,
     colorName,
