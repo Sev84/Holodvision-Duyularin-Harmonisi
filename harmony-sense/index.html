@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#16104f" />
+    <meta name="color-scheme" content="dark light" />
+    <meta
+      name="description"
+      content="HARMONY SENSE turns images into colour, notes, rhythm, accessible descriptions and haptic feedback."
+    />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self' data: blob:; img-src 'self' data: blob:; media-src 'self' data: blob:; connect-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'"
+    />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>HARMONY SENSE · See, Hear, Feel, Share</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Ana içeriğe geç</a>
+
+    <header class="topbar">
+      <a class="brand" href="#hero" aria-label="HARMONY SENSE ana sayfa">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48" focusable="false">
+            <path d="M7 24c5-12 11-18 17-18s12 6 17 18c-5 12-11 18-17 18S12 36 7 24Z" />
+            <path d="M13 25h6l3-8 5 15 4-9 4 2" />
+          </svg>
+        </span>
+        <span><strong>HARMONY SENSE</strong><em>SEE · HEAR · FEEL</em></span>
+      </a>
+      <nav aria-label="Ana menü">
+        <a href="#composer">Besteci</a>
+        <a href="#share-studio">Paylaşım</a>
+        <a href="#archive">Arşiv</a>
+        <a href="#gallery">Galeri</a>
+        <a href="privacy.html">Gizlilik</a>
+      </nav>
+      <div class="access-actions" aria-label="Erişilebilirlik araçları">
+        <div class="language-switcher" role="group" aria-label="Interface language">
+          <button type="button" class="language-button active" data-language="en" aria-pressed="true" title="English">EN</button>
+          <button type="button" class="language-button" data-language="tr" aria-pressed="false" title="Türkçe">TR</button>
+          <button type="button" class="language-button" data-language="el" aria-pressed="false" title="Ελληνικά">EL</button>
+        </div>
+        <button id="large-text" class="icon-button" type="button" aria-pressed="false" aria-label="Büyük yazıyı aç veya kapat">A+</button>
+        <button id="contrast" class="icon-button" type="button" aria-pressed="false" aria-label="Yüksek kontrastı aç veya kapat">◐</button>
+        <button id="guide-toggle" class="icon-button wide" type="button" aria-pressed="true">🔊 Rehber</button>
+        <button id="music-toggle" class="icon-button wide" type="button" aria-pressed="false">♫ Fon</button>
+      </div>
+    </header>
+
+    <main id="main">
+      <section id="hero" class="hero section-shell">
+        <div class="hero-copy">
+          <span class="eyebrow">Erişilebilir sosyal içerik stüdyosu</span>
+          <h1>Görseli gör.<br /><span>Sese ve hisse dönüştür.</span></h1>
+          <p>Bir görsel seçin. HARMONY SENSE renkleri nota, ritim, betimleme ve titreşime dönüştürsün; erişilebilir içeriğinizi istediğiniz platform için hazırlasın.</p>
+          <div class="hero-actions">
+            <a class="primary-button" href="#composer">Besteciyi aç</a>
+            <button id="welcome-speak" class="secondary-button" type="button">🔊 Projeyi dinle</button>
+          </div>
+          <div class="platform-strip" aria-label="Desteklenen paylaşım hedefleri">
+            <span>Instagram</span><span>TikTok</span><span>YouTube</span><span>Facebook</span>
+            <span>X</span><span>LinkedIn</span><span>WhatsApp</span><span>Web</span>
+          </div>
+          <p class="offline-badge"><span aria-hidden="true">●</span> <strong id="network-label">Bağlantı kontrol ediliyor</strong> · Temel besteci internetsiz de çalışır</p>
+        </div>
+        <div class="hero-visual" aria-label="Renklerin notalara dönüştüğü soyut PİKSENFONİ görseli">
+          <svg class="sense-wave" viewBox="0 0 500 120" aria-hidden="true">
+            <path d="M0 62h78l18-1 12-22 24 50 24-75 30 89 28-61 20 20h44l20-2 16-31 26 64 25-51 18 20H500" />
+          </svg>
+          <div class="pulse pulse-one"></div>
+          <div class="pulse pulse-two"></div>
+          <div class="note-orbit">
+            <span style="--i: 0">Do</span><span style="--i: 1">Re</span><span style="--i: 2">Mi</span>
+            <span style="--i: 3">Fa</span><span style="--i: 4">Sol</span><span style="--i: 5">La</span>
+          </div>
+          <div class="hero-core"><strong>HARMONY</strong><span>SENSE</span><small>SEE · HEAR · FEEL · SHARE</small></div>
+        </div>
+      </section>
+
+      <section class="how section-shell" aria-labelledby="how-title">
+        <div class="section-heading">
+          <span class="eyebrow">Dört adımlı erişilebilir akış</span>
+          <h2 id="how-title">Her işlemde sesli ve dokunsal yönlendirme</h2>
+        </div>
+        <ol class="feature-grid workflow-list">
+          <li><span aria-hidden="true">📷</span><h3>1. Görsel seç</h3><p>Kamerayla çek veya galeriden yükle.</p></li>
+          <li><span aria-hidden="true">🟪</span><h3>2. Dönüştür</h3><p>Kare piksel, ana–ara renk, neon veya gri görünüm seç.</p></li>
+          <li><span aria-hidden="true">🎼</span><h3>3. Bestele</h3><p>Renkleri notaya; siyah ve griyi vuruşa, beyazı ese dönüştür.</p></li>
+          <li><span aria-hidden="true">🗂️</span><h3>4. Arşivle</h3><p>Çalışmanı kaydet, indir veya erişilebilir sosyal medya metniyle paylaş.</p></li>
+        </ol>
+      </section>
+
+      <section id="composer" class="composer-lab section-shell" aria-labelledby="composer-title">
+        <div class="section-heading split-heading">
+          <div>
+            <span class="eyebrow">PİKSENFONİ erişilebilir içerik stüdyosu</span>
+            <h2 id="composer-title">Görselden Müzik Bestecisi</h2>
+            <p>İşlem cihazda yapılır. Fotoğraf, siz paylaşmayı seçmediğiniz sürece dışarı gönderilmez.</p>
+          </div>
+          <div class="privacy-chip" aria-label="Gizlilik durumu">🔒 Cihazda işleme</div>
+        </div>
+
+        <div class="consent-panel">
+          <label class="check-row" for="rights-consent">
+            <input id="rights-consent" type="checkbox" />
+            Bu görseli kullanma hakkına sahibim; kişisel veri ve paylaşım sorumluluğunu anladım.
+          </label>
+          <button id="privacy-speak" type="button" class="text-button">Aydınlatmayı dinle</button>
+        </div>
+
+        <div class="composer-upload" aria-labelledby="step-one-title">
+          <div>
+            <span class="step-number" aria-hidden="true">1</span>
+            <h3 id="step-one-title">Görseli al</h3>
+            <p>Portre, manzara, nesne, çizim veya sanat eseri olabilir.</p>
+          </div>
+          <div class="upload-actions">
+            <button id="camera-button" class="primary-button" type="button">📷 Kamerayla çek</button>
+            <button id="gallery-button" class="secondary-button" type="button">🖼️ Galeriden yükle</button>
+            <button id="sample-button" class="secondary-button" type="button">✨ Örnekle dene</button>
+          </div>
+          <input id="composer-file" class="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp" />
+          <input id="camera-file" class="visually-hidden" type="file" accept="image/*" capture="environment" />
+        </div>
+
+        <div id="composer-workspace" class="composer-workspace" aria-busy="false">
+          <div class="canvas-card">
+            <div class="canvas-head">
+              <div><span class="step-number" aria-hidden="true">2</span><h3>Görünümü dönüştür</h3></div>
+              <span id="image-status" class="status-pill">Görsel bekleniyor</span>
+            </div>
+            <div class="canvas-wrap" id="canvas-wrap">
+              <canvas id="composer-canvas" width="720" height="540" role="img" aria-label="Seçilen görselin besteci önizlemesi"></canvas>
+              <div id="scan-cursor" class="scan-cursor" hidden></div>
+              <div id="empty-canvas" class="empty-canvas">
+                <span aria-hidden="true">🎨</span>
+                <strong>Henüz görsel seçilmedi</strong>
+                <small>Kamera, galeri veya örnek görsel düğmesini kullanın.</small>
+              </div>
+            </div>
+            <div class="view-tabs" role="group" aria-label="Görsel dönüşüm türü">
+              <button class="view-tab active" type="button" data-view="natural" aria-pressed="true">Orijinal piksel</button>
+              <button class="view-tab" type="button" data-view="palette" aria-pressed="false">Ana–ara renk</button>
+              <button class="view-tab" type="button" data-view="neon" aria-pressed="false">Neon</button>
+              <button class="view-tab" type="button" data-view="gray" aria-pressed="false">Siyah–beyaz</button>
+            </div>
+            <label class="range-label" for="pixel-size">Piksel boyutu <output id="pixel-size-value">24</output> px</label>
+            <input id="pixel-size" type="range" min="8" max="48" step="4" value="24" />
+            <div class="canvas-actions">
+              <button id="download-image" type="button" disabled>⬇️ Görseli indir</button>
+              <button id="describe-image" type="button" disabled>🔊 Ön tanıyı dinle</button>
+            </div>
+          </div>
+
+          <div class="control-card">
+            <div class="canvas-head">
+              <div><span class="step-number" aria-hidden="true">3</span><h3>Besteyi oluştur</h3></div>
+              <span id="music-status" class="status-pill">Hazır değil</span>
+            </div>
+
+            <div class="analysis-card" aria-live="polite">
+              <h4>Cihaz içi açıklanabilir ön analiz</h4>
+              <p id="scene-description">Görsel seçildiğinde biçim, renk ve parlaklık analizi burada açıklanır.</p>
+              <div id="analysis-chips" class="analysis-chips"></div>
+              <div id="dominant-palette" class="dominant-palette" aria-label="Baskın renk paleti"></div>
+              <small>Bu sonuç yüz kimliği tanımaz; yalnızca görsel özelliklerden ön sınıflandırma yapar.</small>
+            </div>
+
+            <div class="control-grid">
+              <label for="tempo">Tempo <output id="tempo-value">96</output> BPM
+                <input id="tempo" type="range" min="48" max="180" step="4" value="96" />
+              </label>
+              <label for="instrument">Enstrüman
+                <select id="instrument">
+                  <option value="synth">Sentezleyici</option>
+                  <option value="piano">Piyano</option>
+                  <option value="violin">Keman</option>
+                  <option value="guitar">Akustik gitar</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="music-actions">
+              <button id="compose-button" class="primary-button" type="button" disabled>🎼 Otomatik bestele</button>
+              <button id="play-button" type="button" disabled>▶ Besteyi çal</button>
+              <button id="stop-button" type="button" disabled>■ Durdur</button>
+              <button id="download-audio" type="button" disabled>⬇ WAV indir</button>
+            </div>
+
+            <details class="manual-box">
+              <summary>Manuel dokun–çal modu</summary>
+              <p>Kare üzerinde dokunun veya yön düğmeleriyle ilerleyin. Her hücre ses ve titreşimle bildirilir.</p>
+              <div class="arrow-pad" aria-label="Manuel tarama yönleri">
+                <button type="button" data-move="up" aria-label="Yukarı git">↑</button>
+                <button type="button" data-move="left" aria-label="Sola git">←</button>
+                <button type="button" data-move="down" aria-label="Aşağı git">↓</button>
+                <button type="button" data-move="right" aria-label="Sağa git">→</button>
+              </div>
+            </details>
+
+            <div class="music-sheet-wrap">
+              <h4>Nota defteri</h4>
+              <div id="music-sheet" class="music-sheet" role="log" aria-live="polite">Henüz beste oluşturulmadı.</div>
+            </div>
+
+            <div class="archive-actions">
+              <label for="composition-title">Çalışmanın adı</label>
+              <input id="composition-title" type="text" maxlength="80" placeholder="Örneğin: Gün Batımı Senfonisi" />
+              <button id="save-archive" class="primary-button full" type="button" disabled>🗂️ Özel arşive kaydet</button>
+              <button id="share-composition" class="secondary-button full" type="button" disabled>↗ sosyal medya gönderisini hazırla</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="share-studio" class="share-studio section-shell" aria-labelledby="share-studio-title">
+        <div class="section-heading split-heading">
+          <div>
+            <span class="eyebrow">Her platform için erişilebilir içerik</span>
+            <h2 id="share-studio-title">Gönderi Stüdyosu</h2>
+            <p>Bestenizi seçtiğiniz platformun diline uygun metin, erişilebilir betimleme ve şeffaflık etiketiyle hazırlayın.</p>
+          </div>
+          <span id="share-readiness" class="status-pill" role="status">Önce beste oluşturun</span>
+        </div>
+
+        <div class="share-grid">
+          <div class="share-form">
+            <fieldset class="platform-selector">
+              <legend>Paylaşım hedefi</legend>
+              <div class="platform-grid" aria-label="Sosyal platform seçin">
+                <button class="platform-button active" type="button" data-platform="instagram" aria-pressed="true"><span aria-hidden="true">◎</span> Instagram</button>
+                <button class="platform-button" type="button" data-platform="tiktok" aria-pressed="false"><span aria-hidden="true">♪</span> TikTok</button>
+                <button class="platform-button" type="button" data-platform="youtube" aria-pressed="false"><span aria-hidden="true">▶</span> YouTube</button>
+                <button class="platform-button" type="button" data-platform="facebook" aria-pressed="false"><span aria-hidden="true">f</span> Facebook</button>
+                <button class="platform-button" type="button" data-platform="x" aria-pressed="false"><span aria-hidden="true">𝕏</span> X</button>
+                <button class="platform-button" type="button" data-platform="linkedin" aria-pressed="false"><span aria-hidden="true">in</span> LinkedIn</button>
+                <button class="platform-button" type="button" data-platform="whatsapp" aria-pressed="false"><span aria-hidden="true">◉</span> WhatsApp</button>
+                <button class="platform-button" type="button" data-platform="web" aria-pressed="false"><span aria-hidden="true">⌘</span> Web</button>
+              </div>
+              <p id="platform-hint">Instagram için görsel odaklı, kısa ve etiketli gönderi biçimi.</p>
+            </fieldset>
+            <label for="share-title">Gönderi başlığı
+              <input id="share-title" type="text" maxlength="80" placeholder="Örneğin: Gün Batımı Senfonisi" disabled />
+            </label>
+            <label for="share-caption">Gönderi metni
+              <textarea id="share-caption" rows="4" maxlength="600" disabled></textarea>
+            </label>
+            <label for="share-alt">Erişilebilir görsel betimlemesi
+              <textarea id="share-alt" rows="4" maxlength="500" disabled></textarea>
+              <small>Bu alan ekran okuyucu kullanıcıları için görselin temel biçim, renk ve parlaklık özelliklerini açıklar.</small>
+            </label>
+            <label for="share-hashtags">Etiketler
+              <input id="share-hashtags" type="text" maxlength="180" value="#HARMONYSENSE #PİKSENFONİ #Accessibility #InclusiveDesign" disabled />
+            </label>
+            <label class="check-row" for="share-disclosure">
+              <input id="share-disclosure" type="checkbox" checked disabled />
+              “Görselden açıklanabilir algoritmayla üretildi” etiketi gönderide görünsün.
+            </label>
+            <label class="check-row" for="share-rights">
+              <input id="share-rights" type="checkbox" disabled />
+              Bu içeriği paylaşma hakkına sahibim; erişilebilir betimlemeyi kontrol ettim.
+            </label>
+            <div class="share-actions">
+              <button id="refresh-share" class="secondary-button" type="button" disabled>↻ Önizlemeyi yenile</button>
+              <button id="copy-share" class="secondary-button" type="button" disabled>⧉ Metni kopyala</button>
+              <button id="publish-share" class="primary-button" type="button" disabled>↗ Instagram için hazırla</button>
+            </div>
+            <p class="share-note">Uygulama izniniz olmadan otomatik yayın yapmaz. Son paylaşım, cihazın güvenli paylaşım ekranında sizin onayınızla tamamlanır.</p>
+          </div>
+
+          <article class="social-post-preview" aria-labelledby="preview-title">
+            <div class="social-post-head">
+              <span class="avatar" aria-hidden="true">D</span>
+              <div><strong>HARMONY SENSE</strong><small id="preview-platform">Instagram · erişilebilir içerik</small></div>
+              <span class="access-tag">♿ Betimlemeli</span>
+            </div>
+            <img id="share-preview-image" alt="Gönderi önizlemesi için henüz görsel oluşturulmadı" />
+            <div class="social-post-body">
+              <h3 id="preview-title">Gönderi önizlemesi</h3>
+              <p id="share-preview-text">Bestenizi oluşturduğunuzda sosyal medya gönderisi burada hazırlanacaktır.</p>
+              <p id="share-preview-alt" class="preview-alt"><strong>Görsel betimlemesi:</strong> Henüz hazır değil.</p>
+              <small id="share-preview-disclosure">Açıklanabilir üretim etiketi bekleniyor.</small>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="archive" class="archive-section section-shell" aria-labelledby="archive-title">
+        <div class="section-heading split-heading">
+          <div><span class="eyebrow">Cihaz içi özel arşiv</span><h2 id="archive-title">Bestelerim</h2><p>Arşiv varsayılan olarak yalnızca bu cihazda tutulur. Silme ve paylaşma sizin kontrolünüzdedir.</p></div>
+          <button id="archive-guide" class="secondary-button" type="button">🔊 Arşivi dinle</button>
+        </div>
+        <div id="archive-grid" class="archive-grid" aria-live="polite"></div>
+        <p id="archive-empty" class="empty-archive">Henüz kayıt yok. İlk bestenizi oluşturup arşive kaydedin.</p>
+      </section>
+
+      <section id="gallery" class="gallery section-shell" aria-labelledby="gallery-title">
+        <div class="section-heading split-heading">
+          <div><span class="eyebrow">Duyuların Harmonisi sanat atölyesi</span><h2 id="gallery-title">Erişilebilir eser galerisi</h2></div>
+          <div class="filter-group" aria-label="Galeri filtresi">
+            <button type="button" class="filter active" data-filter="all" aria-pressed="true">Tümü</button>
+            <button type="button" class="filter" data-filter="original" aria-pressed="false">Orijinal</button>
+            <button type="button" class="filter" data-filter="pixel" aria-pressed="false">Piksel yorum</button>
+          </div>
+        </div>
+        <div id="gallery-grid" class="gallery-grid" aria-live="polite"></div>
+      </section>
+
+      <section id="sensor" class="sensor-section" aria-labelledby="sensor-title">
+        <div class="section-shell sensor-grid">
+          <div>
+            <span class="eyebrow light">IoT renk eldiveni ve erişilebilir dokunuş</span>
+            <h2 id="sensor-title">Renge dokun, notayı duy</h2>
+            <p>
+              TCS34725 renk sensörlü eldivenden alınacak renk değeri aynı nota–titreşim motoruna bağlanabilir.
+              Paket içindeki güvenli demoda renk düğmelerini kullanın.
+            </p>
+            <div id="sensor-buttons" class="sensor-buttons" aria-label="Renk notaları"></div>
+          </div>
+          <div id="sensor-output" class="sensor-output" role="status" aria-live="polite">
+            <span class="sensor-dot"></span><small>Algılanan renk</small><strong>Bir renk seçin</strong><em>Nota bekleniyor</em>
+          </div>
+        </div>
+      </section>
+
+      <section id="project" class="project-section section-shell" aria-labelledby="project-title">
+        <div class="section-heading">
+          <span class="eyebrow">Toplumsal sürdürülebilirlik için duyusal erişim</span>
+          <h2 id="project-title">Erişilebilir içerikten eşit dijital katılıma</h2>
+          <p>
+            HARMONY SENSE, önceki HOLO-D-VISION/PİKSENFONİ çalışmalarından doğan renk–ses yaklaşımını;
+            kamera, erişilebilir sosyal içerik üretimi, özel arşiv ve çoklu platform paylaşımıyla bağımsız bir dijital kapsayıcılık ürününe dönüştürür.
+          </p>
+        </div>
+        <div class="feature-grid project-grid">
+          <article><span aria-hidden="true">♿</span><h3>Kapsayıcı UX</h3><p>TalkBack uyumlu etiketler, büyük hedefler, sesli rehber, kontrast ve titreşim.</p></article>
+          <article><span aria-hidden="true">🧠</span><h3>Açıklanabilir dönüşüm</h3><p>Her notanın renk, parlaklık ve doygunluk karşılığı kullanıcıya gösterilir.</p></article>
+          <article><span aria-hidden="true">🛡️</span><h3>Mahremiyet</h3><p>Yerel işleme, açık onay, özel arşiv, silme hakkı ve anahtarsız güvenli prototip.</p></article>
+          <article><span aria-hidden="true">🤝</span><h3>Sosyal iyi oluş</h3><p>Sanat üzerinden ifade, paylaşım ve topluluk katılımını destekler; klinik terapi iddiasında bulunmaz.</p></article>
+        </div>
+        <p class="test-callout"><strong>Kullanılabilirlik doğrulaması:</strong> Yarışma pilotu için görev tamamlama, erişilebilirlik ve memnuniyet verilerini etik biçimde toplayın. <a href="usability.html">Pilot kullanıcı testi aracını açın →</a></p>
+      </section>
+    </main>
+
+    <dialog id="art-dialog" aria-labelledby="dialog-title">
+      <div class="dialog-shell">
+        <button id="dialog-close" class="dialog-close" type="button" aria-label="Eser ayrıntısını kapat">×</button>
+        <div class="dialog-media"><img id="dialog-image" alt="" /></div>
+        <div class="dialog-content">
+          <span id="dialog-category" class="eyebrow"></span><h2 id="dialog-title"></h2><p id="dialog-artist" class="dialog-artist"></p>
+          <p id="dialog-description"></p><div id="dialog-palette" class="palette" aria-label="Baskın renkler"></div>
+          <audio id="dialog-audio" controls preload="metadata"></audio>
+          <div class="dialog-actions">
+            <button id="dialog-speak" type="button">🔊 Betimlemeyi dinle</button>
+            <button id="dialog-melody" type="button">✨ Renk melodisini çal</button>
+            <button id="dialog-compose" type="button">🎼 Bestecide aç</button>
+            <button id="dialog-share" type="button">↗ Paylaş</button>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
+    <audio id="background-music" src="assets/audio/fon-muzigi.mp3" loop preload="none"></audio>
+    <div id="guide-status" class="visually-hidden" role="status" aria-live="assertive"></div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <footer>
+      <strong>HARMONY SENSE 3.1</strong>
+      <span>HOLO-D-VISION × PİKSENFONİ · Erişilebilir sosyal içerik ve dijital katılım · 2026</span>
+      <a href="privacy.html">Gizlilik Politikası</a>
+    </footer>
+    <script src="i18n.js" defer></script>
+    <script src="app.js" defer></script>
+  </body>
+</html>

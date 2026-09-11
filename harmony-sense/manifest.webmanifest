@@ -1,0 +1,13 @@
+{
+  "name": "HARMONY SENSE · Accessible Content Studio",
+  "short_name": "HARMONY SENSE",
+  "description": "An inclusive studio that turns images into pixels, notes, rhythm, vibration and accessible content for social platforms.",
+  "lang": "en",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f4f6f8",
+  "theme_color": "#16104f",
+  "categories": ["accessibility", "music", "education", "social"]
+}
